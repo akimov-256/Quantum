@@ -269,6 +269,7 @@ void DownloadWindow::downloadStop()
     msg.exec();
     if (msg.clickedButton() == Yes)
     {
+        m_isWorking = false;
         didStop = true;
         ui->status->setText("Stopping download...");
         download->downloadStop();
