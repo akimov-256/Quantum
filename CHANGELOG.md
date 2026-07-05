@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added download duplicate with a numbered file name option when a file already exists.
 
 ### Changed
 
 ### Fixed
-- Fixed the cancel warning dialog showing on download finish window
+- Fixed the cancel warning dialog showing on download finish window.
 
 ### Known Issues
