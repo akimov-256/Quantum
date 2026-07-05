@@ -170,12 +170,9 @@ void Downloader::StartDataTimer()
 
 void Downloader::SetupWorkers()
 {
-    qint64 chunkSize = info.fileByteSize / info.chunkCount;
     for (int i = 0; i < info.chunkCount; i++)
     {
-        qint64 start = i * chunkSize;
-        qint64 end = (i == info.chunkCount - 1) ? info.fileByteSize - 1 : start + chunkSize - 1;
-
+        // Set up the worker and thread and add them to the tracking list
         QThread *workerThread = new QThread(this);
         DownloadWorker *worker = new DownloadWorker();
         worker->moveToThread(workerThread);
@@ -183,24 +180,16 @@ void Downloader::SetupWorkers()
         m_workers.append(worker);
         m_workerThreads.append(workerThread);
 
+        // Set the first threads to the appropriate parts
         connect(workerThread, &QThread::started, worker, [=]() {
             worker->StartDownload(i, info.fileParts[i].start, info.fileParts[i].end, false, info);
             info.fileParts[i].used = true;
         });
-        // connect(worker, &::DownloadWorker::Finished, workerThread, &QThread::quit);
-        // connect(worker, &::DownloadWorker::Finished, worker, &DownloadWorker::deleteLater);
-        // connect(workerThread, &QThread::finished, workerThread, &QThread::deleteLater);
 
+        // Connect signals
         connect(worker, &::DownloadWorker::Progress, this, &Downloader::onChunkProgress);
         connect(worker, &::DownloadWorker::Finished, this, &Downloader::onChunkFinished);
         connect(worker, &DownloadWorker::ErrorOcc, this, &Downloader::onWorkerError);
-
-        // connect(worker, &DownloadWorker::Finished, this, [this, worker, workerThread]() {
-        //     m_workers.removeOne(worker);
-        //     m_workerThreads.removeOne(workerThread);
-
-        //     workerThread->quit();
-        // });
 
         workerThread->start();
     }
@@ -226,6 +215,7 @@ void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
 
     for (int i = 0; i < info.fileParts.size(); i++)
     {
+        // Assign the next available thread to the free worker
         if (!info.fileParts[i].used)
         {
             info.fileParts[i].used = true;
@@ -243,6 +233,7 @@ void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
 
 void Downloader::retireWorker(DownloadWorker *worker)
 {
+    // Handle worker and thread deletion
     m_workers.removeOne(worker);
     QThread *thread = worker->thread();
     m_workerThreads.removeOne(thread);
@@ -278,6 +269,7 @@ void Downloader::handleDownloadFinish()
         verFile.close();
     }
 
+    // Delete the temp directory
     QDir tempDir(m_qdmTempDir + "/" + info.ID);
     tempDir.removeRecursively();
     emit downloadFinished(true, "Download completed successfully.");
@@ -287,6 +279,7 @@ void Downloader::onReadReady()
 {
     if (reply->bytesAvailable() > 0)
     {
+        // Write the available data to the file
         QByteArray data = reply->readAll();
         currentSize += data.size();
         file.write(data);
