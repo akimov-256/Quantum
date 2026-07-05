@@ -41,6 +41,7 @@
 struct Part {
     qint64 start;
     qint64 end;
+    bool used = false;
 };
 
 class Downloader : public QObject
@@ -69,7 +70,7 @@ private slots:
     void onHeadFinished();
     void onHeadTestFinished();
     void onChunkProgress(int chunkIndex, qint64 bytes);
-    void onChunkFinished();
+    void onChunkFinished(DownloadWorker * worker);
     void onReadReady();
     void onDownloadFinished();
     void handleDownloadFinish();

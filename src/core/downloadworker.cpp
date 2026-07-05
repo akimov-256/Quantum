@@ -1,20 +1,22 @@
 #include "downloadworker.h"
 
-DownloadWorker::DownloadWorker(int chunkIndex, qint64 start, qint64 end, bool isResuming, downloadInformations Info)
-    : m_start(start)
-    , m_end(end)
-    , m_chunkIndex(chunkIndex)
-    , m_isResuming(isResuming)
-    , info(Info)
+DownloadWorker::DownloadWorker()
 {}
 
-void DownloadWorker::StartDownload()
+void DownloadWorker::StartDownload(int chunkIndex, qint64 start, qint64 end, bool isResuming, downloadInformations Info)
 {
+    // set variables
+    m_chunkIndex = chunkIndex;
+    m_start = start;
+    m_end = end;
+    m_isResuming = isResuming;
+    m_info = Info;
+
     m_Stopped = false;
     qDebug() << "StartDownload called for chunk" << m_chunkIndex;
-    m_file.setFileName(info.tempPath);
+    m_file.setFileName(m_info.tempPath);
 
-    qDebug() << "fileName" + info.fileName;
+    qDebug() << "fileName" + m_info.fileName;
 
     m_downloadOffset = m_start;
 
@@ -27,7 +29,7 @@ void DownloadWorker::StartDownload()
     if (!manager)
         manager = new QNetworkAccessManager(this);
 
-    QNetworkRequest request(info.url);
+    QNetworkRequest request(m_info.url);
     QByteArray rangeHeader = "bytes=" + QByteArray::number(m_start) + "-" + QByteArray::number(m_end);
     request.setRawHeader("Range", rangeHeader);
 
@@ -86,7 +88,7 @@ void DownloadWorker::OnReplyFinished()
 
     if (m_Stopped)
     {
-        emit Finished();
+        emit Finished(this);
         return;
     }
 
@@ -98,7 +100,7 @@ void DownloadWorker::OnReplyFinished()
         {
             retryCount++;
             m_isResuming = true;
-            StartDownload();
+            StartDownload(m_chunkIndex, m_start, m_end, m_isResuming, m_info);
             return;
         }
         emit ErrorOcc(errorStr);
@@ -110,6 +112,6 @@ void DownloadWorker::OnReplyFinished()
     else
     {
         retryCount = 0;
-        emit Finished();
+        emit Finished(this);
     }
 }

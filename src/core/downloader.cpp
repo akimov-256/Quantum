@@ -162,26 +162,29 @@ void Downloader::SetupWorkers()
         qint64 end = (i == info.chunkCount - 1) ? info.fileByteSize - 1 : start + chunkSize - 1;
 
         QThread *workerThread = new QThread(this);
-        DownloadWorker *worker = new DownloadWorker(i, start, end, false, info);
+        DownloadWorker *worker = new DownloadWorker();
         worker->moveToThread(workerThread);
 
         m_workers.append(worker);
         m_workerThreads.append(workerThread);
 
-        connect(workerThread, &QThread::started, worker, &::DownloadWorker::StartDownload);
-        connect(worker, &::DownloadWorker::Finished, workerThread, &QThread::quit);
-        connect(worker, &::DownloadWorker::Finished, worker, &DownloadWorker::deleteLater);
-        connect(workerThread, &QThread::finished, workerThread, &QThread::deleteLater);
+        connect(workerThread, &QThread::started, worker, [=]() {
+            worker->StartDownload(i, m_fileParts[i].start, m_fileParts[i].end, false, info);
+            m_fileParts[i].used = true;
+        });
+        // connect(worker, &::DownloadWorker::Finished, workerThread, &QThread::quit);
+        // connect(worker, &::DownloadWorker::Finished, worker, &DownloadWorker::deleteLater);
+        // connect(workerThread, &QThread::finished, workerThread, &QThread::deleteLater);
 
         connect(worker, &::DownloadWorker::Progress, this, &Downloader::onChunkProgress);
         connect(worker, &::DownloadWorker::Finished, this, &Downloader::onChunkFinished);
 
-        connect(worker, &DownloadWorker::Finished, this, [this, worker, workerThread]() {
-            m_workers.removeOne(worker);
-            m_workerThreads.removeOne(workerThread);
+        // connect(worker, &DownloadWorker::Finished, this, [this, worker, workerThread]() {
+        //     m_workers.removeOne(worker);
+        //     m_workerThreads.removeOne(workerThread);
 
-            workerThread->quit();
-        });
+        //     workerThread->quit();
+        // });
 
         workerThread->start();
     }
@@ -195,15 +198,40 @@ void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
     emit progressChanged(m_bytesDownloaded, info.fileByteSize);
 }
 
-void Downloader::onChunkFinished()
+void Downloader::onChunkFinished(DownloadWorker *worker)
 {
-    if (isCancelling) return;
-    m_chunksCompleted++;
-    if (isPausing) return;
-    if (m_chunksCompleted == info.chunkCount)
+    for(int i = 0; i < m_fileParts.size(); i++)
     {
-        handleDownloadFinish();
+        if (m_fileParts[i].used == false)
+        {
+            QMetaObject::invokeMethod(
+                worker,
+                [=]()
+                {
+                    worker->StartDownload(i, m_fileParts[i].start, m_fileParts[i].end, false, info);
+                },
+                Qt::QueuedConnection);
+            m_fileParts[i].used = true;
+            return;
+        }
     }
+
+    // handle cleanup
+    m_workers.removeOne(worker);
+    m_workerThreads.removeOne(worker->thread());
+    worker->thread()->quit();
+    worker->thread()->deleteLater();
+    worker->deleteLater();
+
+    handleDownloadFinish();
+
+    // if (isCancelling) return;
+    // m_chunksCompleted++;
+    // if (isPausing) return;
+    // if (m_chunksCompleted == info.chunkCount)
+    // {
+    //     handleDownloadFinish();
+    // }
 }
 
 void Downloader::handleDownloadFinish()
@@ -337,13 +365,16 @@ void Downloader::downloadResume(downloadInformations Info)
         qint64 end = chunkEnd;
 
         QThread *workerThread = new QThread(this);
-        DownloadWorker *worker = new DownloadWorker(i, start, end, true, info);
+        DownloadWorker *worker = new DownloadWorker();
         worker->moveToThread(workerThread);
 
         m_workers.append(worker);
         m_workerThreads.append(workerThread);
 
-        connect(workerThread, &QThread::started, worker, &DownloadWorker::StartDownload);
+        connect(workerThread, &QThread::started, this, [=]() {
+            worker->StartDownload(i, m_fileParts[i].start, m_fileParts[i].end, false, info);
+            m_fileParts[i].used = false;
+        });
         connect(worker, &DownloadWorker::Finished, worker, &DownloadWorker::deleteLater);
         connect(workerThread, &QThread::finished, workerThread, &QThread::deleteLater);
         connect(worker, &DownloadWorker::Progress, this, &Downloader::onChunkProgress);
