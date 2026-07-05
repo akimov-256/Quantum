@@ -38,6 +38,11 @@
 #include <QJsonArray>
 #include <QCoreApplication>
 
+struct Part {
+    qint64 start;
+    qint64 end;
+};
+
 class Downloader : public QObject
 {
     Q_OBJECT
@@ -87,6 +92,7 @@ private:
     QStringList m_tempPaths;
     downloadInformations info;
     QFile m_file;
+    QList<Part> m_fileParts;
 };
 
 #endif // DOWNLOADER_H

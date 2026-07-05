@@ -62,6 +62,18 @@ void Downloader::onHeadFinished()
     info.fileByteSize = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
     if (info.fileByteSize < 1024 * 1024 * 10) info.chunkCount = 1;
 
+    // set part count, populate the parts array and add a one part at the end if the last part is not divisible by 4Mb
+    int partCount = (info.fileByteSize % 4194304 == 0) ? info.fileByteSize / 4194304 : info.fileByteSize / 4194304 + 1;
+    m_fileParts.resize(partCount);
+    for (int i = 0; i < m_fileParts.size(); i++)
+    {
+        m_fileParts[i].start = i * 4194304;
+        m_fileParts[i].end = m_fileParts[i].start + 4194304;
+    }
+
+    // set the end of the last part to the end of the file
+    m_fileParts[partCount - 1].end = info.fileByteSize - 1;
+
     QByteArray acceptRanges = reply->rawHeader("Accept-Ranges");
     if (acceptRanges.toLower().contains("bytes") || info.chunkCount == 1)
     {
