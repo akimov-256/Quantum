@@ -76,6 +76,7 @@ void DownloadWorker::OnReplyFinished()
     {
         m_file.seek(m_downloadOffset);
         m_file.write(m_writeBuffer);
+        m_downloadOffset += m_writeBuffer.size();
         m_writeBuffer.clear();
     }
     m_file.close();
@@ -96,22 +97,22 @@ void DownloadWorker::OnReplyFinished()
 
     if (error != QNetworkReply::NoError)
     {
-        if (retryCount < retryMax)
+        if (retryCount < retryMax && m_downloadOffset <= m_end)
         {
             retryCount++;
             m_isResuming = true;
-            StartDownload(m_chunkIndex, m_start, m_end, m_isResuming, m_info);
+            StartDownload(m_chunkIndex, m_downloadOffset, m_end, m_isResuming, m_info);
             return;
         }
         emit ErrorOcc(errorStr);
+        return;
     }
-    else if (status != 206)
+    else if (status != 206 && status != 200)
     {
         emit ErrorOcc("Server ignored range request");
+        return;
     }
-    else
-    {
-        retryCount = 0;
-        emit Finished(this, false);
-    }
+
+    retryCount = 0;
+    emit Finished(this, false);
 }

@@ -193,6 +193,7 @@ void Downloader::SetupWorkers()
 
         connect(worker, &::DownloadWorker::Progress, this, &Downloader::onChunkProgress);
         connect(worker, &::DownloadWorker::Finished, this, &Downloader::onChunkFinished);
+        connect(worker, &DownloadWorker::ErrorOcc, this, &Downloader::onWorkerError);
 
         // connect(worker, &DownloadWorker::Finished, this, [this, worker, workerThread]() {
         //     m_workers.removeOne(worker);
@@ -392,6 +393,7 @@ void Downloader::downloadResume(downloadInformations Info)
             });
             connect(worker, &DownloadWorker::Progress, this, &Downloader::onChunkProgress);
             connect(worker, &DownloadWorker::Finished, this, &Downloader::onChunkFinished);
+            connect(worker, &DownloadWorker::ErrorOcc, this, &Downloader::onWorkerError);
             workerThread->start();
         }
 
@@ -456,6 +458,26 @@ void Downloader::downloadPause()
     m_workerThreads.clear();
 
     WriteDownloadData();
+}
+
+void Downloader::onWorkerError(QString errStr)
+{
+    if (m_workers.isEmpty()) return; // already tearing down
+
+    if (saveTimer) saveTimer->stop();
+
+    for (DownloadWorker *worker : m_workers)
+        QMetaObject::invokeMethod(worker, "Stop", Qt::QueuedConnection);
+
+    QElapsedTimer timer;
+    timer.start();
+    while (!m_workers.isEmpty() && timer.elapsed() < 3000)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+
+    m_workers.clear();
+    m_workerThreads.clear();
+
+    emit downloadFinished(false, "Download failed: " + errStr);
 }
 
 qint64 Downloader::fileSize()

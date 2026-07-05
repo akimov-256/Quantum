@@ -69,6 +69,7 @@ private slots:
     void onReadReady();
     void onDownloadFinished();
     void handleDownloadFinish();
+    void onWorkerError(QString errStr);
 private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
