@@ -223,7 +223,8 @@ void Downloader::onChunkFinished(DownloadWorker *worker)
     worker->thread()->deleteLater();
     worker->deleteLater();
 
-    handleDownloadFinish();
+    if (m_workers.isEmpty())
+        handleDownloadFinish();
 
     // if (isCancelling) return;
     // m_chunksCompleted++;
