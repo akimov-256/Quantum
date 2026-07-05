@@ -88,7 +88,7 @@ void DownloadWorker::OnReplyFinished()
 
     if (m_Stopped)
     {
-        emit Finished(this);
+        emit Finished(this, true);
         return;
     }
 
@@ -112,6 +112,6 @@ void DownloadWorker::OnReplyFinished()
     else
     {
         retryCount = 0;
-        emit Finished(this);
+        emit Finished(this, false);
     }
 }

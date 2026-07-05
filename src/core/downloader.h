@@ -19,8 +19,8 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "src/core/downloadworker.h"
 #include "src/models/downloadstatus.h"
+#include "src/core/downloadworker.h"
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QNetworkRequest>
@@ -37,12 +37,6 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QCoreApplication>
-
-struct Part {
-    qint64 start;
-    qint64 end;
-    bool used = false;
-};
 
 class Downloader : public QObject
 {
@@ -62,6 +56,7 @@ public:
     QVector<qint64> chunkProgressData();
     QString downloadID();
     qint64 bytesDownloaded();
+    QList<Part> FilePartsData();
 signals:
     void downloadStarted();
     void progressChanged(qint64 bytesRecived, qint64 bytesTotal);
@@ -70,7 +65,7 @@ private slots:
     void onHeadFinished();
     void onHeadTestFinished();
     void onChunkProgress(int chunkIndex, qint64 bytes);
-    void onChunkFinished(DownloadWorker * worker);
+    void onChunkFinished(DownloadWorker *worker, bool wasStopped);
     void onReadReady();
     void onDownloadFinished();
     void handleDownloadFinish();
@@ -93,7 +88,7 @@ private:
     QStringList m_tempPaths;
     downloadInformations info;
     QFile m_file;
-    QList<Part> m_fileParts;
+    void retireWorker(DownloadWorker *worker);
 };
 
 #endif // DOWNLOADER_H

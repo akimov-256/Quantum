@@ -222,6 +222,7 @@ void DownloadWindow::GatherDownloadInfo()
     info.chunkCount = download->chunkNumber();
     info.chunkProgress = download->chunkProgressData();
     info.ID = download->downloadID();
+    info.fileParts = download->FilePartsData();
 
     emit DownloadInfo(info);
 }
@@ -293,6 +294,7 @@ void DownloadWindow::on_Pause_clicked()
     {
         isPaused = true;
         download->downloadPause();
+        GatherDownloadInfo();
         ui->Pause->setText("Resume");
         info.status = "Paused";
         lastProgress = ui->progressBar->value();

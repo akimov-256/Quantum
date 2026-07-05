@@ -38,7 +38,7 @@ private:
     QNetworkAccessManager *manager = nullptr;
 signals:
     void Progress(int chunkIndex, qint64 bytesRec);
-    void Finished(DownloadWorker *worker);
+    void Finished(DownloadWorker *worker, bool wasStopped);
     void ErrorOcc(QString errStr);
 };
 
