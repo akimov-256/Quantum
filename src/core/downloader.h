@@ -19,8 +19,8 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "src/core/downloadworker.h"
 #include "src/models/downloadstatus.h"
+#include "src/core/downloadworker.h"
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QNetworkRequest>
@@ -56,6 +56,7 @@ public:
     QVector<qint64> chunkProgressData();
     QString downloadID();
     qint64 bytesDownloaded();
+    QList<Part> FilePartsData();
 signals:
     void downloadStarted();
     void progressChanged(qint64 bytesRecived, qint64 bytesTotal);
@@ -64,10 +65,11 @@ private slots:
     void onHeadFinished();
     void onHeadTestFinished();
     void onChunkProgress(int chunkIndex, qint64 bytes);
-    void onChunkFinished();
+    void onChunkFinished(DownloadWorker *worker, bool wasStopped);
     void onReadReady();
     void onDownloadFinished();
     void handleDownloadFinish();
+    void onWorkerError(QString errStr);
 private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
@@ -87,6 +89,7 @@ private:
     QStringList m_tempPaths;
     downloadInformations info;
     QFile m_file;
+    void retireWorker(DownloadWorker *worker);
 };
 
 #endif // DOWNLOADER_H

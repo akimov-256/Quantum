@@ -6,28 +6,16 @@
 #include <QList>
 #include <QFile>
 
-/*
-* struct DownloadStatus
-* {
-*     QString fileName;
-*     QString status;
-*     QString Date;
-*     QString fileSize;
-*     QString currentSize;
-*     QString speed;
-*     float disk;
-*     float progress;
-* };
-* struct resumeDownload
-* {
-*     QString ID;
-*     QString url;
-*     QString savePath;
-*     qint64 fileSize;
-*     int chunkCount;
-*     QVector<qint64> chunkProgress;
-* };
-*/
+class Downloader;
+
+
+struct Part {
+    qint64 start;
+    qint64 end;
+    bool used = false;
+    bool done = false;
+};
+
 struct downloadInformations
 {
     // Display info:
@@ -49,6 +37,7 @@ struct downloadInformations
     int chunkCount;
     QVector<qint64> chunkProgress;
     QString SHA256;
+    QList<Part> fileParts;
 };
 
 Q_DECLARE_METATYPE(downloadInformations)

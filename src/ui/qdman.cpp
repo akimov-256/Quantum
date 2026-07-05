@@ -78,6 +78,7 @@ void QDMan::GatherUnfinishedDownsInfo()
         item.savePath = root["savePath"].toString();
         item.fileByteSize = root["fileSize"].toInteger();
         item.chunkCount = root["chunkCount"].toInt();
+
         QVector<qint64> chunkProgress;
         QJsonArray chunks = root["chunks"].toArray();
         for (auto chunk : chunks)
@@ -85,6 +86,21 @@ void QDMan::GatherUnfinishedDownsInfo()
             chunkProgress.append(chunk.toInteger());
         }
         item.chunkProgress = chunkProgress;
+
+        item.fileParts.clear();
+        QJsonArray partsArray = root["parts"].toArray();
+        for (const QJsonValue &value : partsArray)
+        {
+            QJsonObject obj = value.toObject();
+
+            Part part;
+            part.start = obj["start"].toInteger();
+            part.end = obj["end"].toInteger();
+            part.used = obj["used"].toBool();
+            part.done = obj["done"].toBool();
+
+            item.fileParts.append(part);
+        }
         m_resumeDownloads.append(item);
     }
 }
@@ -104,7 +120,7 @@ void QDMan::CreateResumeCards()
         info.currentSize = GetSizeStr(currentSize);
         info.fileName = QFileInfo(item.savePath).fileName();
         if (item.fileByteSize > 0)
-            info.progress = (currentSize / item.fileByteSize) * 100;
+            info.progress = item.fileByteSize > 0 ? (static_cast<double>(currentSize) / item.fileByteSize) * 100.0 : 0.0;
         info.speed = "- B/s";
         DownloadInfo *card = new DownloadInfo(this);
         ui->downloadsLayout->addWidget(card);
