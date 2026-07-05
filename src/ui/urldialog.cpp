@@ -92,15 +92,29 @@ void urlDialog::on_buttonBox_accepted()
     {
         QMessageBox msg;
         msg.setWindowTitle("File Already Exists");
-        msg.setText("The target file already exists in the directory. \nDo you want to replace it?");
+        msg.setText("The target file already exists in the directory. \nDo you want to replace it, add a duplicate with a numbered file name or cancel?");
         msg.setIcon(QMessageBox::Warning);
-        QPushButton *No = msg.addButton("No", QMessageBox::DestructiveRole);
-        QPushButton *Yes = msg.addButton("Yes", QMessageBox::AcceptRole);
-        msg.setDefaultButton(Yes);
+        QPushButton *Cancel = msg.addButton("Cancel", QMessageBox::DestructiveRole);
+        QPushButton *Duplicate = msg.addButton("Duplicate", QMessageBox::ActionRole);
+        QPushButton *Replace = msg.addButton("Replace", QMessageBox::ActionRole);
+        msg.setDefaultButton(Replace);
         msg.exec();
-        if (msg.clickedButton() == Yes)
+        if (msg.clickedButton() == Replace)
         {
             QFile::remove(savePath);
+            DownloadWindow *window = new DownloadWindow(nullptr);
+            window->startDownload(info);
+            window->setAttribute(Qt::WA_DeleteOnClose);
+            window->show();
+        }
+        else if (msg.clickedButton() == Duplicate)
+        {
+            QFileInfo fileInfo(info.fileName);
+            QString newName = fileInfo.baseName() + "_1." + fileInfo.completeSuffix();
+            QUrl savePath(info.savePath);
+            QString newPath = savePath.adjusted(QUrl::RemoveFilename).toString() + newName;
+            info.fileName = newName;
+            info.savePath = newPath;
             DownloadWindow *window = new DownloadWindow(nullptr);
             window->startDownload(info);
             window->setAttribute(Qt::WA_DeleteOnClose);
