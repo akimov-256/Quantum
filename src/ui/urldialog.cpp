@@ -109,12 +109,28 @@ void urlDialog::on_buttonBox_accepted()
         }
         else if (msg.clickedButton() == Duplicate)
         {
-            QFileInfo fileInfo(info.fileName);
-            QString newName = fileInfo.baseName() + "_1." + fileInfo.completeSuffix();
-            QUrl savePath(info.savePath);
-            QString newPath = savePath.adjusted(QUrl::RemoveFilename).toString() + newName;
+            QFileInfo fileInfo(info.savePath);
+
+            QString baseName = fileInfo.completeBaseName();
+            QString suffix = fileInfo.completeSuffix();
+            QString dir = fileInfo.absolutePath();
+
+            QString newName, newPath;
+
+            int i = 0;
+
+            while (fileInfo.exists())
+            {
+                newName = QString("%1_%2.%3").arg(baseName).arg(i).arg(suffix);
+                newPath = QDir(dir).filePath(newName);
+
+                fileInfo.setFile(newPath);
+                ++i;
+            }
+
             info.fileName = newName;
             info.savePath = newPath;
+
             DownloadWindow *window = new DownloadWindow(nullptr);
             window->startDownload(info);
             window->setAttribute(Qt::WA_DeleteOnClose);
