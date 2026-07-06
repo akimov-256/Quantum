@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added download duplicate with a numbered file name option when a file already exists.
 
 ### Changed
+- Used dynamic chunking instead of fixed chunking.
 
 ### Fixed
 - Fixed the cancel warning dialog showing on download finish window.
