@@ -1,13 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/icons/new.png</file>
-        <file>resources/icons/stop.png</file>
-        <file>resources/icons/UI/close.png</file>
-        <file>resources/icons/UI/downloads.png</file>
-        <file>resources/icons/UI/open.png</file>
-        <file>resources/icons/UI/pause.png</file>
-        <file>resources/icons/UI/settings.png</file>
         <file>qml/Main.qml</file>
         <file>qml/pages/MainPage.qml</file>
+        <file>qml/components/WindowButton.qml</file>
+        <file>qml/assets/icons/close.png</file>
+        <file>qml/assets/icons/maximize.png</file>
+        <file>qml/assets/icons/minimize.png</file>
+        <file>qml/assets/icons/restore.png</file>
     </qresource>
 </RCC>

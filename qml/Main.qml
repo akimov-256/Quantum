@@ -1,24 +1,26 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "components"
 
 ApplicationWindow {
-    id: mainWindow
+    id: root
+
+    property bool isMaximized: false
 
     visible: true
     width: 1200
     height: 700
 
-    // Disable resizing
-    minimumWidth: 1200
-    maximumWidth: 1200
-    minimumHeight: 700
-    maximumHeight: 700
-
     title: "Quantum"
 
     // Remove the Default title bar
     flags: Qt.Window | Qt.FramelessWindowHint
+
+    onWindowStateChanged: {
+        isMaximized = (visibility === Window.Maximized)
+        console.log(isMaximized)
+    }
 
     // Create the title bar
     Rectangle {
@@ -29,30 +31,12 @@ ApplicationWindow {
 
         color: "#000000"
 
-        // Handle window movement and maximizing/minimizing
-        MouseArea {
-            anchors.fill: parent
-            property point clickPos: "0,0"
-
-            onPressed: (mouse) => {
-                mainWindow.startSystemMove()
-            }
-
-            onDoubleClicked: (mouse) => {
-                if (mainWindow.visibility === Window.Maximized)
-                    mainWindow.showNormal()
-                else
-                    mainWindow.showMinimized()
-            }
-        }
-
         // Add title bar content
         RowLayout {
             id: titleBarLayout
 
             anchors.fill: parent
             anchors.leftMargin: 10
-            anchors.rightMargin: 10
 
             // Add the app name
             Text {
@@ -67,35 +51,54 @@ ApplicationWindow {
             // Add spacer
             Item {
                 Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                // Handle window movement and maximizing/minimizing
+                MouseArea {
+                    anchors.fill: parent
+                    property point clickPos: "0,0"
+
+                    onPressed: (mouse) => {
+                        root.startSystemMove()
+                    }
+
+                    onDoubleClicked: (mouse) => {
+                        if (root.isMaximized)
+                            root.showNormal()
+                        else
+                            root.showMaximized()
+                    }
+                }
             }
 
             // Add window control buttons
             RowLayout {
                 Layout.alignment: Qt.AlignVCenter
-                spacing: 5
 
-                Button {
+                WindowButton {
                     id: minimize
-                    text: "—"
-                    onClicked: mainWindow.showMinimized()
+                    buttonIcon: "qrc:/qml/assets/icons/minimize.png"
+                    onClicked: root.showMinimized()
                 }
 
-                Button {
+                WindowButton {
                     id: maximize
-                    text: mainWindow.visibility === Window.Maximized ? "🗗" : "🗖"
+                    buttonIcon: root.isMaximized ? "qrc:/qml/assets/icons/restore.png" : "qrc:/qml/assets/icons/maximize.png"
                     onClicked:
                     {
-                        if (mainWindow.visibility === Window.Maximized)
-                            mainWindow.showNormal()
+                        if (root.isMaximized)
+                            root.showNormal()
                         else
-                            mainWindow.showMaximized()
+                            root.showMaximized()
                     }
                 }
 
-                Button {
+                WindowButton {
                     id: close
-                    text: "✕"
-                    onClicked: mainWindow.close()
+                    buttonIcon: "qrc:/qml/assets/icons/close.png"
+                    hoverColor: "#ff0000"
+                    clickColor: "#700000"
+                    onClicked: root.close()
                 }
             }
         }
@@ -121,6 +124,4 @@ ApplicationWindow {
             GradientStop{ position: 1.0; color: "#0E0010"}
         }
     }
-
-
 }
