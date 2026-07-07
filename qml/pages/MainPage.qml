@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts
+import "../components"
 
 Item {
     id: root
@@ -77,6 +78,21 @@ Item {
 
                 border.color: borderColor
                 border.width: 2
+
+                UiButton {
+                    id: settingsButton
+
+                    anchors.centerIn: parent
+
+                    buttonHeight: 32
+                    buttonWidth: 215
+
+                    fillColor: fillColor
+                    borderColor: borderColor
+
+                    buttonText: "Settings"
+                    buttonIcon: "qrc:/qml/assets/icons/setting.png"
+                }
             }
         }
 
@@ -128,6 +144,15 @@ Item {
 
                     anchors.right: parent.right
                     anchors.top: parent.top
+                }
+
+                // Separator border
+                Rectangle {
+                    height: parent.height
+                    width: 2
+                    x: 200
+
+                    color: borderColor
                 }
             }
 

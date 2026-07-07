@@ -8,5 +8,7 @@
         <file>qml/assets/icons/minimize.png</file>
         <file>qml/assets/icons/restore.png</file>
         <file>qml/assets/fonts/Lexend.ttf</file>
+        <file>qml/components/UiButton.qml</file>
+        <file>qml/assets/icons/setting.png</file>
     </qresource>
 </RCC>
