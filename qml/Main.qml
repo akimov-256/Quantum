@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "components"
+import "pages"
 
 ApplicationWindow {
     id: root
@@ -19,7 +20,6 @@ ApplicationWindow {
 
     onWindowStateChanged: {
         isMaximized = (visibility === Window.Maximized)
-        console.log(isMaximized)
     }
 
     // Create the title bar
@@ -127,6 +127,10 @@ ApplicationWindow {
         gradient: Gradient {
             GradientStop{ position: 0.0; color: "#1F0024"}
             GradientStop{ position: 1.0; color: "#0E0010"}
+        }
+
+        MainPage {
+            anchors.fill: parent
         }
     }
 }
