@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
 ApplicationWindow {
     id: mainWindow
@@ -26,6 +27,9 @@ ApplicationWindow {
         width: parent.width
         height: 26.25
 
+        color: "#000000"
+
+        // Handle window movement and maximizing/minimizing
         MouseArea {
             anchors.fill: parent
             property point clickPos: "0,0"
@@ -35,15 +39,66 @@ ApplicationWindow {
             }
 
             onDoubleClicked: (mouse) => {
-                if (mainWindow.visibility == Window.Maximized)
+                if (mainWindow.visibility === Window.Maximized)
                     mainWindow.showNormal()
                 else
                     mainWindow.showMinimized()
             }
-
         }
 
-        color: "#000000"
+        // Add title bar content
+        RowLayout {
+            id: titleBarLayout
+
+            anchors.fill: parent
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+
+            // Add the app name
+            Text {
+                id: appName
+
+                text: "QUANTUM DOWNLOAD MANAGER"
+                font.pixelSize: 15
+                color: "#ffffff"
+                Layout.alignment: Qt.AlignVCenter
+            }
+
+            // Add spacer
+            Item {
+                Layout.fillWidth: true
+            }
+
+            // Add window control buttons
+            RowLayout {
+                Layout.alignment: Qt.AlignVCenter
+                spacing: 5
+
+                Button {
+                    id: minimize
+                    text: "—"
+                    onClicked: mainWindow.showMinimized()
+                }
+
+                Button {
+                    id: maximize
+                    text: mainWindow.visibility === Window.Maximized ? "🗗" : "🗖"
+                    onClicked:
+                    {
+                        if (mainWindow.visibility === Window.Maximized)
+                            mainWindow.showNormal()
+                        else
+                            mainWindow.showMaximized()
+                    }
+                }
+
+                Button {
+                    id: close
+                    text: "✕"
+                    onClicked: mainWindow.close()
+                }
+            }
+        }
     }
 
     // Create the background
