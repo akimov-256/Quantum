@@ -1,5 +1,5 @@
 QT       += core gui
-QT += network
+QT += quick qml quickcontrols2 network
 LIBS += -lShell32
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

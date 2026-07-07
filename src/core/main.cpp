@@ -20,10 +20,15 @@
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QGuiApplication a(argc, argv);
+
+    QQmlApplicationEngine engine;
+
+    engine.load(QUrl("qrc:/qml/Main.qml"));
 
     qRegisterMetaType<downloadInformations>("DownloadStatus");
 
@@ -36,11 +41,6 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    QDMan w;
-    w.setStyleSheet("QMainWindow {"
-                          "background: qlineargradient(x1: 0.25, y1: 0, x2: 0, y2: 1,"
-                          "stop: 0 #212B45, stop: 1 #1E2329);"
-                          "}");
-    w.show();
+
     return a.exec();
 }
