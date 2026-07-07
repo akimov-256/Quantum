@@ -44,8 +44,27 @@ Item {
 
                 color: fillColor
 
-                border.color: borderColor
-                border.width: 2
+                // Left border
+                Rectangle {
+                    width: 2
+                    height: parent.height
+
+                    color: borderColor
+
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                }
+
+                // Right border
+                Rectangle {
+                    width: 2
+                    height: parent.height
+
+                    color: borderColor
+
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                }
             }
 
             Rectangle {
@@ -78,8 +97,38 @@ Item {
 
                 color: fillColor
 
-                border.color: borderColor
-                border.width: 2
+                // Top border
+                Rectangle {
+                    height: 2
+                    width: parent.width
+
+                    color: borderColor
+
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                }
+
+                // Bottom border
+                Rectangle {
+                    height: 2
+                    width: parent.width
+
+                    color: borderColor
+
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                }
+
+                // Right border
+                Rectangle {
+                    height: parent.height
+                    width: 2
+
+                    color: borderColor
+
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                }
             }
 
             Rectangle {
