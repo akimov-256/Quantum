@@ -38,11 +38,16 @@ ApplicationWindow {
             anchors.fill: parent
             anchors.leftMargin: 10
 
+            FontLoader {
+                id: appFont
+                source: "qrc:/qml/assets/fonts/Lexend.ttf"
+            }
+
             // Add the app name
             Text {
                 id: appName
-
                 text: "QUANTUM DOWNLOAD MANAGER"
+                font.family: appFont.name
                 font.pixelSize: 15
                 color: "#ffffff"
                 Layout.alignment: Qt.AlignVCenter

@@ -14,6 +14,13 @@ Rectangle {
 
     color: mouseArea.pressed ? clickColor : mouseArea.containsMouse ? hoverColor : "transparent"
 
+    Behavior on color {
+
+        ColorAnimation {
+            duration: 100
+        }
+    }
+
     Image {
         id: icon
         source: buttonIcon
