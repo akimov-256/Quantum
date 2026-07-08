@@ -238,7 +238,6 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-
             Rectangle {
                 Layout.preferredHeight: 50
                 Layout.fillHeight: false
@@ -358,7 +357,6 @@ Item {
                 Layout.fillWidth: true
                 color: "transparent"
             }
-
         }
     }
 }

@@ -9,6 +9,8 @@ Item {
     property string buttonText
     property string buttonIcon
     property color fillColor: "#35003D"
+    property color hoverColor: "#4A0055"
+    property color pressedColor: "#2A0030"
     property color borderColor: "#AC00FB"
     signal clicked()
 
@@ -20,11 +22,33 @@ Item {
         width: parent.width
         anchors.fill: parent
 
-        color: fillColor
+        color: mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : fillColor
+        scale: mouseArea.pressed ? 0.98 : 1.0
+
         radius: 10
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 80
+            }
+        }
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: 80
+            }
+        }
 
         border.color: borderColor
         border.width: 2
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onClicked: root.clicked()
+        }
 
         RowLayout {
             anchors.fill: parent
