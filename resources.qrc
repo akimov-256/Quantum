@@ -13,5 +13,6 @@
         <file>qml/assets/icons/download.png</file>
         <file>qml/assets/icons/pause.png</file>
         <file>qml/assets/icons/play.png</file>
+        <file>qml/components/Counter.qml</file>
     </qresource>
 </RCC>

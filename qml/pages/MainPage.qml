@@ -26,6 +26,7 @@ Item {
             Layout.fillWidth: false
             Layout.fillHeight: true
 
+            // Download Counter Box
             Rectangle {
                 id: downloadCounterBox
                 Layout.preferredHeight: 90
@@ -36,8 +37,50 @@ Item {
 
                 border.color: borderColor
                 border.width: 2
+
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 20
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    // Completed
+                    Counter {
+                        id: completed
+
+                        counterHeight: 70
+                        counterWdith: 90
+
+                        fillColor: "#041500"
+                        borderColor: "#0AC300"
+
+                        counterText: "10"
+                        titleText: "COMPLETED"
+                    }
+
+                    // Downloading
+                    Counter {
+                        id: downloading
+
+                        counterHeight: 70
+                        counterWdith: 90
+
+                        fillColor: "#150000"
+                        borderColor: "#C30003"
+
+                        counterText: "3"
+                        titleText: "DOWNLOADING"
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+                }
             }
 
+            // Categories box
             Rectangle {
                 id: categoriesBox
                 Layout.fillHeight: true
@@ -68,6 +111,7 @@ Item {
                 }
             }
 
+            // Settings box
             Rectangle {
                 id: settingsBox
                 Layout.preferredHeight: 50
@@ -79,6 +123,7 @@ Item {
                 border.color: borderColor
                 border.width: 2
 
+                // Settings button
                 UiButton {
                     id: settingsButton
 
@@ -156,10 +201,11 @@ Item {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
 
+                    // New download
                     UiButton {
                         id: newDownloadButton
 
-                        Layout.alignment: verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
 
                         buttonHeight: 32
                         buttonWidth: 170
@@ -180,10 +226,11 @@ Item {
                         color: borderColor
                     }
 
+                    // Pause all
                     UiButton {
                         id: pauseAllButton
 
-                        Layout.alignment: verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
 
                         buttonHeight: 32
                         buttonWidth: 120
@@ -195,10 +242,11 @@ Item {
                         buttonIcon: "qrc:/qml/assets/icons/pause.png"
                     }
 
+                    // Resume all
                     UiButton {
                         id: resumeAllButton
 
-                        Layout.alignment: verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
 
                         buttonHeight: 32
                         buttonWidth: 120
@@ -216,7 +264,7 @@ Item {
                 }
             }
 
-
+            // Download cards box
             Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
