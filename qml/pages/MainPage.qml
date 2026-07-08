@@ -105,8 +105,8 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
+
             Rectangle {
-                id: downloadsToolbar
                 Layout.preferredHeight: 50
                 Layout.fillHeight: false
                 Layout.fillWidth: true
@@ -146,15 +146,76 @@ Item {
                     anchors.top: parent.top
                 }
 
-                // Separator border
-                Rectangle {
-                    height: parent.height
-                    width: 2
-                    x: 200
+                RowLayout {
+                    id: downloadsToolbarBox
 
-                    color: borderColor
+                    anchors.fill: parent
+                    anchors.leftMargin: 10
+                    spacing: 10
+
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    UiButton {
+                        id: newDownloadButton
+
+                        Layout.alignment: verticalCenter
+
+                        buttonHeight: 32
+                        buttonWidth: 170
+
+                        fillColor: fillColor
+                        borderColor: borderColor
+
+                        buttonText: "New Download"
+                        buttonIcon: "qrc:/qml/assets/icons/download.png"
+                    }
+
+                    // Separator border
+                    Rectangle {
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: 2
+                        Layout.fillWidth: false
+
+                        color: borderColor
+                    }
+
+                    UiButton {
+                        id: pauseAllButton
+
+                        Layout.alignment: verticalCenter
+
+                        buttonHeight: 32
+                        buttonWidth: 120
+
+                        fillColor: fillColor
+                        borderColor: borderColor
+
+                        buttonText: "Pause All"
+                        buttonIcon: "qrc:/qml/assets/icons/pause.png"
+                    }
+
+                    UiButton {
+                        id: resumeAllButton
+
+                        Layout.alignment: verticalCenter
+
+                        buttonHeight: 32
+                        buttonWidth: 120
+
+                        fillColor: fillColor
+                        borderColor: borderColor
+
+                        buttonText: "Resume All"
+                        buttonIcon: "qrc:/qml/assets/icons/play.png"
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
                 }
             }
+
 
             Rectangle {
                 Layout.fillHeight: true

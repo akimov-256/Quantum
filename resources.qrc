@@ -10,5 +10,8 @@
         <file>qml/assets/fonts/Lexend.ttf</file>
         <file>qml/components/UiButton.qml</file>
         <file>qml/assets/icons/setting.png</file>
+        <file>qml/assets/icons/download.png</file>
+        <file>qml/assets/icons/pause.png</file>
+        <file>qml/assets/icons/play.png</file>
     </qresource>
 </RCC>
