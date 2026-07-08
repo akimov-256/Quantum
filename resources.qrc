@@ -20,5 +20,6 @@
         <file>qml/assets/icons/music.png</file>
         <file>qml/assets/icons/program.png</file>
         <file>qml/assets/icons/video.png</file>
+        <file>qml/UrlWindow.qml</file>
     </qresource>
 </RCC>
