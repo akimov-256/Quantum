@@ -109,6 +109,94 @@ Item {
                     anchors.right: parent.right
                     anchors.top: parent.top
                 }
+
+                ColumnLayout {
+                    anchors.fill: parent
+
+                    spacing: 0
+
+                    Item {
+                        Layout.preferredHeight: 3
+                    }
+
+                    FontLoader {
+                        id: appFont
+                        source: "qrc:/qml/assets/fonts/Lexend.ttf"
+                    }
+
+                    Text {
+                        id: categoriesTitle
+
+                        Layout.leftMargin: 10
+
+                        text: "CATEGORIES"
+                        font.family: appFont.name
+                        font.pixelSize: 12
+                        color: "#595959"
+                    }
+
+                    Item {
+                        Layout.preferredHeight: 5
+                    }
+
+                    CategoryTab {
+                        Layout.alignment: Qt.AlignRight
+
+                        tabText: "All Downloads"
+                        tabIcon: "qrc:/qml/assets/icons/download.png"
+
+                        isSelected: true
+                    }
+
+                    CategoryTab {
+                        Layout.alignment: Qt.AlignRight
+
+                        tabText: "Compressed"
+                        tabIcon: "qrc:/qml/assets/icons/compressed.png"
+
+                        isSelected: false
+                    }
+
+                    CategoryTab {
+                        Layout.alignment: Qt.AlignRight
+
+                        tabText: "Documents"
+                        tabIcon: "qrc:/qml/assets/icons/document.png"
+
+                        isSelected: false
+                    }
+
+                    CategoryTab {
+                        Layout.alignment: Qt.AlignRight
+
+                        tabText: "Music"
+                        tabIcon: "qrc:/qml/assets/icons/music.png"
+
+                        isSelected: false
+                    }
+
+                    CategoryTab {
+                        Layout.alignment: Qt.AlignRight
+
+                        tabText: "Videos"
+                        tabIcon: "qrc:/qml/assets/icons/video.png"
+
+                        isSelected: false
+                    }
+
+                    CategoryTab {
+                        Layout.alignment: Qt.AlignRight
+
+                        tabText: "Programs"
+                        tabIcon: "qrc:/qml/assets/icons/program.png"
+
+                        isSelected: false
+                    }
+
+                    Item {
+                        Layout.fillHeight: true
+                    }
+                }
             }
 
             // Settings box

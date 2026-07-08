@@ -14,5 +14,11 @@
         <file>qml/assets/icons/pause.png</file>
         <file>qml/assets/icons/play.png</file>
         <file>qml/components/Counter.qml</file>
+        <file>qml/components/CategoryTab.qml</file>
+        <file>qml/assets/icons/compressed.png</file>
+        <file>qml/assets/icons/document.png</file>
+        <file>qml/assets/icons/music.png</file>
+        <file>qml/assets/icons/program.png</file>
+        <file>qml/assets/icons/video.png</file>
     </qresource>
 </RCC>
