@@ -9,6 +9,8 @@ Item {
     property int tabWidth: 238
     property string tabText
     property string tabIcon
+    property color hoverFillColor: "#1B002B"
+    property color pressedFillColor: "#2A0040"
     property color normalFillColor: "#100019"
     property color selectedFillColor: "#1E0030"
     property color normalBorderColor: "#35003D"
@@ -16,6 +18,7 @@ Item {
     property color textSelectedColor: "#FFFFFF"
     property color textNormalColor: "#656565"
     property bool isSelected: false
+    signal pressed()
 
     height: tabHeight
     width: tabWidth
@@ -25,7 +28,21 @@ Item {
 
         anchors.fill: parent
 
-        color: isSelected ? selectedFillColor : normalFillColor
+        color: mouseArea.pressed ? pressedFillColor : mouseArea.containsMouse ? hoverFillColor : isSelected ? selectedFillColor : normalFillColor
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 80
+            }
+        }
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onPressed: root.pressed
+        }
 
         // Right border
         Rectangle {
