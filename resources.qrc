@@ -21,5 +21,9 @@
         <file>qml/assets/icons/program.png</file>
         <file>qml/assets/icons/video.png</file>
         <file>qml/UrlWindow.qml</file>
+        <file>qml/components/DialogInputBox.qml</file>
+        <file>qml/assets/icons/folder.png</file>
+        <file>qml/assets/icons/down-arrow.png</file>
+        <file>qml/assets/icons/left-arrow.png</file>
     </qresource>
 </RCC>

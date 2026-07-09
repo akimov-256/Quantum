@@ -5,6 +5,7 @@ import "components"
 
 ApplicationWindow {
     id: root
+
     visible: true
 
     title: "New Download"
@@ -13,6 +14,11 @@ ApplicationWindow {
     width: 650
 
     flags: Qt.Window | Qt.FramelessWindowHint
+
+    FontLoader {
+        id: appFont
+        source: "qrc:/qml/assets/fonts/Lexend.ttf"
+    }
 
     Rectangle {
         id: titleBar
@@ -28,11 +34,6 @@ ApplicationWindow {
 
             anchors.fill: parent
             anchors.leftMargin: 10
-
-            FontLoader {
-                id: appFont
-                source: "qrc:/qml/assets/fonts/Lexend.ttf"
-            }
 
             // Add the app name
             Text {
@@ -83,11 +84,132 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: body
+
         anchors {
             top: titleBar.bottom
             right: parent.right
             left: parent.left
             bottom: parent.bottom
+        }
+
+        ColumnLayout {
+            anchors.fill: parent
+
+            // Download url box
+            DialogInputBox {
+                titleText: "DOWNLOAD URL"
+
+                Layout.fillWidth: true
+
+                Layout.topMargin: 5
+                Layout.leftMargin: 25
+                Layout.rightMargin: 25
+            }
+
+            // File name box
+            DialogInputBox {
+                titleText: "FILE NAME"
+
+                Layout.fillWidth: true
+
+                Layout.leftMargin: 25
+                Layout.rightMargin: 25
+            }
+
+            // Save to box
+            RowLayout {
+
+                spacing: 10
+
+                Layout.leftMargin: 25
+                Layout.rightMargin: 25
+
+                DialogInputBox {
+                    titleText: "SAVE TO"
+
+                    Layout.fillWidth: true
+                }
+
+                UiButton {
+                    id: browseButton
+
+                    buttonHeight: 32
+                    buttonWidth: 130
+                    buttonText: "Browse"
+                    buttonIcon: "qrc:/qml/assets/icons/folder.png"
+
+                    Layout.alignment: Qt.AlignBottom
+                }
+            }
+
+            // SHA256 hash box
+            RowLayout {
+
+                spacing: 10
+
+                Layout.leftMargin: 25
+                Layout.rightMargin: 25
+
+                DialogInputBox {
+                    titleText: "SHA256 HASH (OPTIONAL)"
+
+                    Layout.fillWidth: true
+                }
+
+                UiButton {
+                    id: connectionsList
+
+                    buttonHeight: 32
+                    buttonWidth: 130
+                    buttonText: "8"
+                    buttonIcon: "qrc:/qml/assets/icons/left-arrow.png"
+
+                    Layout.alignment: Qt.AlignBottom
+                }
+            }
+
+            Item {
+                Layout.preferredHeight: 10
+            }
+
+            // Window buttons
+            RowLayout {
+
+                spacing: 10
+
+                Layout.rightMargin: 25
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                UiButton {
+                    id: cancelButton
+
+                    buttonHeight: 32
+                    buttonWidth: 130
+                    buttonText: "Cancel"
+                    buttonIcon: "qrc:/qml/assets/icons/close.png"
+
+                    Layout.alignment: Qt.AlignBottom
+                }
+
+                UiButton {
+                    id: startButton
+
+                    buttonHeight: 32
+                    buttonWidth: 130
+                    buttonText: "Start"
+                    buttonIcon: "qrc:/qml/assets/icons/download.png"
+
+                    Layout.alignment: Qt.AlignBottom
+                }
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
         }
 
         color: "#100019"
