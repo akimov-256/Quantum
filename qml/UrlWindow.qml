@@ -99,6 +99,7 @@ ApplicationWindow {
             // Download url box
             DialogInputBox {
                 titleText: "DOWNLOAD URL"
+                placeHolderText: "Paste download URL..."
 
                 Layout.fillWidth: true
 
@@ -110,6 +111,7 @@ ApplicationWindow {
             // File name box
             DialogInputBox {
                 titleText: "FILE NAME"
+                placeHolderText: "File name (optional)"
 
                 Layout.fillWidth: true
 
@@ -127,6 +129,7 @@ ApplicationWindow {
 
                 DialogInputBox {
                     titleText: "SAVE TO"
+                    placeHolderText: "Select download location..."
 
                     Layout.fillWidth: true
                 }
@@ -152,7 +155,8 @@ ApplicationWindow {
                 Layout.rightMargin: 25
 
                 DialogInputBox {
-                    titleText: "SHA256 HASH (OPTIONAL)"
+                    titleText: "SHA256 HASH"
+                    placeHolderText: "Paste SHA256 for verification (optional)"
 
                     Layout.fillWidth: true
                 }

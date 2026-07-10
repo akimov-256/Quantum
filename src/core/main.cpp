@@ -21,9 +21,12 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QQmlApplicationEngine>
+#include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {
+    QQuickStyle::setStyle("Fusion");
+
     QGuiApplication a(argc, argv);
 
     QQmlApplicationEngine engine;
