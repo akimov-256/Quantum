@@ -197,6 +197,8 @@ ApplicationWindow {
                     buttonIcon: "qrc:/qml/assets/icons/close.png"
 
                     Layout.alignment: Qt.AlignBottom
+
+                    onClicked: root.close()
                 }
 
                 UiButton {
