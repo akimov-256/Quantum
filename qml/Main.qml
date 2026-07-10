@@ -15,6 +15,11 @@ ApplicationWindow {
 
     title: "Quantum"
 
+    // Add the child windows
+    UrlWindow {
+        id: urlWindow
+    }
+
     // Remove the Default title bar
     flags: Qt.Window | Qt.FramelessWindowHint
 
@@ -131,6 +136,14 @@ ApplicationWindow {
 
         MainPage {
             anchors.fill: parent
+
+            onNewDownloadRequested: {
+                if(!urlWindow.visible)
+                    urlWindow.show()
+
+                urlWindow.raise()
+                urlWindow.requestActivate()
+            }
         }
     }
 }

@@ -8,6 +8,8 @@ Item {
     property color fillColor: "#100019"
     property color borderColor: "#35003D"
 
+    signal newDownloadRequested()
+
     anchors.fill: parent
 
     // The main layout
@@ -302,6 +304,8 @@ Item {
 
                         buttonText: "New Download"
                         buttonIcon: "qrc:/qml/assets/icons/download.png"
+
+                        onClicked: root.newDownloadRequested()
                     }
 
                     // Separator border

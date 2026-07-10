@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    engine.load(QUrl("qrc:/qml/UrlWindow.qml"));
+    engine.load(QUrl("qrc:/qml/Main.qml"));
 
     qRegisterMetaType<downloadInformations>("DownloadStatus");
 

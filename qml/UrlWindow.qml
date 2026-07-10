@@ -3,10 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "components"
 
-ApplicationWindow {
+Window {
     id: root
 
-    visible: true
+    visible: false
 
     title: "New Download"
 
