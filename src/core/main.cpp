@@ -17,11 +17,13 @@
 */
 
 #include "src/ui/qdman.h"
+#include "src/backend/backend.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
+#include <QQmlContext>
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +31,11 @@ int main(int argc, char *argv[])
 
     QGuiApplication a(argc, argv);
 
+    Backend backend;
+
     QQmlApplicationEngine engine;
+
+    engine.rootContext()->setContextProperty("backend", &backend);
 
     engine.load(QUrl("qrc:/qml/Main.qml"));
 

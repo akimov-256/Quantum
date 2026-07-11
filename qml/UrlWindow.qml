@@ -98,6 +98,8 @@ Window {
 
             // Download url box
             DialogInputBox {
+                id: urlBox
+
                 titleText: "DOWNLOAD URL"
                 placeHolderText: "Paste download URL..."
 
@@ -110,6 +112,8 @@ Window {
 
             // File name box
             DialogInputBox {
+                id: fileNameBox
+
                 titleText: "FILE NAME"
                 placeHolderText: "File name (optional)"
 
@@ -128,6 +132,8 @@ Window {
                 Layout.rightMargin: 25
 
                 DialogInputBox {
+                    id: pathBox
+
                     titleText: "SAVE TO"
                     placeHolderText: "Select download location..."
 
@@ -155,6 +161,8 @@ Window {
                 Layout.rightMargin: 25
 
                 DialogInputBox {
+                    id: sha256Box
+
                     titleText: "SHA256 HASH"
                     placeHolderText: "Paste SHA256 for verification (optional)"
 
@@ -198,6 +206,7 @@ Window {
 
                     Layout.alignment: Qt.AlignBottom
 
+                    // Close the app
                     onClicked: root.close()
                 }
 
@@ -210,6 +219,11 @@ Window {
                     buttonIcon: "qrc:/qml/assets/icons/download.png"
 
                     Layout.alignment: Qt.AlignBottom
+
+                    // Pass info to backend class to start download
+                    onClicked: {
+                        backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, sha256Box.text)
+                    }
                 }
             }
 
