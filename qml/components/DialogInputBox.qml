@@ -26,21 +26,35 @@ Item {
         Rectangle {
             id: urlBox
 
-            color: "transparent"
+            color: input.hovered ? "#200025" : "#100019"
 
             radius: 6
 
-            border.color: "#480069"
+            border.color: input.activeFocus ? "#AE00FF" : "#480069"
             border.width: 2
 
             Layout.preferredHeight: 32
             Layout.fillWidth: true
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 200
+                }
+            }
+
+            Behavior on border.color {
+                ColorAnimation {
+                    duration: 80
+                }
+            }
 
             TextField {
                 id: input
 
                 anchors.fill: parent
                 anchors.margins: 1
+
+                hoverEnabled: true
 
                 verticalAlignment: Text.AlignVCenter
 
