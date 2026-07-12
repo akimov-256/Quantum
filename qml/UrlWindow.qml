@@ -108,6 +108,8 @@ Window {
                 Layout.topMargin: 5
                 Layout.leftMargin: 25
                 Layout.rightMargin: 25
+
+                onBoxTextEditingFinished: backend.GetHeadInfo(urlBox.text)
             }
 
             // File name box
@@ -116,6 +118,8 @@ Window {
 
                 titleText: "FILE NAME"
                 placeHolderText: "File name (optional)"
+
+                text: backend.fileName
 
                 Layout.fillWidth: true
 
