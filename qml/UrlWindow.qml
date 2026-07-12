@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import "components"
+import "js/UrlHelper.js" as UrlHelper
 
 Window {
     id: root
@@ -27,7 +28,8 @@ Window {
 
         onTriggered: {
             if (urlBox.text.length > 8) {
-                backend.GetHeadInfo(urlBox.text)
+                if (UrlHelper.looksLikeUrl(urlBox.text))
+                    backend.GetHeadInfo(urlBox.text)
             }
         }
     }

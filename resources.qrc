@@ -25,5 +25,6 @@
         <file>qml/assets/icons/folder.png</file>
         <file>qml/assets/icons/down-arrow.png</file>
         <file>qml/assets/icons/left-arrow.png</file>
+        <file>qml/js/UrlHelper.js</file>
     </qresource>
 </RCC>

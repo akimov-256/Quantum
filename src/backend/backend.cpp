@@ -38,7 +38,7 @@ void Backend::GetHeadInfo(const QString &fileUrl)
         else
             m_fileName = QFileInfo(reply->url().path()).fileName();
 
-        qDebug() << m_fileName;
+        if (m_fileName.isEmpty()) m_fileName = "download";
 
         emit fileNameChanged();
 
