@@ -1,5 +1,4 @@
 #include "backend.h"
-#include <QDebug>
 
 Backend::Backend(QObject *parent)
     : QObject{parent}
@@ -10,9 +9,13 @@ void Backend::CreateDownload(const QString fileUrl, const QString fileName, cons
     downloadInformations info;
 
     info.fileName = fileName;
-    info.savePath = filePath;
+    if(filePath.isEmpty())
+        info.savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    else
+        info.savePath = filePath;
     info.url = fileUrl;
     info.SHA256 = SHA256;
+    info.chunkCount = 8;
 
     m_downloader.download(info);
 }

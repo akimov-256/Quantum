@@ -223,6 +223,7 @@ Window {
                     // Pass info to backend class to start download
                     onClicked: {
                         backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, sha256Box.text)
+                        root.close()
                     }
                 }
             }

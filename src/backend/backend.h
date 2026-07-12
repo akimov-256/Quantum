@@ -4,6 +4,7 @@
 #include "src/models/downloadstatus.h"
 #include "src/core/downloader.h"
 #include <QObject>
+#include <QStandardPaths>
 
 class Backend : public QObject
 {
