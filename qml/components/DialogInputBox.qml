@@ -6,7 +6,7 @@ Item {
     property string titleText
     property string placeHolderText
     property alias text: input.text
-    signal boxTextEditingFinished()
+    signal boxTextChanged()
 
     height: 51
     width: 600
@@ -54,7 +54,7 @@ Item {
                     color: "transparent"
                 }
 
-                onEditingFinished: boxTextEditingFinished()
+                onTextChanged: boxTextChanged()
             }
         }
     }

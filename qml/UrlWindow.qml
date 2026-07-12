@@ -20,6 +20,18 @@ Window {
         source: "qrc:/qml/assets/fonts/Lexend.ttf"
     }
 
+    Timer {
+        id: headTimer
+        interval: 600
+        repeat: false
+
+        onTriggered: {
+            if (urlBox.text.length > 8) {
+                backend.GetHeadInfo(urlBox.text)
+            }
+        }
+    }
+
     Rectangle {
         id: titleBar
 
@@ -109,7 +121,7 @@ Window {
                 Layout.leftMargin: 25
                 Layout.rightMargin: 25
 
-                onBoxTextEditingFinished: backend.GetHeadInfo(urlBox.text)
+                onBoxTextChanged: headTimer.restart()
             }
 
             // File name box
