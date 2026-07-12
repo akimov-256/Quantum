@@ -5,6 +5,7 @@ import QtQuick.Controls
 Item {
     property string titleText
     property string placeHolderText
+    property alias text: input.text
 
     height: 51
     width: 600
