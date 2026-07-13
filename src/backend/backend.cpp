@@ -23,11 +23,21 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
 void Backend::GetHeadInfo(const QString &fileUrl)
 {
+    // Update GetHeadInfo status
+    m_isHeadReqActive = true;
+    emit isHeadReqActiveChanged();
+
     QUrl url = QUrl::fromUserInput(fileUrl);
     QNetworkRequest request(url);
     QNetworkReply *reply = manager->head(request);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {
+        // Get file size
+        m_fileSize = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
+
+        emit fileSizeChanged();
+
+        // Get file name
         QByteArray disposition = reply->rawHeader("Content-Disposition");
 
         QRegularExpression re(R"(filename\*?=(?:UTF-8''|")?([^";]+))");
@@ -42,6 +52,10 @@ void Backend::GetHeadInfo(const QString &fileUrl)
 
         emit fileNameChanged();
 
+        // Update GetHeadInfo status
+        m_isHeadReqActive = false;
+        emit isHeadReqActiveChanged();
+
         reply->deleteLater();
     });
 }
@@ -49,4 +63,14 @@ void Backend::GetHeadInfo(const QString &fileUrl)
 QString Backend::fileName() const
 {
     return m_fileName;
+}
+
+qint64 Backend::fileSize() const
+{
+    return m_fileSize;
+}
+
+bool Backend::isHeadReqActive() const
+{
+    return m_isHeadReqActive;
 }

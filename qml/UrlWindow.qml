@@ -209,6 +209,28 @@ Window {
                 spacing: 10
 
                 Layout.rightMargin: 25
+                Layout.leftMargin: 25
+
+                Text {
+                    id: fileSize
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    text: {
+                        if (urlBox.text === "")
+                            return ""
+
+                        if (backend.isHeadReqActive)
+                            return "Calculating file size..."
+
+                        if (backend.fileSize > 0)
+                            return UrlHelper.formatFileSize(backend.fileSize)
+                    }
+
+                    color: "white"
+                    font.family: appFont.name
+                    font.pixelSize: 16
+                }
 
                 Item {
                     Layout.fillWidth: true
