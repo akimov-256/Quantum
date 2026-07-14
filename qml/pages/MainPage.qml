@@ -360,6 +360,18 @@ Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 color: "transparent"
+
+                ColumnLayout {
+                    anchors.fill: parent
+
+                    DownloadCard {
+
+                    }
+
+                    Item {
+                        Layout.fillHeight: true
+                    }
+                }
             }
         }
     }
