@@ -2,6 +2,7 @@
 #define BACKEND_H
 
 #include "src/models/downloadstatus.h"
+#include "src/backend/downloadmodel.h"
 #include "src/core/downloader.h"
 #include <QObject>
 #include <QStandardPaths>
@@ -13,6 +14,7 @@ class Backend : public QObject
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
     Q_PROPERTY(qint64 fileSize READ fileSize NOTIFY fileSizeChanged)
     Q_PROPERTY(bool isHeadReqActive READ isHeadReqActive NOTIFY isHeadReqActiveChanged)
+    Q_PROPERTY(DownloadModel* downloadModel READ downloadModel CONSTANT)
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -21,6 +23,7 @@ public:
     Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
     QString fileName() const;
     qint64 fileSize() const;
+    DownloadModel *downloadModel();
     bool isHeadReqActive() const;
 signals:
     void fileNameChanged();
@@ -33,6 +36,8 @@ private:
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;
+    QList<downloadInformations> m_downloads;
+    DownloadModel m_downloadModel;
 };
 
 #endif // BACKEND_H

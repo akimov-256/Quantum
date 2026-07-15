@@ -364,8 +364,24 @@ Item {
                 ColumnLayout {
                     anchors.fill: parent
 
-                    DownloadCard {
+                    ListView {
+                        anchors.margins: 15
 
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        clip: true
+
+                        model: backend.downloadModel
+                        delegate: DownloadCard {
+                            width: ListView.view.width
+
+                            fileName: model.fileName
+                            downloadProgress: model.progress
+                            speed: model.speed
+                            fileSize: model.fileSize
+                            downloaded: model.downloaded
+                            status: model.status
+                        }
                     }
 
                     Item {

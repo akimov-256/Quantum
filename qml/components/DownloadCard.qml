@@ -4,9 +4,14 @@ import QtQuick.Layouts
 Rectangle {
     id: root
 
-    Layout.preferredHeight: 90
-    Layout.fillWidth: true
-    Layout.margins: 15
+    property string fileName
+    property int downloadProgress
+    property string speed
+    property string downloaded
+    property string fileSize
+    property string status
+
+    height: 90
 
     color: "#35003D"
     border.color: "#AC00FB"
@@ -29,7 +34,7 @@ Rectangle {
         Text {
             id: fileName
 
-            text: "Downloaded.txt"
+            text: fileName
 
             color: "white"
             font.family: appFont.name
@@ -66,7 +71,7 @@ Rectangle {
 
                     Layout.alignment: Qt.AlignRight
 
-                    text: "13 MB / 256 MB"
+                    text: fileSize
 
                     color: "gray"
                     font.family: appFont.name
@@ -77,7 +82,7 @@ Rectangle {
             ProgressBar {
                 id: progressBar
 
-                progress: 80
+                progress: downloadProgress
             }
         }
 

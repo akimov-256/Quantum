@@ -3,22 +3,50 @@
 Backend::Backend(QObject *parent)
     : QObject{parent}
     , manager(new QNetworkAccessManager(this))
-{}
+{
+    m_downloadModel.setDownloads(&m_downloads);
+}
 
 void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const QString &SHA256)
-{    
+{
     downloadInformations info;
 
     info.fileName = fileName;
-    if(filePath.isEmpty())
+    if (filePath.isEmpty())
         info.savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     else
         info.savePath = filePath;
     info.url = fileUrl;
     info.SHA256 = SHA256;
     info.chunkCount = 8;
+    info.status = "Starting...";
+    info.progress = 0;
+
+    m_downloads.append(info);
+    int row = m_downloads.size() - 1;
+    m_downloadModel.addDownload(row);
 
     m_downloader.download(info);
+
+    connect(&m_downloader, &Downloader::progressChanged,
+            this,
+            [this, row](qint64 bytesReceived, qint64 bytesTotal)
+            {
+                m_downloads[row].fileByteSize = bytesTotal;
+                if (bytesTotal > 0)
+                    m_downloads[row].progress =
+                        static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
+                m_downloadModel.updateDownload(row);
+            });
+
+    connect(&m_downloader, &Downloader::downloadFinished,
+            this,
+            [this, row](bool success, const QString &message)
+            {
+                m_downloads[row].status = success ? "Completed" : "Failed";
+                m_downloadModel.updateDownload(row);
+                qDebug() << message;
+            });
 }
 
 void Backend::GetHeadInfo(const QString &fileUrl)
@@ -68,6 +96,11 @@ QString Backend::fileName() const
 qint64 Backend::fileSize() const
 {
     return m_fileSize;
+}
+
+DownloadModel *Backend::downloadModel()
+{
+    return &m_downloadModel;
 }
 
 bool Backend::isHeadReqActive() const
