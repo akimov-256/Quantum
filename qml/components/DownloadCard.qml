@@ -24,6 +24,8 @@ Rectangle {
 
         anchors.margins: 15
 
+        spacing: 15
+
         Text {
             id: fileName
 
@@ -75,8 +77,18 @@ Rectangle {
             ProgressBar {
                 id: progressBar
 
-                progress: 100
+                progress: 80
             }
+        }
+
+        UiButton {
+            id: button
+
+            buttonHeight: 32
+            buttonWidth: 90
+
+            buttonText: "Pause"
+            buttonIcon: "qrc:/qml/assets/icons/pause.png"
         }
     }
 }

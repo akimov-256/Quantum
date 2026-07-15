@@ -25,6 +25,4 @@ Rectangle {
             color: progress === 100 ? "#209F00" : "#480069"
         }
     }
-
-
 }
