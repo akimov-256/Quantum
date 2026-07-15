@@ -73,147 +73,147 @@ void DownloadWindow::startDownload(downloadInformations Info)
 
 void DownloadWindow::Resume(downloadInformations Info)
 {
-    info = Info;
+    // info = Info;
 
-    this->setWindowTitle(info.fileName);
-    ui->adress->setText(info.url);
-    ui->progressBar->setValue(static_cast<int>(info.progress));
-    info.status = "Resuming...";
-    ui->status->setText(info.status);
+    // this->setWindowTitle(info.fileName);
+    // ui->adress->setText(info.url);
+    // ui->progressBar->setValue(static_cast<int>(info.progress));
+    // info.status = "Resuming...";
+    // ui->status->setText(info.status);
 
-    qint64 currentBytes = 0;
-    for (qint64 c : info.chunkProgress) currentBytes += c;
-    lastDownloaded = currentBytes;
-    lastBytesReceived = currentBytes;
-    lastUpdateTime = QTime::currentTime();
+    // qint64 currentBytes = 0;
+    // for (qint64 c : info.chunkProgress) currentBytes += c;
+    // lastDownloaded = currentBytes;
+    // lastBytesReceived = currentBytes;
+    // lastUpdateTime = QTime::currentTime();
 
-    if (currentBytes < 1024)
-        info.currentSize = QString::number(currentBytes) + " B";
-    else if (currentBytes < 1024 * 1024)
-        info.currentSize = QString::number(currentBytes / 1024.0, 'f', 2) + " KB";
-    else if (currentBytes < 1024 * 1024 * 1024)
-        info.currentSize = QString::number(currentBytes / (1024.0 * 1024.0), 'f', 2) + " MB";
-    else
-        info.currentSize = QString::number(currentBytes / (1024.0 * 1024.0 * 1024.0), 'f', 2) + " GB";
+    // if (currentBytes < 1024)
+    //     info.currentSize = QString::number(currentBytes) + " B";
+    // else if (currentBytes < 1024 * 1024)
+    //     info.currentSize = QString::number(currentBytes / 1024.0, 'f', 2) + " KB";
+    // else if (currentBytes < 1024 * 1024 * 1024)
+    //     info.currentSize = QString::number(currentBytes / (1024.0 * 1024.0), 'f', 2) + " MB";
+    // else
+    //     info.currentSize = QString::number(currentBytes / (1024.0 * 1024.0 * 1024.0), 'f', 2) + " GB";
 
-    ui->downloaded->setText(info.currentSize);
+    // ui->downloaded->setText(info.currentSize);
 
-    info.Date = QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss");
-    downloadTimer.start();
-    download->downloadResume(info);
+    // info.Date = QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss");
+    // downloadTimer.start();
+    // download->downloadResume(info);
 }
 
 void DownloadWindow::onProgressChange(qint64 bytesReceived, qint64 bytesTotal)
 {
-    if (bytesTotal <= 0) {
-        ui->progressBar->setValue(lastProgress);
-        return;
-    }
+    // if (bytesTotal <= 0) {
+    //     ui->progressBar->setValue(lastProgress);
+    //     return;
+    // }
 
-    lastDownloaded = bytesReceived;
+    // lastDownloaded = bytesReceived;
 
-    info.progress = (static_cast<double>(lastDownloaded) / bytesTotal) * 100.0;
-    ui->progressBar->setValue(static_cast<int>(info.progress));
-    ui->status->setText("Downloading...");
+    // info.progress = (static_cast<double>(lastDownloaded) / bytesTotal) * 100.0;
+    // ui->progressBar->setValue(static_cast<int>(info.progress));
+    // ui->status->setText("Downloading...");
 
-    double Received = 0;
-    double Total = 0;
+    // double Received = 0;
+    // double Total = 0;
 
-    if(lastDownloaded < 1024)
-    {
-        info.currentSize = QString::number(lastDownloaded, 'f', 2) + " B";
-    }
-    else if (lastDownloaded < 1024.0 * 1024.0)
-    {
-        Received = lastDownloaded / 1024.0;
-        info.currentSize = QString::number(Received, 'f', 2) + " KB";
-    }
-    else if (lastDownloaded < (1024.0 * 1024.0 * 1024))
-    {
-        Received = lastDownloaded / (1024.0 * 1024.0);
-        info.currentSize = QString::number(Received, 'f', 2) + " MB";
-    }
-    else if (lastDownloaded > (1024.0 * 1024.0 * 1024))
-    {
-        Received = lastDownloaded / (1024.0 * 1024.0 * 1024);
-        info.currentSize = QString::number(Received, 'f', 2) + " GB";
-    }
-
-
-    if(bytesTotal < 1024)
-    {
-        info.fileSize = QString::number(bytesTotal, 'f', 2) + " B";
-    }
-    else if (bytesTotal < 1024*1024)
-    {
-        Total = bytesTotal / 1024.0;
-        info.fileSize = QString::number(Total, 'f', 2) + " KB";
-    }
-    else if (bytesTotal < 1024*1024*1024)
-    {
-        Total = bytesTotal / (1024.0 * 1024.0);
-        info.fileSize = QString::number(Total, 'f', 2) + " MB";
-    }
-    else if (bytesTotal >= 1024*1024*1024)
-    {
-        Total = bytesTotal / (1024.0 * 1024.0 * 1024);
-        info.fileSize = QString::number(Total, 'f', 2) + " GB";
-    }
-
-    QTime currentTime = QTime::currentTime();
-    int elapsedMs = lastUpdateTime.msecsTo(currentTime);
+    // if(lastDownloaded < 1024)
+    // {
+    //     info.currentSize = QString::number(lastDownloaded, 'f', 2) + " B";
+    // }
+    // else if (lastDownloaded < 1024.0 * 1024.0)
+    // {
+    //     Received = lastDownloaded / 1024.0;
+    //     info.currentSize = QString::number(Received, 'f', 2) + " KB";
+    // }
+    // else if (lastDownloaded < (1024.0 * 1024.0 * 1024))
+    // {
+    //     Received = lastDownloaded / (1024.0 * 1024.0);
+    //     info.currentSize = QString::number(Received, 'f', 2) + " MB";
+    // }
+    // else if (lastDownloaded > (1024.0 * 1024.0 * 1024))
+    // {
+    //     Received = lastDownloaded / (1024.0 * 1024.0 * 1024);
+    //     info.currentSize = QString::number(Received, 'f', 2) + " GB";
+    // }
 
 
-    if (elapsedMs > 500) {
-        qint64 bytesSinceLast = bytesReceived - lastBytesReceived;
-        double mbSinceLast = bytesSinceLast / (1024.0 * 1024.0);
-        double secondsSinceLast = elapsedMs / 1000.0;
+    // if(bytesTotal < 1024)
+    // {
+    //     info.fileSize = QString::number(bytesTotal, 'f', 2) + " B";
+    // }
+    // else if (bytesTotal < 1024*1024)
+    // {
+    //     Total = bytesTotal / 1024.0;
+    //     info.fileSize = QString::number(Total, 'f', 2) + " KB";
+    // }
+    // else if (bytesTotal < 1024*1024*1024)
+    // {
+    //     Total = bytesTotal / (1024.0 * 1024.0);
+    //     info.fileSize = QString::number(Total, 'f', 2) + " MB";
+    // }
+    // else if (bytesTotal >= 1024*1024*1024)
+    // {
+    //     Total = bytesTotal / (1024.0 * 1024.0 * 1024);
+    //     info.fileSize = QString::number(Total, 'f', 2) + " GB";
+    // }
 
-        if (secondsSinceLast > 0) {
-            double instantSpeed = mbSinceLast / secondsSinceLast;
-            info.speed = QString::number(instantSpeed, 'f', 2) + " MB/s";
-            ui->transSpeed->setText(info.speed);
-
-            int sRTA = 0;
-            if (instantSpeed != 0)
-                sRTA = ((bytesTotal - bytesReceived) / (1024 * 1024)) / instantSpeed;
-            else
-                ui->RTA->setText("Unknown");
-            int mRTA = 0;
-            int hRTA = 0;
-            while (sRTA >= 60)
-            {
-                sRTA -= 60;
-                mRTA++;
-            }
-            while (mRTA >= 60)
-            {
-                mRTA -= 60;
-                hRTA++;
-            }
-            QString timeRemaining;
-            if(hRTA != 0)
-                timeRemaining += QString::number(hRTA) + " h ";
-            if(mRTA != 0)
-                timeRemaining += QString::number(mRTA) + " m ";
-            timeRemaining += QString::number(sRTA) + " s";
-            ui->RTA->setText(timeRemaining);
-        }
-
-        lastBytesReceived = bytesReceived;
-        lastUpdateTime = currentTime;
-        GatherDownloadInfo();
-    }
+    // QTime currentTime = QTime::currentTime();
+    // int elapsedMs = lastUpdateTime.msecsTo(currentTime);
 
 
+    // if (elapsedMs > 500) {
+    //     qint64 bytesSinceLast = bytesReceived - lastBytesReceived;
+    //     double mbSinceLast = bytesSinceLast / (1024.0 * 1024.0);
+    //     double secondsSinceLast = elapsedMs / 1000.0;
 
-    ui->downloaded->setText(info.currentSize);
+    //     if (secondsSinceLast > 0) {
+    //         double instantSpeed = mbSinceLast / secondsSinceLast;
+    //         info.speed = QString::number(instantSpeed, 'f', 2) + " MB/s";
+    //         ui->transSpeed->setText(info.speed);
 
-    if (bytesTotal > 0) {
-        ui->fileSize->setText(info.fileSize);
-    } else {
-        ui->fileSize->setText("Unknown");
-    }
+    //         int sRTA = 0;
+    //         if (instantSpeed != 0)
+    //             sRTA = ((bytesTotal - bytesReceived) / (1024 * 1024)) / instantSpeed;
+    //         else
+    //             ui->RTA->setText("Unknown");
+    //         int mRTA = 0;
+    //         int hRTA = 0;
+    //         while (sRTA >= 60)
+    //         {
+    //             sRTA -= 60;
+    //             mRTA++;
+    //         }
+    //         while (mRTA >= 60)
+    //         {
+    //             mRTA -= 60;
+    //             hRTA++;
+    //         }
+    //         QString timeRemaining;
+    //         if(hRTA != 0)
+    //             timeRemaining += QString::number(hRTA) + " h ";
+    //         if(mRTA != 0)
+    //             timeRemaining += QString::number(mRTA) + " m ";
+    //         timeRemaining += QString::number(sRTA) + " s";
+    //         ui->RTA->setText(timeRemaining);
+    //     }
+
+    //     lastBytesReceived = bytesReceived;
+    //     lastUpdateTime = currentTime;
+    //     GatherDownloadInfo();
+    // }
+
+
+
+    // ui->downloaded->setText(info.currentSize);
+
+    // if (bytesTotal > 0) {
+    //     ui->fileSize->setText(info.fileSize);
+    // } else {
+    //     ui->fileSize->setText("Unknown");
+    // }
 }
 
 void DownloadWindow::GatherDownloadInfo()

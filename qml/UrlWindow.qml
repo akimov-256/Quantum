@@ -224,7 +224,7 @@ Window {
                             return "Calculating file size..."
 
                         if (backend.fileSize > 0)
-                            return UrlHelper.formatFileSize(backend.fileSize)
+                            return "File Size: " + UrlHelper.formatFileSize(backend.fileSize)
                     }
 
                     color: "white"

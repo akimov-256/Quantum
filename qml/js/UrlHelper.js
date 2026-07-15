@@ -13,13 +13,13 @@ function looksLikeUrl(text) {
 
 function formatFileSize(size) {
     if (size === 0)
-        return "Unknown File Size";
+        return "Unknown";
 
     if (size < 1024)
-        return "File Size: " + String(size) + " B";
+        return String(size) + " B";
     if (size < 1024 * 1024)
-        return "File Size: " + String((size / 1024).toFixed(2)) + " KB";
+        return String((size / 1024).toFixed(2)) + " KB";
     if (size < 1024 * 1024 * 1024)
-        return "File Size: " + String((size / (1024 * 1024)).toFixed(2)) + " MB";
-    return "File Size: " + (size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+        return String((size / (1024 * 1024)).toFixed(2)) + " MB";
+    return (size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
 }

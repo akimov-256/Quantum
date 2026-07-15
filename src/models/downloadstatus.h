@@ -23,7 +23,7 @@ struct downloadInformations
     QString status;
     QString Date;
     QString fileSize;
-    QString currentSize;
+    qint64 currentSize = 0;
     QString speed;
     float disk;
     float progress;

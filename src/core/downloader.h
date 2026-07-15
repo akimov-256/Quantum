@@ -77,8 +77,6 @@ private:
     QUrl m_url;
     int m_chunksCompleted;
     QVector<qint64> chunkProgress;
-    qint64 m_bytesDownloaded;
-    qint64 currentSize = 0;
     QTimer *saveTimer = nullptr;
     QString m_qdmTempDir;
     QVector<DownloadWorker*> m_workers;

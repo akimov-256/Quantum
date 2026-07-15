@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import "../components"
+import "../js/UrlHelper.js" as UrlHelper
 
 Item {
     id: root
@@ -378,8 +379,7 @@ Item {
                             fileName: model.fileName
                             downloadProgress: model.progress
                             speed: model.speed
-                            fileSize: model.fileSize
-                            downloaded: model.downloaded
+                            fileSize: UrlHelper.formatFileSize(model.downloaded) + "/" + UrlHelper.formatFileSize(model.fileSize)
                             status: model.status
                         }
                     }

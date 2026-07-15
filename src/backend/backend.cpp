@@ -33,6 +33,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
             [this, row](qint64 bytesReceived, qint64 bytesTotal)
             {
                 m_downloads[row].fileByteSize = bytesTotal;
+                m_downloads[row].currentSize = bytesReceived;
                 if (bytesTotal > 0)
                     m_downloads[row].progress =
                         static_cast<double>(bytesReceived) * 100.0 / bytesTotal;

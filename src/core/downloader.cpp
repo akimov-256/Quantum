@@ -31,7 +31,7 @@ void Downloader::download(downloadInformations Info)
     info = Info;
     isCancelling = false;
     m_chunksCompleted = 0;
-    m_bytesDownloaded = 0;
+    info.currentSize = 0;
     m_tempPaths.clear();
     m_url = QUrl(Info.url);
 
@@ -197,10 +197,10 @@ void Downloader::SetupWorkers()
 
 void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
 {
-    m_bytesDownloaded += bytes;
+    info.currentSize += bytes;
     if (chunkIndex >= 0 && chunkIndex < chunkProgress.size())
         chunkProgress[chunkIndex] += bytes;
-    emit progressChanged(m_bytesDownloaded, info.fileByteSize);
+    emit progressChanged(info.currentSize, info.fileByteSize);
 }
 
 void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
@@ -281,7 +281,7 @@ void Downloader::onReadReady()
     {
         // Write the available data to the file
         QByteArray data = reply->readAll();
-        currentSize += data.size();
+        info.currentSize += data.size();
         file.write(data);
     }
 }
@@ -342,8 +342,8 @@ void Downloader::downloadResume(downloadInformations Info)
     if (chunkProgress.size() != info.fileParts.size())
         chunkProgress.resize(info.fileParts.size());
 
-    m_bytesDownloaded = 0;
-    for (qint64 p : chunkProgress) m_bytesDownloaded += p;
+    info.currentSize = 0;
+    for (qint64 p : chunkProgress) info.currentSize += p;
 
     QNetworkRequest req(m_url);
     QNetworkReply *headReply = manager->head(req);
@@ -394,7 +394,7 @@ void Downloader::downloadResume(downloadInformations Info)
             handleDownloadFinish();
     });
 
-    emit progressChanged(m_bytesDownloaded, info.fileByteSize);
+    emit progressChanged(info.currentSize, info.fileByteSize);
 }
 
 void Downloader::downloadStop()
@@ -495,7 +495,7 @@ QVector<qint64> Downloader::chunkProgressData()
 
 qint64 Downloader::bytesDownloaded()
 {
-    return m_bytesDownloaded;
+    return info.currentSize;
 }
 
 QList<Part> Downloader::FilePartsData()

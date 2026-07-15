@@ -107,26 +107,26 @@ void QDMan::GatherUnfinishedDownsInfo()
 
 void QDMan::CreateResumeCards()
 {
-    for (const downloadInformations &item : m_resumeDownloads)
-    {
-        downloadInformations info = item;
-        info.status = "Paused.";
-        info.fileSize = GetSizeStr(item.fileByteSize);
-        qint64 currentSize = 0;
-        for (qint64 chunk : item.chunkProgress)
-        {
-            currentSize += chunk;
-        }
-        info.currentSize = GetSizeStr(currentSize);
-        info.fileName = QFileInfo(item.savePath).fileName();
-        if (item.fileByteSize > 0)
-            info.progress = item.fileByteSize > 0 ? (static_cast<double>(currentSize) / item.fileByteSize) * 100.0 : 0.0;
-        info.speed = "- B/s";
-        DownloadInfo *card = new DownloadInfo(this);
-        ui->downloadsLayout->addWidget(card);
-        card->UpdateInfo(info);
-        connect(card, &DownloadInfo::resumeRequested, this, &QDMan::onResumeDownload);
-    }
+    // for (const downloadInformations &item : m_resumeDownloads)
+    // {
+    //     downloadInformations info = item;
+    //     info.status = "Paused.";
+    //     info.fileSize = GetSizeStr(item.fileByteSize);
+    //     qint64 currentSize = 0;
+    //     for (qint64 chunk : item.chunkProgress)
+    //     {
+    //         currentSize += chunk;
+    //     }
+    //     info.currentSize = GetSizeStr(currentSize);
+    //     info.fileName = QFileInfo(item.savePath).fileName();
+    //     if (item.fileByteSize > 0)
+    //         info.progress = item.fileByteSize > 0 ? (static_cast<double>(currentSize) / item.fileByteSize) * 100.0 : 0.0;
+    //     info.speed = "- B/s";
+    //     DownloadInfo *card = new DownloadInfo(this);
+    //     ui->downloadsLayout->addWidget(card);
+    //     card->UpdateInfo(info);
+    //     connect(card, &DownloadInfo::resumeRequested, this, &QDMan::onResumeDownload);
+    // }
 }
 
 void QDMan::onResumeDownload(downloadInformations item)
