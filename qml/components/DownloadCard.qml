@@ -32,7 +32,7 @@ Rectangle {
         spacing: 15
 
         Text {
-            id: fileName
+            id: fileNameText
 
             text: fileName
 
@@ -63,11 +63,11 @@ Rectangle {
                 }
 
                 Item {
-                    Layout.preferredWidth: progressBar.width - fileSize.width - fileName.width
+                    Layout.preferredWidth: progressBar.width - fileSizeText.width - fileNameText.width
                 }
 
                 Text {
-                    id: fileSize
+                    id: fileSizeText
 
                     Layout.alignment: Qt.AlignRight
 
