@@ -10,6 +10,7 @@ Rectangle {
     property string downloaded
     property string fileSize
     property string status
+    property string rta
 
     height: 90
 
@@ -56,7 +57,7 @@ Rectangle {
 
                     Layout.alignment: Qt.AlignLeft
 
-                    text: "Remaining: 13 min 12 s"
+                    text: rta
 
                     color: "gray"
                     font.family: appFont.name

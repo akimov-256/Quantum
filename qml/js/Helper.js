@@ -36,3 +36,31 @@ function formatSpeed(bytesPerSecond) {
         return String((bytesPerSecond / (1024 * 1024)).toFixed(2)) + " MB/s";
     return (bytesPerSecond / (1024 * 1024 * 1024)).toFixed(2) + " GB/s";
 }
+
+function handleRTA(bytesPerSecond, downloadedBytes, totalBytes) {
+    if (bytesPerSecond === 0)
+        if (downloadedBytes === 0)
+            return "Calculating";
+        else
+            return "Unknown";
+
+    let remainingSeconds = ((totalBytes - downloadedBytes) / bytesPerSecond).toFixed(0);
+    let remainingMinutes = 0;
+
+    let result = "";
+
+    while (remainingSeconds >= 60) {
+        remainingSeconds -= 60;
+        remainingMinutes += 1;
+    }
+
+    if (remainingMinutes > 0)
+        result += String(remainingMinutes) + " min ";
+
+    if (remainingSeconds < 0)
+        remainingSeconds = 0;
+
+    result += String(remainingSeconds) + " s";
+
+    return result;
+}
