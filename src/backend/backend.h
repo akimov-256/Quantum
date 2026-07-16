@@ -32,7 +32,7 @@ signals:
 
 private:
     QNetworkAccessManager *manager;
-    Downloader m_downloader;
+    QList<Downloader*> m_activeDownloaders;
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;

@@ -26,36 +26,29 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
     int row = m_downloads.size() - 1;
     m_downloadModel.addDownload(row);
 
-    m_downloader.download(info);
+    Downloader *downloader = new Downloader(this);
+    m_activeDownloaders.append(downloader);
 
-    connect(&m_downloader, &Downloader::progressChanged,
-            this,
-            [this, row](qint64 bytesReceived, qint64 bytesTotal)
-            {
-                m_downloads[row].fileByteSize = bytesTotal;
-                m_downloads[row].currentSize = bytesReceived;
-                if (bytesTotal > 0)
-                    m_downloads[row].progress =
-                        static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
-                m_downloadModel.updateDownload(row);
-            });
+    downloader->download(info);
 
-    connect(&m_downloader, &Downloader::downloadFinished,
-            this,
-            [this, row](bool success, const QString &message)
-            {
-                m_downloads[row].status = success ? "Completed" : "Failed";
-                m_downloadModel.updateDownload(row);
-                qDebug() << message;
-            });
+    connect(downloader, &Downloader::progressChanged, this, [this, row](qint64 bytesReceived, qint64 bytesTotal) {
+        m_downloads[row].fileByteSize = bytesTotal;
+        m_downloads[row].currentSize = bytesReceived;
+        if (bytesTotal > 0)
+            m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
+        m_downloadModel.updateDownload(row);
+    });
 
-    connect(&m_downloader, &Downloader::speedChanged,
-            this,
-            [this, row](qint64 bytesPerSecond)
-            {
-                m_downloads[row].speed = bytesPerSecond;
-                m_downloadModel.updateDownload(row);
-            });
+    connect(downloader, &Downloader::speedChanged, this, [this, row](qint64 bps) {
+        m_downloads[row].speed = bps;
+        m_downloadModel.updateDownload(row);
+    });
+
+    connect(downloader, &Downloader::downloadFinished, this, [this, row, downloader](bool success, const QString &message) {
+        m_downloads[row].status = success ? "Completed" : "Failed";
+        m_downloadModel.updateDownload(row);
+        qDebug() << message;
+    });
 }
 
 void Backend::GetHeadInfo(const QString &fileUrl)
