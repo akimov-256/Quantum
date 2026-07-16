@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import "components"
-import "js/UrlHelper.js" as UrlHelper
+import "js/Helper.js" as Helper
 
 Window {
     id: root
@@ -28,7 +28,7 @@ Window {
 
         onTriggered: {
             if (urlBox.text.length > 8) {
-                if (UrlHelper.looksLikeUrl(urlBox.text))
+                if (Helper.looksLikeUrl(urlBox.text))
                     backend.GetHeadInfo(urlBox.text)
             }
         }
@@ -224,7 +224,7 @@ Window {
                             return "Calculating file size..."
 
                         if (backend.fileSize > 0)
-                            return "File Size: " + UrlHelper.formatFileSize(backend.fileSize)
+                            return "File Size: " + Helper.formatFileSize(backend.fileSize)
                     }
 
                     color: "white"

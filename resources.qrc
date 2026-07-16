@@ -25,7 +25,7 @@
         <file>qml/assets/icons/folder.png</file>
         <file>qml/assets/icons/down-arrow.png</file>
         <file>qml/assets/icons/left-arrow.png</file>
-        <file>qml/js/UrlHelper.js</file>
+        <file>qml/js/Helper.js</file>
         <file>qml/components/DownloadCard.qml</file>
         <file>qml/components/ProgressBar.qml</file>
     </qresource>
