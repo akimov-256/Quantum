@@ -366,11 +366,13 @@ Item {
                     anchors.fill: parent
 
                     ListView {
-                        anchors.margins: 15
+                        Layout.margins: 15
 
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
+
+                        spacing: 15
 
                         model: backend.downloadModel
                         delegate: DownloadCard {
