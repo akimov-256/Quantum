@@ -61,6 +61,8 @@ signals:
     void downloadStarted();
     void progressChanged(qint64 bytesRecived, qint64 bytesTotal);
     void downloadFinished(bool success, const QString &message);
+    void speedChanged(qint64 bytesPerSecond);
+
 private slots:
     void onHeadFinished();
     void onHeadTestFinished();
@@ -70,6 +72,8 @@ private slots:
     void onDownloadFinished();
     void handleDownloadFinish();
     void onWorkerError(QString errStr);
+    void onSpeedTimer();
+
 private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
@@ -87,6 +91,9 @@ private:
     QStringList m_tempPaths;
     downloadInformations info;
     QFile m_file;
+    QTimer *m_speedTimer = nullptr;
+    qint64 m_lastBytesForSpeed = 0;
+
     void retireWorker(DownloadWorker *worker);
 };
 

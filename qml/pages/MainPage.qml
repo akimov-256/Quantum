@@ -378,7 +378,7 @@ Item {
 
                             fileName: model.fileName
                             downloadProgress: model.progress
-                            speed: model.speed
+                            speed: Helper.formatSpeed(model.speed)
                             fileSize: Helper.formatFileSize(model.downloaded) + "/" + Helper.formatFileSize(model.fileSize)
                             status: model.status
                         }

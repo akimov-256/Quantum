@@ -48,6 +48,14 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
                 m_downloadModel.updateDownload(row);
                 qDebug() << message;
             });
+
+    connect(&m_downloader, &Downloader::speedChanged,
+            this,
+            [this, row](qint64 bytesPerSecond)
+            {
+                m_downloads[row].speed = bytesPerSecond;
+                m_downloadModel.updateDownload(row);
+            });
 }
 
 void Backend::GetHeadInfo(const QString &fileUrl)

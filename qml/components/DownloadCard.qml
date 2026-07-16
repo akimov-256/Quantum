@@ -49,6 +49,7 @@ Rectangle {
             Layout.preferredWidth: progressBar.width
 
             RowLayout {
+                Layout.preferredWidth: progressBar.width
 
                 Text {
                     id: remainingTime
@@ -67,11 +68,11 @@ Rectangle {
                 }
 
                 Text {
-                    id: fileSizeText
+                    id: speedText
 
                     Layout.alignment: Qt.AlignRight
 
-                    text: fileSize
+                    text: speed
 
                     color: "gray"
                     font.family: appFont.name
@@ -83,6 +84,22 @@ Rectangle {
                 id: progressBar
 
                 progress: downloadProgress
+            }
+
+            RowLayout {
+                Layout.preferredWidth: progressBar.width
+
+                Text {
+                    id: fileSizeText
+
+                    Layout.alignment: Qt.AlignRight
+
+                    text: fileSize
+
+                    color: "gray"
+                    font.family: appFont.name
+                    font.pixelSize: 10
+                }
             }
         }
 

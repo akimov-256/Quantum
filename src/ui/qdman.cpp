@@ -234,7 +234,6 @@ void QDMan::SetTable(const downloadInformations &Info)
         // int row = downloadsList.value(parts[0]);
         // InsertItems(parts, row);
 
-        downloadsList[Info.fileName]->UpdateInfo(Info);
     }
     else
     {
@@ -243,7 +242,6 @@ void QDMan::SetTable(const downloadInformations &Info)
         // downloadsList.insert(parts[0], row);
 
         auto* downloadInfo = new DownloadInfo(nullptr);
-        downloadInfo->UpdateInfo(Info);
         ui->downloadsLayout->addWidget(downloadInfo);
         downloadsList.insert(Info.fileName, downloadInfo);
     }

@@ -18,7 +18,6 @@ public:
     void Downloading(QString Data);
     void Paused(QString Data);
     void Finished(QString Data);
-    void UpdateInfo(const downloadInformations &Info);
     ~DownloadInfo();
 
 signals:

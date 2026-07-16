@@ -166,6 +166,23 @@ void Downloader::StartDataTimer()
         connect(saveTimer, &QTimer::timeout, this, &Downloader::WriteDownloadData);
     }
     saveTimer->start(5000);
+
+    if (!m_speedTimer)
+    {
+        m_speedTimer = new QTimer(this);
+        connect(m_speedTimer, &QTimer::timeout, this, &Downloader::onSpeedTimer);
+    }
+    m_lastBytesForSpeed = info.currentSize;
+    m_speedTimer->start(500);
+}
+
+void Downloader::onSpeedTimer()
+{
+    qint64 delta = info.currentSize - m_lastBytesForSpeed;
+    m_lastBytesForSpeed = info.currentSize;
+
+    qint64 bytesPerSecond = delta * 2;
+    emit speedChanged(bytesPerSecond);
 }
 
 void Downloader::SetupWorkers()
@@ -246,6 +263,7 @@ void Downloader::retireWorker(DownloadWorker *worker)
 void Downloader::handleDownloadFinish()
 {
     if (saveTimer) saveTimer->stop();
+    if (m_speedTimer) m_speedTimer->stop();
 
     m_file.rename(info.savePath);
 
@@ -438,6 +456,7 @@ void Downloader::downloadPause()
 
     isPausing = true;
     if (saveTimer) saveTimer->stop();
+    if (m_speedTimer) m_speedTimer->stop();
 
     for (DownloadWorker *worker : m_workers)
         QMetaObject::invokeMethod(worker, "Stop", Qt::QueuedConnection);
@@ -458,6 +477,7 @@ void Downloader::onWorkerError(QString errStr)
     if (m_workers.isEmpty()) return; // already tearing down
 
     if (saveTimer) saveTimer->stop();
+    if (m_speedTimer) m_speedTimer->stop();
 
     for (DownloadWorker *worker : m_workers)
         QMetaObject::invokeMethod(worker, "Stop", Qt::QueuedConnection);
