@@ -48,6 +48,10 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         m_downloads[row].status = success ? "Completed" : "Failed";
         m_downloadModel.updateDownload(row);
         qDebug() << message;
+
+        // Clean up
+        downloader->deleteLater();
+        m_activeDownloaders[row] = nullptr;
     });
 }
 
