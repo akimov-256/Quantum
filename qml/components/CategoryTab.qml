@@ -41,7 +41,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onPressed: root.pressed
+            onPressed: root.pressed()
         }
 
         // Right border
