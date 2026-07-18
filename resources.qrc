@@ -28,5 +28,6 @@
         <file>qml/js/Helper.js</file>
         <file>qml/components/DownloadCard.qml</file>
         <file>qml/components/ProgressBar.qml</file>
+        <file>qml/assets/icon.svg</file>
     </qresource>
 </RCC>

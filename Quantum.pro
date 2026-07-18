@@ -1,5 +1,6 @@
 QT       += core gui
 QT += quick qml quickcontrols2 network
+QT += svg
 LIBS += -lShell32
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

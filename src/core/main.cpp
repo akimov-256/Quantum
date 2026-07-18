@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication a(argc, argv);
 
+    a.setWindowIcon(QIcon(":/qml/assets/icon.svg"));
+
     Backend backend;
 
     QQmlApplicationEngine engine;
