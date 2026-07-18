@@ -59,7 +59,7 @@ Item {
                         fillColor: "#041500"
                         borderColor: "#0AC300"
 
-                        counterText: "10"
+                        counterText: backend.completedCount
                         titleText: "COMPLETED"
                     }
 
@@ -73,7 +73,7 @@ Item {
                         fillColor: "#150000"
                         borderColor: "#C30003"
 
-                        counterText: "3"
+                        counterText: backend.downloadCount
                         titleText: "DOWNLOADING"
                     }
 

@@ -15,6 +15,8 @@ class Backend : public QObject
     Q_PROPERTY(qint64 fileSize READ fileSize NOTIFY fileSizeChanged)
     Q_PROPERTY(bool isHeadReqActive READ isHeadReqActive NOTIFY isHeadReqActiveChanged)
     Q_PROPERTY(DownloadModel* downloadModel READ downloadModel CONSTANT)
+    Q_PROPERTY(int downloadCount READ downloadCount NOTIFY countChanged)
+    Q_PROPERTY(int completedCount READ completedCount NOTIFY countChanged)
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -25,10 +27,13 @@ public:
     qint64 fileSize() const;
     DownloadModel *downloadModel();
     bool isHeadReqActive() const;
+    int downloadCount() const;
+    int completedCount() const;
 signals:
     void fileNameChanged();
     void fileSizeChanged();
     void isHeadReqActiveChanged();
+    void countChanged();
 
 private:
     QNetworkAccessManager *manager;

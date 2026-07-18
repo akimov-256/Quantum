@@ -31,6 +31,8 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
     downloader->download(info);
 
+    emit countChanged();
+
     connect(downloader, &Downloader::progressChanged, this, [this, row](qint64 bytesReceived, qint64 bytesTotal) {
         m_downloads[row].fileByteSize = bytesTotal;
         m_downloads[row].currentSize = bytesReceived;
@@ -46,6 +48,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
     connect(downloader, &Downloader::downloadFinished, this, [this, row, downloader](bool success, const QString &message) {
         m_downloads[row].status = success ? "Completed" : "Failed";
+        emit countChanged();
         m_downloadModel.updateDownload(row);
         qDebug() << message;
 
@@ -112,4 +115,26 @@ DownloadModel *Backend::downloadModel()
 bool Backend::isHeadReqActive() const
 {
     return m_isHeadReqActive;
+}
+
+int Backend::downloadCount() const
+{
+    int count = 0;
+    for (downloadInformations dInfo : m_downloads)
+    {
+        if (dInfo.status == "Downloading..." || dInfo.status == "Starting...")
+            count++;
+    }
+    return count;
+}
+
+int Backend::completedCount() const
+{
+    int count = 0;
+    for (downloadInformations dInfo : m_downloads)
+    {
+        if (dInfo.status == "Completed")
+            count++;
+    }
+    return count;
 }
