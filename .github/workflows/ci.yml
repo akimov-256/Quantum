@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  QT_VERSION: "6.9.1"
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt (MinGW)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: windows
+          target: desktop
+          arch: win64_mingw
+          cache: true
+
+      # install-qt-action@v4 puts the matching MinGW toolchain on PATH
+      # automatically for the win64_mingw arch. If mingw32-make isn't found,
+      # check the action's README for the exact "tools_mingwXXXX" name that
+      # ships with Qt 6.9.1 and add it under `tools:` above.
+      - name: Locate .pro file
+        id: proj
+        shell: bash
+        run: |
+          PRO_FILE=$(find . -maxdepth 3 -name "*.pro" | head -n 1)
+          if [ -z "$PRO_FILE" ]; then
+            echo "No .pro file found!" >&2
+            exit 1
+          fi
+          echo "pro_file=$PRO_FILE" >> "$GITHUB_OUTPUT"
+          echo "pro_dir=$(dirname "$PRO_FILE")" >> "$GITHUB_OUTPUT"
+
+      - name: qmake
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")"
+
+      - name: Build
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: mingw32-make -j$(nproc 2>/dev/null || echo 4)
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: linux
+          target: desktop
+          arch: gcc_64
+          cache: true
+
+      - name: Locate .pro file
+        id: proj
+        run: |
+          PRO_FILE=$(find . -maxdepth 3 -name "*.pro" | head -n 1)
+          if [ -z "$PRO_FILE" ]; then
+            echo "No .pro file found!" >&2
+            exit 1
+          fi
+          echo "pro_file=$PRO_FILE" >> "$GITHUB_OUTPUT"
+          echo "pro_dir=$(dirname "$PRO_FILE")" >> "$GITHUB_OUTPUT"
+
+      - name: qmake
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")"
+
+      - name: Build
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: make -j$(nproc)
