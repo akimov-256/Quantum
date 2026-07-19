@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/icon.png" alt="Quantum logo" width="120">
+  <img src="qml/assets/icon.svg" alt="Quantum logo" width="120">
 </p>
 
 <p align="center">
