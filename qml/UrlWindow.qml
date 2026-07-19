@@ -258,6 +258,9 @@ Window {
                     buttonText: "Start"
                     buttonIcon: "qrc:/qml/assets/icons/download.png"
 
+                    buttonEnabled: Helper.looksLikeUrl(urlBox.text) ? true : false
+                    opacity: buttonEnabled ? 1.0 : 0.5
+
                     Layout.alignment: Qt.AlignBottom
 
                     // Pass info to backend class to start download

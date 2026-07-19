@@ -12,6 +12,7 @@ Item {
     property color hoverColor: "#4A0055"
     property color pressedColor: "#2A0030"
     property color borderColor: "#AC00FB"
+    property bool buttonEnabled: true
     signal clicked()
 
     height: buttonHeight
@@ -22,8 +23,8 @@ Item {
         width: parent.width
         anchors.fill: parent
 
-        color: mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : fillColor
-        scale: mouseArea.pressed ? 0.98 : 1.0
+        color: (!buttonEnabled) ? fillColor : mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : fillColor
+        scale: (!buttonEnabled) ? 1.0 : mouseArea.pressed ? 0.98 : 1.0
 
         radius: 10
 
@@ -47,7 +48,10 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onClicked: root.clicked()
+            onClicked: {
+                if (buttonEnabled)
+                    root.clicked()
+            }
         }
 
         RowLayout {
