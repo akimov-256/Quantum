@@ -1,6 +1,8 @@
+import QtCore
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "components"
 import "js/Helper.js" as Helper
 
@@ -156,6 +158,10 @@ Window {
                     placeHolderText: "Select download location..."
 
                     Layout.fillWidth: true
+
+                    Component.onCompleted: {
+                        text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
+                    }
                 }
 
                 UiButton {

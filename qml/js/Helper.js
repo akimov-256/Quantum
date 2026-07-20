@@ -64,3 +64,14 @@ function handleRTA(bytesPerSecond, downloadedBytes, totalBytes) {
 
     return result;
 }
+
+function formatFilePaths(url) {
+    let path = url.toString();
+    path = decodeURIComponent(path);
+
+    if (path.startsWith("file:///"))
+        return path.substring(8);
+    else if (path.startsWith("file://"))
+        return path.substring(7);
+    return path;
+}
