@@ -13,6 +13,7 @@ Rectangle {
     property string rta
 
     height: 90
+    width: ListView.view ? ListView.view.width : parent.width
 
     color: "#35003D"
     border.color: "#AC00FB"
@@ -37,13 +38,13 @@ Rectangle {
 
             text: fileName
 
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
+            elide: Text.ElideRight
+
             color: "white"
             font.family: appFont.name
             font.pixelSize: 20
-        }
-
-        Item {
-            Layout.fillWidth: true
         }
 
         ColumnLayout {

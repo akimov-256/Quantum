@@ -164,6 +164,17 @@ Window {
                     }
                 }
 
+                FileDialog {
+                    id: folderDialog
+
+                    title: "Select download location"
+                    currentFile: pathBox.text !== "" ? "file:///" + pathBox.text : StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+
+                    onAccepted: {
+                        pathBox.text = Helper.formatFilePaths(selectedFile)
+                    }
+                }
+
                 UiButton {
                     id: browseButton
 
@@ -173,6 +184,8 @@ Window {
                     buttonIcon: "qrc:/qml/assets/icons/folder.png"
 
                     Layout.alignment: Qt.AlignBottom
+
+                    onClicked: folderDialog.open()
                 }
             }
 
