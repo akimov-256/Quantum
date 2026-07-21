@@ -21,7 +21,7 @@ class Backend : public QObject
 public:
     explicit Backend(QObject *parent = nullptr);
 
-    Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const QString &SHA256);
+    Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
     QString fileName() const;
     qint64 fileSize() const;

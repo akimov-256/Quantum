@@ -218,7 +218,7 @@ Window {
                     Layout.alignment: Qt.AlignBottom
 
                     onActivated: (index) => {
-                        console.log(model[index])
+                        currentIndex = index
                     }
                 }
             }
@@ -289,7 +289,7 @@ Window {
 
                     // Pass info to backend class to start download
                     onClicked: {
-                        backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, sha256Box.text)
+                        backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
                         root.close()
                     }
                 }

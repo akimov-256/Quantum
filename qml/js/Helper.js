@@ -75,3 +75,7 @@ function formatFilePaths(url) {
         return path.substring(7);
     return path;
 }
+
+function getNumberFromStr(str) {
+    return String(str);
+}

@@ -7,7 +7,7 @@ Backend::Backend(QObject *parent)
     m_downloadModel.setDownloads(&m_downloads);
 }
 
-void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const QString &SHA256)
+void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256)
 {
     downloadInformations info;
 
@@ -18,7 +18,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         info.savePath = filePath;
     info.url = fileUrl;
     info.SHA256 = SHA256;
-    info.chunkCount = 8;
+    info.chunkCount = connections;
     info.status = "Starting...";
     info.progress = 0;
 
