@@ -58,7 +58,7 @@ Rectangle {
 
                     Layout.alignment: Qt.AlignLeft
 
-                    text: rta
+                    text: downloadProgress === 100 ? "Completed" : rta
 
                     color: "gray"
                     font.family: appFont.name
