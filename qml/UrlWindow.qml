@@ -206,15 +206,20 @@ Window {
                     Layout.fillWidth: true
                 }
 
-                UiButton {
+                DropDown {
                     id: connectionsList
 
                     buttonHeight: 32
                     buttonWidth: 130
-                    buttonText: "8"
-                    buttonIcon: "qrc:/qml/assets/icons/left-arrow.png"
+
+                    model: ["1", "2", "4", "8", "16"]
+                    currentIndex: 3
 
                     Layout.alignment: Qt.AlignBottom
+
+                    onActivated: (index) => {
+                        console.log(model[index])
+                    }
                 }
             }
 

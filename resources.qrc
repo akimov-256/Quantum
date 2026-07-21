@@ -29,5 +29,6 @@
         <file>qml/components/DownloadCard.qml</file>
         <file>qml/components/ProgressBar.qml</file>
         <file>qml/assets/icon.svg</file>
+        <file>qml/components/DropDown.qml</file>
     </qresource>
 </RCC>
