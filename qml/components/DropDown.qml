@@ -19,6 +19,8 @@ Item {
     property int currentIndex: 0
     readonly property string currentText: model.length > 0 ? model[currentIndex] : ""
 
+    property bool isActivated: false
+
     signal activated(int index)
 
     height: buttonHeight
@@ -49,7 +51,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onClicked: popup.visible = !popup.visible
+            onClicked: isActivated = !isActivated
         }
 
         RowLayout {
@@ -104,6 +106,8 @@ Item {
         y: -popup.height - 4
         width: root.width
         padding: 0
+
+        visible: isActivated
 
         background: Rectangle {
             color: popupColor
