@@ -57,6 +57,8 @@ public:
     QString downloadID();
     qint64 bytesDownloaded();
     QList<Part> FilePartsData();
+
+    downloadInformations downloadInfo();
 signals:
     void downloadStarted();
     void progressChanged(qint64 bytesRecived, qint64 bytesTotal);

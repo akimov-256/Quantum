@@ -98,6 +98,20 @@ void Backend::GetHeadInfo(const QString &fileUrl)
     });
 }
 
+void Backend::buttonClicked(const int row) {
+    if (row < 0 || row >= m_activeDownloaders.size())
+        return;
+
+    Downloader *downloader = m_activeDownloaders[row];
+    if (!downloader)
+        return;
+
+    if (downloader->downloadInfo().status == "Paused")
+        downloader->downloadResume(downloader->downloadInfo());
+    else
+        downloader->downloadPause();
+}
+
 QString Backend::fileName() const
 {
     return m_fileName;

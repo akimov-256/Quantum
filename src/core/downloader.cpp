@@ -352,6 +352,9 @@ void Downloader::downloadResume(downloadInformations Info)
     m_qdmTempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/Quantum";
     isResuming = true;
 
+    // Update status
+    info.status = "Resuming";
+
     info.tempPath = m_qdmTempDir + "/" + info.ID + "/" + info.fileName + ".qdm";
     m_file.setFileName(info.tempPath);
     m_file.resize(info.fileByteSize);
@@ -466,6 +469,9 @@ void Downloader::downloadPause()
     while (!m_workers.isEmpty() && timer.elapsed() < 5000)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 
+    // Change status
+    info.status = "Paused";
+
     m_workers.clear();
     m_workerThreads.clear();
 
@@ -491,6 +497,11 @@ void Downloader::onWorkerError(QString errStr)
     m_workerThreads.clear();
 
     emit downloadFinished(false, "Download failed: " + errStr);
+}
+
+downloadInformations Downloader::downloadInfo() {
+    info.chunkProgress = chunkProgress;
+    return info;
 }
 
 qint64 Downloader::fileSize()

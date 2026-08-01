@@ -384,6 +384,11 @@ Item {
                             rta: Helper.handleRTA(model.speed, model.downloaded, model.fileSize)
                             fileSize: Helper.formatFileSize(model.downloaded) + "/" + Helper.formatFileSize(model.fileSize)
                             status: model.status
+
+                            onButtonClicked: {
+                                isPaused = !isPaused
+                                backend.buttonClicked(index)
+                            }
                         }
                     }
 

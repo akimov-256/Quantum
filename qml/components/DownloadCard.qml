@@ -11,6 +11,9 @@ Rectangle {
     property string fileSize
     property string status
     property string rta
+    property bool isPaused: false
+
+    signal buttonClicked()
 
     height: 90
     width: ListView.view ? ListView.view.width : parent.width
@@ -111,8 +114,10 @@ Rectangle {
             buttonHeight: 32
             buttonWidth: 90
 
-            buttonText: "Pause"
-            buttonIcon: "qrc:/qml/assets/icons/pause.png"
+            buttonText: isPaused ? "Resume" : "Pause"
+            buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.png" : "qrc:/qml/assets/icons/pause.png"
+
+            onClicked: root.buttonClicked()
         }
     }
 }
