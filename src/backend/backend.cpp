@@ -107,9 +107,47 @@ void Backend::buttonClicked(const int row) {
         return;
 
     if (downloader->downloadInfo().status == "Paused")
+    {
         downloader->downloadResume(downloader->downloadInfo());
+        m_downloads[row].status = "Downloading...";
+    }
     else
+    {
         downloader->downloadPause();
+        m_downloads[row].status = "Paused";
+    }
+
+    m_downloadModel.updateDownload(row);
+}
+
+void Backend::pauseAll() {
+    for (int i = 0; i < m_activeDownloaders.size(); i++)
+    {
+        Downloader *downloader = m_activeDownloaders[i];
+
+        if (downloader->downloadInfo().status != "Paused")
+        {
+            downloader->downloadPause();
+            m_downloads[i].status = "Paused";
+        }
+
+        m_downloadModel.updateDownload(i);
+    }
+}
+
+void Backend::resumeAll() {
+    for (int i = 0; i < m_activeDownloaders.size(); i++)
+    {
+        Downloader *downloader = m_activeDownloaders[i];
+
+        if (downloader->downloadInfo().status == "Paused")
+        {
+            downloader->downloadResume(downloader->downloadInfo());
+            m_downloads[i].status = "Downloading...";
+        }
+
+        m_downloadModel.updateDownload(i);
+    }
 }
 
 QString Backend::fileName() const

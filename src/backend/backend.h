@@ -24,6 +24,8 @@ public:
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
     Q_INVOKABLE void buttonClicked(const int row);
+    Q_INVOKABLE void pauseAll();
+    Q_INVOKABLE void resumeAll();
 
     QString fileName() const;
     qint64 fileSize() const;

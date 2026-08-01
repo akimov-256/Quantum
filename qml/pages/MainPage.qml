@@ -332,6 +332,8 @@ Item {
 
                         buttonText: "Pause All"
                         buttonIcon: "qrc:/qml/assets/icons/pause.png"
+
+                        onClicked: backend.pauseAll()
                     }
 
                     // Resume all
@@ -348,6 +350,8 @@ Item {
 
                         buttonText: "Resume All"
                         buttonIcon: "qrc:/qml/assets/icons/play.png"
+
+                        onClicked: backend.resumeAll()
                     }
 
                     Item {
@@ -385,8 +389,9 @@ Item {
                             fileSize: Helper.formatFileSize(model.downloaded) + "/" + Helper.formatFileSize(model.fileSize)
                             status: model.status
 
+                            isPaused: status === "Paused"
+
                             onButtonClicked: {
-                                isPaused = !isPaused
                                 backend.buttonClicked(index)
                             }
                         }
