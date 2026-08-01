@@ -16,6 +16,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         info.savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     else
         info.savePath = filePath;
+    info.savePath += "/" + fileName;
     info.url = fileUrl;
     info.SHA256 = SHA256;
     info.chunkCount = connections;
