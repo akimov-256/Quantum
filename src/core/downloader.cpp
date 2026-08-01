@@ -222,7 +222,7 @@ void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
 
 void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
 {
-    if (wasStopped)
+    if (wasStopped || isPausing || isCancelling)
     {
         retireWorker(worker);
         return;
