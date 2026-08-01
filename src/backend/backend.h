@@ -17,6 +17,8 @@ class Backend : public QObject
     Q_PROPERTY(DownloadModel* downloadModel READ downloadModel CONSTANT)
     Q_PROPERTY(int downloadCount READ downloadCount NOTIFY countChanged)
     Q_PROPERTY(int completedCount READ completedCount NOTIFY countChanged)
+    Q_PROPERTY(int pausedCount READ pausedCount NOTIFY countChanged FINAL)
+    Q_PROPERTY(int activeCount READ activeCount NOTIFY countChanged FINAL)
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -33,6 +35,9 @@ public:
     bool isHeadReqActive() const;
     int downloadCount() const;
     int completedCount() const;
+    int pausedCount() const;
+    int activeCount() const;
+
 signals:
     void fileNameChanged();
     void fileSizeChanged();
@@ -47,6 +52,7 @@ private:
     bool m_isHeadReqActive = false;
     QList<downloadInformations> m_downloads;
     DownloadModel m_downloadModel;
+
 };
 
 #endif // BACKEND_H

@@ -324,6 +324,8 @@ Item {
 
                         Layout.alignment: Qt.AlignVCenter
 
+                        buttonEnabled: backend.activeCount > 0
+
                         buttonHeight: 32
                         buttonWidth: 120
 
@@ -341,6 +343,8 @@ Item {
                         id: resumeAllButton
 
                         Layout.alignment: Qt.AlignVCenter
+
+                        buttonEnabled: backend.pausedCount > 0
 
                         buttonHeight: 32
                         buttonWidth: 120

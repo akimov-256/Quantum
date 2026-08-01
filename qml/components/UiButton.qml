@@ -25,6 +25,7 @@ Item {
 
         color: (!buttonEnabled) ? fillColor : mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : fillColor
         scale: (!buttonEnabled) ? 1.0 : mouseArea.pressed ? 0.98 : 1.0
+        opacity: buttonEnabled ? 1.0 : 0.5
 
         radius: 10
 
