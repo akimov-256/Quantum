@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Window 2.15
 
 Item {
     id: root
@@ -18,6 +19,8 @@ Item {
     property var model: []
     property int currentIndex: 0
     readonly property string currentText: model.length > 0 ? model[currentIndex] : ""
+
+    property bool openDownward: true
 
     property bool isActivated: false
 
@@ -51,7 +54,14 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onClicked: isActivated = !isActivated
+            onClicked: {
+                var globalY = root.mapToItem(null, 0, 0).y
+                var windowHeight = root.Window.window ? root.Window.window.height : 0
+                var spaceBelow = windowHeight - (globalY + root.height)
+
+                root.openDownward = spaceBelow >= popup.height + 4
+                isActivated = !isActivated
+            }
         }
 
         RowLayout {
@@ -103,7 +113,7 @@ Item {
         id: popup
         parent: root
 
-        y: -popup.height - 4
+        y: openDownward ? root.height + 4 : -popup.height - 4
         width: root.width
         padding: 0
 
