@@ -249,6 +249,8 @@ Window {
 
                         if (backend.fileSize > 0)
                             return "File Size: " + Helper.formatFileSize(backend.fileSize)
+
+                        return ""
                     }
 
                     color: "white"
