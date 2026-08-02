@@ -18,6 +18,14 @@ Window {
 
     flags: Qt.Window | Qt.FramelessWindowHint
 
+    function resetForm() {
+        urlBox.text = ""
+        fileNameBox.text = ""
+        pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
+        sha256Box.text = ""
+        connectionsList.currentIndex = 3
+    }
+
     FontLoader {
         id: appFont
         source: "qrc:/qml/assets/fonts/Lexend.ttf"
@@ -273,7 +281,10 @@ Window {
                     Layout.alignment: Qt.AlignBottom
 
                     // Close the app
-                    onClicked: root.close()
+                    onClicked: {
+                        resetForm()
+                        root.close()
+                    }
                 }
 
                 UiButton {
@@ -292,6 +303,7 @@ Window {
                     // Pass info to backend class to start download
                     onClicked: {
                         backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
+                        resetForm()
                         root.close()
                     }
                 }
