@@ -31,7 +31,7 @@ void Downloader::download(downloadInformations Info)
     info = Info;
     isCancelling = false;
     m_chunksCompleted = 0;
-    m_bytesDownloaded = 0;
+    info.currentSize = 0;
     m_tempPaths.clear();
     m_url = QUrl(Info.url);
 
@@ -166,6 +166,23 @@ void Downloader::StartDataTimer()
         connect(saveTimer, &QTimer::timeout, this, &Downloader::WriteDownloadData);
     }
     saveTimer->start(5000);
+
+    if (!m_speedTimer)
+    {
+        m_speedTimer = new QTimer(this);
+        connect(m_speedTimer, &QTimer::timeout, this, &Downloader::onSpeedTimer);
+    }
+    m_lastBytesForSpeed = info.currentSize;
+    m_speedTimer->start(500);
+}
+
+void Downloader::onSpeedTimer()
+{
+    qint64 delta = info.currentSize - m_lastBytesForSpeed;
+    m_lastBytesForSpeed = info.currentSize;
+
+    qint64 bytesPerSecond = delta * 2;
+    emit speedChanged(bytesPerSecond);
 }
 
 void Downloader::SetupWorkers()
@@ -197,10 +214,10 @@ void Downloader::SetupWorkers()
 
 void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
 {
-    m_bytesDownloaded += bytes;
+    info.currentSize += bytes;
     if (chunkIndex >= 0 && chunkIndex < chunkProgress.size())
         chunkProgress[chunkIndex] += bytes;
-    emit progressChanged(m_bytesDownloaded, info.fileByteSize);
+    emit progressChanged(info.currentSize, info.fileByteSize);
 }
 
 void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
@@ -246,6 +263,7 @@ void Downloader::retireWorker(DownloadWorker *worker)
 void Downloader::handleDownloadFinish()
 {
     if (saveTimer) saveTimer->stop();
+    if (m_speedTimer) m_speedTimer->stop();
 
     m_file.rename(info.savePath);
 
@@ -281,7 +299,7 @@ void Downloader::onReadReady()
     {
         // Write the available data to the file
         QByteArray data = reply->readAll();
-        currentSize += data.size();
+        info.currentSize += data.size();
         file.write(data);
     }
 }
@@ -334,6 +352,9 @@ void Downloader::downloadResume(downloadInformations Info)
     m_qdmTempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/Quantum";
     isResuming = true;
 
+    // Update status
+    info.status = "Resuming";
+
     info.tempPath = m_qdmTempDir + "/" + info.ID + "/" + info.fileName + ".qdm";
     m_file.setFileName(info.tempPath);
     m_file.resize(info.fileByteSize);
@@ -342,8 +363,8 @@ void Downloader::downloadResume(downloadInformations Info)
     if (chunkProgress.size() != info.fileParts.size())
         chunkProgress.resize(info.fileParts.size());
 
-    m_bytesDownloaded = 0;
-    for (qint64 p : chunkProgress) m_bytesDownloaded += p;
+    info.currentSize = 0;
+    for (qint64 p : chunkProgress) info.currentSize += p;
 
     QNetworkRequest req(m_url);
     QNetworkReply *headReply = manager->head(req);
@@ -394,7 +415,7 @@ void Downloader::downloadResume(downloadInformations Info)
             handleDownloadFinish();
     });
 
-    emit progressChanged(m_bytesDownloaded, info.fileByteSize);
+    emit progressChanged(info.currentSize, info.fileByteSize);
 }
 
 void Downloader::downloadStop()
@@ -438,6 +459,7 @@ void Downloader::downloadPause()
 
     isPausing = true;
     if (saveTimer) saveTimer->stop();
+    if (m_speedTimer) m_speedTimer->stop();
 
     for (DownloadWorker *worker : m_workers)
         QMetaObject::invokeMethod(worker, "Stop", Qt::QueuedConnection);
@@ -446,6 +468,9 @@ void Downloader::downloadPause()
     timer.start();
     while (!m_workers.isEmpty() && timer.elapsed() < 5000)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+
+    // Change status
+    info.status = "Paused";
 
     m_workers.clear();
     m_workerThreads.clear();
@@ -458,6 +483,7 @@ void Downloader::onWorkerError(QString errStr)
     if (m_workers.isEmpty()) return; // already tearing down
 
     if (saveTimer) saveTimer->stop();
+    if (m_speedTimer) m_speedTimer->stop();
 
     for (DownloadWorker *worker : m_workers)
         QMetaObject::invokeMethod(worker, "Stop", Qt::QueuedConnection);
@@ -471,6 +497,11 @@ void Downloader::onWorkerError(QString errStr)
     m_workerThreads.clear();
 
     emit downloadFinished(false, "Download failed: " + errStr);
+}
+
+downloadInformations Downloader::downloadInfo() {
+    info.chunkProgress = chunkProgress;
+    return info;
 }
 
 qint64 Downloader::fileSize()
@@ -495,7 +526,7 @@ QVector<qint64> Downloader::chunkProgressData()
 
 qint64 Downloader::bytesDownloaded()
 {
-    return m_bytesDownloaded;
+    return info.currentSize;
 }
 
 QList<Part> Downloader::FilePartsData()

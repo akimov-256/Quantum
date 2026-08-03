@@ -17,13 +17,29 @@
 */
 
 #include "src/ui/qdman.h"
+#include "src/backend/backend.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QQmlApplicationEngine>
+#include <QQuickStyle>
+#include <QQmlContext>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QQuickStyle::setStyle("Fusion");
+
+    QGuiApplication a(argc, argv);
+
+    a.setWindowIcon(QIcon(":/qml/assets/icon.svg"));
+
+    Backend backend;
+
+    QQmlApplicationEngine engine;
+
+    engine.rootContext()->setContextProperty("backend", &backend);
+
+    engine.load(QUrl("qrc:/qml/Main.qml"));
 
     qRegisterMetaType<downloadInformations>("DownloadStatus");
 
@@ -36,11 +52,6 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    QDMan w;
-    w.setStyleSheet("QMainWindow {"
-                          "background: qlineargradient(x1: 0.25, y1: 0, x2: 0, y2: 1,"
-                          "stop: 0 #212B45, stop: 1 #1E2329);"
-                          "}");
-    w.show();
+
     return a.exec();
 }

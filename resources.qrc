@@ -1,11 +1,34 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/icons/new.png</file>
-        <file>resources/icons/stop.png</file>
-        <file>resources/icons/UI/close.png</file>
-        <file>resources/icons/UI/downloads.png</file>
-        <file>resources/icons/UI/open.png</file>
-        <file>resources/icons/UI/pause.png</file>
-        <file>resources/icons/UI/settings.png</file>
+        <file>qml/Main.qml</file>
+        <file>qml/pages/MainPage.qml</file>
+        <file>qml/components/WindowButton.qml</file>
+        <file>qml/assets/icons/close.png</file>
+        <file>qml/assets/icons/maximize.png</file>
+        <file>qml/assets/icons/minimize.png</file>
+        <file>qml/assets/icons/restore.png</file>
+        <file>qml/assets/fonts/Lexend.ttf</file>
+        <file>qml/components/UiButton.qml</file>
+        <file>qml/assets/icons/setting.png</file>
+        <file>qml/assets/icons/download.png</file>
+        <file>qml/assets/icons/pause.png</file>
+        <file>qml/assets/icons/play.png</file>
+        <file>qml/components/Counter.qml</file>
+        <file>qml/components/CategoryTab.qml</file>
+        <file>qml/assets/icons/compressed.png</file>
+        <file>qml/assets/icons/document.png</file>
+        <file>qml/assets/icons/music.png</file>
+        <file>qml/assets/icons/program.png</file>
+        <file>qml/assets/icons/video.png</file>
+        <file>qml/UrlWindow.qml</file>
+        <file>qml/components/DialogInputBox.qml</file>
+        <file>qml/assets/icons/folder.png</file>
+        <file>qml/assets/icons/down-arrow.png</file>
+        <file>qml/assets/icons/left-arrow.png</file>
+        <file>qml/js/Helper.js</file>
+        <file>qml/components/DownloadCard.qml</file>
+        <file>qml/components/ProgressBar.qml</file>
+        <file>qml/assets/icon.svg</file>
+        <file>qml/components/DropDown.qml</file>
     </qresource>
 </RCC>

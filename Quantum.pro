@@ -1,5 +1,6 @@
 QT       += core gui
-QT += network
+QT += quick qml quickcontrols2 network
+QT += svg
 LIBS += -lShell32
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -11,6 +12,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/backend/backend.cpp \
+    src/backend/downloadmodel.cpp \
     src/core/appglobals.cpp \
     src/core/downloader.cpp \
     src/ui/downloadinfo.cpp \
@@ -22,6 +25,8 @@ SOURCES += \
     src/ui/urldialog.cpp
 
 HEADERS += \
+    src/backend/backend.h \
+    src/backend/downloadmodel.h \
     src/core/appglobals.h \
     src/core/downloader.h \
     src/ui/downloadinfo.h \

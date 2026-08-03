@@ -1,0 +1,123 @@
+import QtQuick 2.15
+import QtQuick.Layouts
+
+Rectangle {
+    id: root
+
+    property string fileName
+    property int downloadProgress
+    property string speed
+    property string downloaded
+    property string fileSize
+    property string status
+    property string rta
+    property bool isPaused: false
+
+    signal buttonClicked()
+
+    height: 90
+    width: ListView.view ? ListView.view.width : parent.width
+
+    color: "#35003D"
+    border.color: "#AC00FB"
+    border.width: 2
+    radius: 5
+
+    FontLoader {
+        id: appFont
+
+        source: "qrc:/qml/assets/fonts/Lexend.ttf"
+    }
+
+    RowLayout {
+        anchors.fill: parent
+
+        anchors.margins: 15
+
+        spacing: 15
+
+        Text {
+            id: fileNameText
+
+            text: fileName
+
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
+            elide: Text.ElideRight
+
+            color: "white"
+            font.family: appFont.name
+            font.pixelSize: 20
+        }
+
+        ColumnLayout {
+            Layout.preferredWidth: progressBar.width
+
+            RowLayout {
+                Layout.preferredWidth: progressBar.width
+
+                Text {
+                    id: remainingTime
+
+                    Layout.alignment: Qt.AlignLeft
+
+                    text: downloadProgress === 100 ? "Completed" : rta
+
+                    color: "gray"
+                    font.family: appFont.name
+                    font.pointSize: 10
+                }
+
+                Item {
+                    Layout.preferredWidth: progressBar.width - fileSizeText.width - fileNameText.width
+                }
+
+                Text {
+                    id: speedText
+
+                    Layout.alignment: Qt.AlignRight
+
+                    text: speed
+
+                    color: "gray"
+                    font.family: appFont.name
+                    font.pixelSize: 10
+                }
+            }
+
+            ProgressBar {
+                id: progressBar
+
+                progress: downloadProgress
+            }
+
+            RowLayout {
+                Layout.preferredWidth: progressBar.width
+
+                Text {
+                    id: fileSizeText
+
+                    Layout.alignment: Qt.AlignRight
+
+                    text: fileSize
+
+                    color: "gray"
+                    font.family: appFont.name
+                    font.pixelSize: 10
+                }
+            }
+        }
+
+        UiButton {
+            id: button
+
+            buttonHeight: 32
+            buttonWidth: 90
+
+            buttonText: isPaused ? "Resume" : "Pause"
+            buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.png" : "qrc:/qml/assets/icons/pause.png"
+
+            onClicked: root.buttonClicked()
+        }
+    }
+}
