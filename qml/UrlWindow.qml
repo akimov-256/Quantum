@@ -295,8 +295,7 @@ Window {
                     buttonText: "Start"
                     buttonIcon: "qrc:/qml/assets/icons/download.png"
 
-                    buttonEnabled: Helper.looksLikeUrl(urlBox.text) ? true : false
-                    opacity: buttonEnabled ? 1.0 : 0.5
+                    buttonEnabled: backend.fileSize !== 0 ? true : false
 
                     Layout.alignment: Qt.AlignBottom
 
