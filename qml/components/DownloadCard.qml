@@ -14,8 +14,9 @@ Rectangle {
     property bool isPaused: false
 
     signal buttonClicked()
+    signal cancelClicked()
 
-    height: 90
+    height: 100
     width: ListView.view ? ListView.view.width : parent.width
 
     color: "#35003D"
@@ -108,16 +109,33 @@ Rectangle {
             }
         }
 
-        UiButton {
-            id: button
+        ColumnLayout {
+            Layout.fillHeight: true
+            Layout.preferredWidth: pauseButton.width
 
-            buttonHeight: 32
-            buttonWidth: 90
+            UiButton {
+                id: pauseButton
 
-            buttonText: isPaused ? "Resume" : "Pause"
-            buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.png" : "qrc:/qml/assets/icons/pause.png"
+                buttonHeight: 32
+                buttonWidth: 90
 
-            onClicked: root.buttonClicked()
+                buttonText: isPaused ? "Resume" : "Pause"
+                buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.png" : "qrc:/qml/assets/icons/pause.png"
+
+                onClicked: root.buttonClicked()
+            }
+
+            UiButton {
+                id: cancelButton
+
+                buttonHeight: 32
+                buttonWidth: 90
+
+                buttonText: "Cancel"
+                buttonIcon: "qrc:/qml/assets/icons/close.png"
+
+                onClicked: root.cancelClicked()
+            }
         }
     }
 }

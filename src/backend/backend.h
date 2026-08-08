@@ -26,6 +26,7 @@ public:
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
     Q_INVOKABLE void buttonClicked(const int row);
+    Q_INVOKABLE void cancelClicked(const int row);
     Q_INVOKABLE void pauseAll();
     Q_INVOKABLE void resumeAll();
 
@@ -37,6 +38,7 @@ public:
     int completedCount() const;
     int pausedCount() const;
     int activeCount() const;
+    int rowForId(const QString &id) const;
 
 signals:
     void fileNameChanged();
@@ -46,7 +48,7 @@ signals:
 
 private:
     QNetworkAccessManager *manager;
-    QList<Downloader*> m_activeDownloaders;
+    QHash<QString, Downloader*> m_activeDownloaders;
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;

@@ -22,19 +22,23 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
     info.chunkCount = connections;
     info.status = "Starting...";
     info.progress = 0;
+    info.ID = QUuid::createUuid().toString(QUuid::WithoutBraces);
 
     m_downloads.append(info);
     int row = m_downloads.size() - 1;
     m_downloadModel.addDownload(row);
 
     Downloader *downloader = new Downloader(this);
-    m_activeDownloaders.append(downloader);
+    m_activeDownloaders.insert(info.ID, downloader);
 
     downloader->download(info);
 
     emit countChanged();
 
-    connect(downloader, &Downloader::progressChanged, this, [this, row](qint64 bytesReceived, qint64 bytesTotal) {
+    connect(downloader, &Downloader::progressChanged, this, [this, id = info.ID](qint64 bytesReceived, qint64 bytesTotal) {
+        int row = rowForId(id);
+        if (row == -1) return;
+
         m_downloads[row].fileByteSize = bytesTotal;
         m_downloads[row].currentSize = bytesReceived;
         if (bytesTotal > 0)
@@ -42,12 +46,18 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         m_downloadModel.updateDownload(row);
     });
 
-    connect(downloader, &Downloader::speedChanged, this, [this, row](qint64 bps) {
+    connect(downloader, &Downloader::speedChanged, this, [this, id = info.ID](qint64 bps) {
+        int row = rowForId(id);
+        if (row == -1) return;
+
         m_downloads[row].speed = bps;
         m_downloadModel.updateDownload(row);
     });
 
-    connect(downloader, &Downloader::downloadFinished, this, [this, row, downloader](bool success, const QString &message) {
+    connect(downloader, &Downloader::downloadFinished, this, [this, id = info.ID, downloader](bool success, const QString &message) {
+        int row = rowForId(id);
+        if (row == -1) return;
+
         m_downloads[row].status = success ? "Completed" : "Failed";
         emit countChanged();
         m_downloadModel.updateDownload(row);
@@ -55,7 +65,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
         // Clean up
         downloader->deleteLater();
-        m_activeDownloaders[row] = nullptr;
+        m_activeDownloaders[id] = nullptr;
     });
 }
 
@@ -102,29 +112,57 @@ void Backend::buttonClicked(const int row) {
     if (row < 0 || row >= m_activeDownloaders.size())
         return;
 
-    Downloader *downloader = m_activeDownloaders[row];
+    QString id = m_downloads[row].ID;
+    Downloader *downloader = m_activeDownloaders.value(id, nullptr);
     if (!downloader)
+        return;
+
+    int currentRow = rowForId(id);
+    if (currentRow == -1)
         return;
 
     if (downloader->downloadInfo().status == "Paused")
     {
         downloader->downloadResume(downloader->downloadInfo());
-        m_downloads[row].status = "Downloading...";
+        m_downloads[currentRow].status = "Downloading...";
     }
     else
     {
         downloader->downloadPause();
-        m_downloads[row].status = "Paused";
+        m_downloads[currentRow].status = "Paused";
     }
 
     emit countChanged();
-    m_downloadModel.updateDownload(row);
+    m_downloadModel.updateDownload(currentRow);
+}
+
+void Backend::cancelClicked(const int row)
+{
+    if (row < 0 || row >= m_activeDownloaders.size())
+        return;
+
+    QString id = m_downloads[row].ID;
+    Downloader *downloader = m_activeDownloaders.value(id, nullptr);
+    if (!downloader)
+        return;
+
+    downloader->downloadStop();
+
+    int currentRow = rowForId(id);
+    if (currentRow == -1)
+        return;
+
+    m_downloads.remove(currentRow);
+    m_activeDownloaders.remove(id);
+    m_downloadModel.removeRow(currentRow);
+    emit countChanged();
 }
 
 void Backend::pauseAll() {
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {
-        Downloader *downloader = m_activeDownloaders[i];
+        QString id = m_downloads[i].ID;
+        Downloader *downloader = m_activeDownloaders.value(id, nullptr);
 
         if (downloader->downloadInfo().status != "Paused")
         {
@@ -140,7 +178,8 @@ void Backend::pauseAll() {
 void Backend::resumeAll() {
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {
-        Downloader *downloader = m_activeDownloaders[i];
+        QString id = m_downloads[i].ID;
+        Downloader *downloader = m_activeDownloaders.value(id, nullptr);
 
         if (downloader->downloadInfo().status == "Paused")
         {
@@ -158,7 +197,8 @@ int Backend::pausedCount() const
     int count = 0;
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {
-        if (m_activeDownloaders[i]->downloadInfo().status == "Paused")
+        QString id = m_downloads[i].ID;
+        if (m_activeDownloaders.value(id, nullptr)->downloadInfo().status == "Paused")
             count++;
     }
     return count;
@@ -169,7 +209,8 @@ int Backend::activeCount() const
     int count = 0;
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {
-        if (m_activeDownloaders[i]->downloadInfo().status != "Paused")
+        QString id = m_downloads[i].ID;
+        if (m_activeDownloaders.value(id, nullptr)->downloadInfo().status != "Paused")
             count++;
     }
     return count;
@@ -215,4 +256,12 @@ int Backend::completedCount() const
             count++;
     }
     return count;
+}
+
+int Backend::rowForId(const QString &id) const
+{
+    for (int i = 0; i < m_downloads.size(); i++)
+        if (m_downloads[i].ID == id)
+            return i;
+    return -1;
 }

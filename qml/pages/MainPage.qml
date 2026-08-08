@@ -398,6 +398,10 @@ Item {
                             onButtonClicked: {
                                 backend.buttonClicked(index)
                             }
+
+                            onCancelClicked: {
+                                backend.cancelClicked(index)
+                            }
                         }
                     }
 
