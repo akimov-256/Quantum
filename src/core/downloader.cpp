@@ -36,7 +36,8 @@ void Downloader::download(downloadInformations Info)
     m_url = QUrl(Info.url);
 
     m_qdmTempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/Quantum";
-    info.ID = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    if(info.ID.isEmpty())
+        info.ID = QUuid::createUuid().toString(QUuid::WithoutBraces);
     QDir dir;
     dir.mkpath(m_qdmTempDir + "/" + info.ID);
 
@@ -222,7 +223,7 @@ void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
 
 void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
 {
-    if (wasStopped)
+    if (wasStopped || isPausing || isCancelling)
     {
         retireWorker(worker);
         return;

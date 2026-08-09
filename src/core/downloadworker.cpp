@@ -30,6 +30,7 @@ void DownloadWorker::StartDownload(int chunkIndex, qint64 start, qint64 end, boo
         manager = new QNetworkAccessManager(this);
 
     QNetworkRequest request(m_info.url);
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
     QByteArray rangeHeader = "bytes=" + QByteArray::number(m_start) + "-" + QByteArray::number(m_end);
     request.setRawHeader("Range", rangeHeader);
 

@@ -1,24 +1,25 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Window
 import "components"
 import "pages"
 
-ApplicationWindow {
+ApplicationWindow 
+{
     id: root
-
-    property bool isMaximized: false
-
-    visible: true
     width: 1200
     height: 700
 
     title: "Quantum"
 
-    // Add the child windows
-    UrlWindow {
-        id: urlWindow
-    }
+    opacity: 0
+
+    visible: true
+    Component.onCompleted: openAnimated()
+
+    property bool isMaximized: false
+    property rect normalGeometry: Qt.rect(x, y, width, height)
 
     // Remove the Default title bar
     flags: Qt.Window | Qt.FramelessWindowHint
@@ -27,123 +28,172 @@ ApplicationWindow {
         isMaximized = (visibility === Window.Maximized)
     }
 
-    // Create the title bar
-    Rectangle {
-        id: titleBar
+    // wrap existing content
+    Item {
+        id: contentWrapper
+        anchors.fill: parent
+        scale: 0.98
 
-        width: parent.width
-        height: 26.25
+        // Add the child windows
+        UrlWindow {
+            id: urlWindow
+        }
 
-        color: "#000000"
+        // Create the title bar
+        Rectangle {
+            id: titleBar
 
-        // Add title bar content
-        RowLayout {
-            id: titleBarLayout
+            width: parent.width
+            height: 26.25
 
-            anchors.fill: parent
-            anchors.leftMargin: 10
+            color: "#000000"
 
-            FontLoader {
-                id: appFont
-                source: "qrc:/qml/assets/fonts/Lexend.ttf"
-            }
-
-            // Add the app name
-            Text {
-                id: appName
-                text: "QUANTUM DOWNLOAD MANAGER"
-                font.family: appFont.name
-                font.pixelSize: 15
-                color: "#ffffff"
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            // Add spacer
-            Item {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                // Handle window movement and maximizing/minimizing
-                MouseArea {
-                    anchors.fill: parent
-                    property point clickPos: "0,0"
-
-                    onPressed: (mouse) => {
-                        root.startSystemMove()
-                    }
-
-                    onDoubleClicked: (mouse) => {
-                        if (root.isMaximized)
-                            root.showNormal()
-                        else
-                            root.showMaximized()
-                    }
-                }
-            }
-
-            // Add window control buttons
+            // Add title bar content
             RowLayout {
-                Layout.alignment: Qt.AlignVCenter
+                id: titleBarLayout
 
-                WindowButton {
-                    id: minimize
-                    buttonIcon: "qrc:/qml/assets/icons/minimize.png"
-                    onClicked: root.showMinimized()
+                anchors.fill: parent
+                anchors.leftMargin: 10
+
+                FontLoader {
+                    id: appFont
+                    source: "qrc:/qml/assets/fonts/Lexend.ttf"
                 }
 
-                WindowButton {
-                    id: maximize
-                    buttonIcon: root.isMaximized ? "qrc:/qml/assets/icons/restore.png" : "qrc:/qml/assets/icons/maximize.png"
-                    onClicked:
-                    {
-                        if (root.isMaximized)
-                            root.showNormal()
-                        else
-                            root.showMaximized()
+                // Add the app name
+                Text {
+                    id: appName
+                    text: "QUANTUM DOWNLOAD MANAGER"
+                    font.family: appFont.name
+                    font.pixelSize: 15
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                // Add spacer
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    // Handle window movement and maximizing/minimizing
+                    MouseArea {
+                        anchors.fill: parent
+                        property point clickPos: "0,0"
+
+                        onPressed: (mouse) => {
+                            root.startSystemMove()
+                        }
+
+                        onDoubleClicked: (mouse) => {
+                            root.toggleMaximize()
+                        }
                     }
                 }
 
-                WindowButton {
-                    id: close
-                    buttonIcon: "qrc:/qml/assets/icons/close.png"
-                    hoverColor: "#ff0000"
-                    clickColor: "#700000"
-                    onClicked: root.close()
+                // Add window control buttons
+                RowLayout {
+                    Layout.alignment: Qt.AlignVCenter
+
+                    WindowButton {
+                        id: minimize
+                        buttonIcon: "qrc:/qml/assets/icons/minimize.png"
+                        onClicked: root.showMinimized()
+                    }
+
+                    WindowButton {
+                        id: maximize
+                        buttonIcon: root.isMaximized ? "qrc:/qml/assets/icons/restore.png" : "qrc:/qml/assets/icons/maximize.png"
+                        onClicked:
+                        {
+                            root.toggleMaximize()
+                        }
+                    }
+
+                    WindowButton {
+                        id: close
+                        buttonIcon: "qrc:/qml/assets/icons/close.png"
+                        hoverColor: "#ff0000"
+                        clickColor: "#700000"
+                        onClicked: root.closeAnimated()
+                    }
+                }
+            }
+        }
+
+        // Create the background
+        Rectangle {
+            id: background
+
+            // Set the position
+            anchors {
+                top: titleBar.bottom
+                bottom: parent.bottom
+                left: parent.left
+                right: parent.right
+            }
+
+            width: parent.width
+            height: parent.height - titleBar.height
+
+            gradient: Gradient {
+                GradientStop{ position: 0.0; color: "#1F0024"}
+                GradientStop{ position: 1.0; color: "#0E0010"}
+            }
+
+            MainPage {
+                anchors.fill: parent
+
+                onNewDownloadRequested: {
+                    if(!urlWindow.visible)
+                        urlWindow.openAnimated()
+
+                    urlWindow.raise()
+                    urlWindow.requestActivate()
                 }
             }
         }
     }
 
-    // Create the background
-    Rectangle {
-        id: background
+    function openAnimated() {
+        show()
+        raise()
+        requestActivate()
+        openAnim.start()
+    }
 
-        // Set the position
-        anchors {
-            top: titleBar.bottom
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
+    ParallelAnimation {
+        id: openAnim
+        NumberAnimation { target: root; property: "opacity"; to: 1; duration: 120; easing.type: Easing.OutCubic }
+        NumberAnimation { target: contentWrapper; property: "scale"; to: 1; duration: 120;}
+    }
 
-        width: parent.width
-        height: parent.height - titleBar.height
+    function closeAnimated() {
+        closeAnim.start()
+    }
 
-        gradient: Gradient {
-            GradientStop{ position: 0.0; color: "#1F0024"}
-            GradientStop{ position: 1.0; color: "#0E0010"}
-        }
+    ParallelAnimation {
+        id: closeAnim
+        NumberAnimation { target: root; property: "opacity"; to: 0; duration: 120 }
+        NumberAnimation { target: contentWrapper; property: "scale"; to: 0.92; duration: 120 }
+        onFinished: root.hide()
+    }
 
-        MainPage {
-            anchors.fill: parent
+    Behavior on width { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+    Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+    Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+    Behavior on y { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
 
-            onNewDownloadRequested: {
-                if(!urlWindow.visible)
-                    urlWindow.show()
-
-                urlWindow.raise()
-                urlWindow.requestActivate()
-            }
+    function toggleMaximize() {
+        if (!root.isMaximized) {
+            normalGeometry = Qt.rect(x, y, width, height)
+            var screenGeo = backend.availableScreenGeometry()
+            x = screenGeo.x; y = screenGeo.y
+            width = screenGeo.width; height = screenGeo.height
+            isMaximized = true
+        } else {
+            x = normalGeometry.x; y = normalGeometry.y
+            width = normalGeometry.width; height = normalGeometry.height
+            isMaximized = false
         }
     }
 }

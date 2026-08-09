@@ -61,6 +61,15 @@ void DownloadModel::updateDownload(int row)
     emit dataChanged(index(row), index(row));
 }
 
+void DownloadModel::removeRow(int row)
+{
+    if (!m_downloads || row < 0 || row >= m_downloads->size())
+        return;
+
+    beginRemoveRows(QModelIndex(), row, row);
+    endRemoveRows();
+}
+
 QHash<int, QByteArray> DownloadModel::roleNames() const
 {
     return {

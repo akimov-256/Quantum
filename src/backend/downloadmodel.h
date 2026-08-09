@@ -26,6 +26,7 @@ public:
     void setDownloads(QList<downloadInformations> *downloads);
     void addDownload(int row);
     void updateDownload(int row);
+    void removeRow(int row);
 
     QHash<int, QByteArray> roleNames() const override;
 

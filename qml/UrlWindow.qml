@@ -9,6 +9,8 @@ import "js/Helper.js" as Helper
 Window {
     id: root
 
+    opacity: 0
+
     visible: false
 
     title: "New Download"
@@ -17,6 +19,14 @@ Window {
     width: 650
 
     flags: Qt.Window | Qt.FramelessWindowHint
+
+    function resetForm() {
+        urlBox.text = ""
+        fileNameBox.text = ""
+        pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
+        sha256Box.text = ""
+        connectionsList.currentIndex = 3
+    }
 
     FontLoader {
         id: appFont
@@ -36,272 +46,305 @@ Window {
         }
     }
 
-    Rectangle {
-        id: titleBar
+    Item {
+        id: contentWrapper
+        anchors.fill: parent
+        scale: 0.98
 
-        width: parent.width
-        height: 26.25
+        Rectangle {
+            id: titleBar
 
-        color: "#000000"
+            width: parent.width
+            height: 26.25
 
-        // Add title bar content
-        RowLayout {
-            id: titleBarLayout
+            color: "#000000"
 
-            anchors.fill: parent
-            anchors.leftMargin: 10
-
-            // Add the app name
-            Text {
-                id: appName
-                text: "NEW DOWNLOAD"
-                font.family: appFont.name
-                font.pixelSize: 15
-                color: "#ffffff"
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            // Add spacer
-            Item {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                // Handle window movement and maximizing/minimizing
-                MouseArea {
-                    anchors.fill: parent
-                    property point clickPos: "0,0"
-
-                    onPressed: (mouse) => {
-                        root.startSystemMove()
-                    }
-
-                    onDoubleClicked: (mouse) => {
-                        if (root.isMaximized)
-                            root.showNormal()
-                        else
-                            root.showMaximized()
-                    }
-                }
-            }
-
-            // Add window control buttons
+            // Add title bar content
             RowLayout {
-                Layout.alignment: Qt.AlignVCenter
+                id: titleBarLayout
 
-                WindowButton {
-                    id: close
-                    buttonIcon: "qrc:/qml/assets/icons/close.png"
-                    hoverColor: "#ff0000"
-                    clickColor: "#700000"
-                    onClicked: root.close()
-                }
-            }
-        }
-    }
+                anchors.fill: parent
+                anchors.leftMargin: 10
 
-    Rectangle {
-        id: body
-
-        anchors {
-            top: titleBar.bottom
-            right: parent.right
-            left: parent.left
-            bottom: parent.bottom
-        }
-
-        ColumnLayout {
-            anchors.fill: parent
-
-            // Download url box
-            DialogInputBox {
-                id: urlBox
-
-                titleText: "DOWNLOAD URL"
-                placeHolderText: "Paste download URL..."
-
-                Layout.fillWidth: true
-
-                Layout.topMargin: 5
-                Layout.leftMargin: 25
-                Layout.rightMargin: 25
-
-                onBoxTextChanged: headTimer.restart()
-            }
-
-            // File name box
-            DialogInputBox {
-                id: fileNameBox
-
-                titleText: "FILE NAME"
-                placeHolderText: "File name (optional)"
-
-                text: backend.fileName
-
-                Layout.fillWidth: true
-
-                Layout.leftMargin: 25
-                Layout.rightMargin: 25
-            }
-
-            // Save to box
-            RowLayout {
-
-                spacing: 10
-
-                Layout.leftMargin: 25
-                Layout.rightMargin: 25
-
-                DialogInputBox {
-                    id: pathBox
-
-                    titleText: "SAVE TO"
-                    placeHolderText: "Select download location..."
-
-                    Layout.fillWidth: true
-
-                    Component.onCompleted: {
-                        text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
-                    }
-                }
-
-                FileDialog {
-                    id: folderDialog
-
-                    title: "Select download location"
-                    currentFile: pathBox.text !== "" ? "file:///" + pathBox.text : StandardPaths.writableLocation(StandardPaths.DownloadLocation)
-
-                    onAccepted: {
-                        pathBox.text = Helper.formatFilePaths(selectedFile)
-                    }
-                }
-
-                UiButton {
-                    id: browseButton
-
-                    buttonHeight: 32
-                    buttonWidth: 130
-                    buttonText: "Browse"
-                    buttonIcon: "qrc:/qml/assets/icons/folder.png"
-
-                    Layout.alignment: Qt.AlignBottom
-
-                    onClicked: folderDialog.open()
-                }
-            }
-
-            // SHA256 hash box
-            RowLayout {
-
-                spacing: 10
-
-                Layout.leftMargin: 25
-                Layout.rightMargin: 25
-
-                DialogInputBox {
-                    id: sha256Box
-
-                    titleText: "SHA256 HASH"
-                    placeHolderText: "Paste SHA256 for verification (optional)"
-
-                    Layout.fillWidth: true
-                }
-
-                DropDown {
-                    id: connectionsList
-
-                    buttonHeight: 32
-                    buttonWidth: 130
-
-                    model: ["1", "2", "4", "8", "16"]
-                    currentIndex: 3
-
-                    Layout.alignment: Qt.AlignBottom
-
-                    onActivated: (index) => {
-                        currentIndex = index
-                    }
-                }
-            }
-
-            Item {
-                Layout.preferredHeight: 10
-            }
-
-            // Window buttons
-            RowLayout {
-
-                spacing: 10
-
-                Layout.rightMargin: 25
-                Layout.leftMargin: 25
-
+                // Add the app name
                 Text {
-                    id: fileSize
+                    id: appName
+                    text: "NEW DOWNLOAD"
+                    font.family: appFont.name
+                    font.pixelSize: 15
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignVCenter
+                }
 
+                // Add spacer
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    // Handle window movement and maximizing/minimizing
+                    MouseArea {
+                        anchors.fill: parent
+                        property point clickPos: "0,0"
+
+                        onPressed: (mouse) => {
+                            root.startSystemMove()
+                        }
+
+                        onDoubleClicked: (mouse) => {
+                            if (root.isMaximized)
+                                root.showNormal()
+                            else
+                                root.showMaximized()
+                        }
+                    }
+                }
+
+                // Add window control buttons
+                RowLayout {
                     Layout.alignment: Qt.AlignVCenter
 
-                    text: {
-                        if (urlBox.text === "")
-                            return ""
+                    WindowButton {
+                        id: close
+                        buttonIcon: "qrc:/qml/assets/icons/close.png"
+                        hoverColor: "#ff0000"
+                        clickColor: "#700000"
+                        onClicked: root.closeAnimated()
+                    }
+                }
+            }
+        }
 
-                        if (backend.isHeadReqActive)
-                            return "Calculating file size..."
+        Rectangle {
+            id: body
 
-                        if (backend.fileSize > 0)
-                            return "File Size: " + Helper.formatFileSize(backend.fileSize)
+            anchors {
+                top: titleBar.bottom
+                right: parent.right
+                left: parent.left
+                bottom: parent.bottom
+            }
 
-                        return ""
+            ColumnLayout {
+                anchors.fill: parent
+
+                // Download url box
+                DialogInputBox {
+                    id: urlBox
+
+                    titleText: "DOWNLOAD URL"
+                    placeHolderText: "Paste download URL..."
+
+                    Layout.fillWidth: true
+
+                    Layout.topMargin: 5
+                    Layout.leftMargin: 25
+                    Layout.rightMargin: 25
+
+                    onBoxTextChanged: headTimer.restart()
+                }
+
+                // File name box
+                DialogInputBox {
+                    id: fileNameBox
+
+                    titleText: "FILE NAME"
+                    placeHolderText: "File name (optional)"
+
+                    text: backend.fileName
+
+                    Layout.fillWidth: true
+
+                    Layout.leftMargin: 25
+                    Layout.rightMargin: 25
+                }
+
+                // Save to box
+                RowLayout {
+
+                    spacing: 10
+
+                    Layout.leftMargin: 25
+                    Layout.rightMargin: 25
+
+                    DialogInputBox {
+                        id: pathBox
+
+                        titleText: "SAVE TO"
+                        placeHolderText: "Select download location..."
+
+                        Layout.fillWidth: true
+
+                        Component.onCompleted: {
+                            text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
+                        }
                     }
 
-                    color: "white"
-                    font.family: appFont.name
-                    font.pixelSize: 16
+                    FileDialog {
+                        id: folderDialog
+
+                        title: "Select download location"
+                        currentFile: pathBox.text !== "" ? "file:///" + pathBox.text : StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+
+                        onAccepted: {
+                            pathBox.text = Helper.formatFilePaths(selectedFile)
+                        }
+                    }
+
+                    UiButton {
+                        id: browseButton
+
+                        buttonHeight: 32
+                        buttonWidth: 130
+                        buttonText: "Browse"
+                        buttonIcon: "qrc:/qml/assets/icons/folder.png"
+
+                        Layout.alignment: Qt.AlignBottom
+
+                        onClicked: folderDialog.open()
+                    }
+                }
+
+                // SHA256 hash box
+                RowLayout {
+
+                    spacing: 10
+
+                    Layout.leftMargin: 25
+                    Layout.rightMargin: 25
+
+                    DialogInputBox {
+                        id: sha256Box
+
+                        titleText: "SHA256 HASH"
+                        placeHolderText: "Paste SHA256 for verification (optional)"
+
+                        Layout.fillWidth: true
+                    }
+
+                    DropDown {
+                        id: connectionsList
+
+                        buttonHeight: 32
+                        buttonWidth: 130
+
+                        model: ["1", "2", "4", "8", "16"]
+                        currentIndex: 3
+
+                        Layout.alignment: Qt.AlignBottom
+
+                        onActivated: (index) => {
+                            currentIndex = index
+                        }
+                    }
                 }
 
                 Item {
-                    Layout.fillWidth: true
+                    Layout.preferredHeight: 10
                 }
 
-                UiButton {
-                    id: cancelButton
+                // Window buttons
+                RowLayout {
 
-                    buttonHeight: 32
-                    buttonWidth: 130
-                    buttonText: "Cancel"
-                    buttonIcon: "qrc:/qml/assets/icons/close.png"
+                    spacing: 10
 
-                    Layout.alignment: Qt.AlignBottom
+                    Layout.rightMargin: 25
+                    Layout.leftMargin: 25
 
-                    // Close the app
-                    onClicked: root.close()
-                }
+                    Text {
+                        id: fileSize
 
-                UiButton {
-                    id: startButton
+                        Layout.alignment: Qt.AlignVCenter
 
-                    buttonHeight: 32
-                    buttonWidth: 130
-                    buttonText: "Start"
-                    buttonIcon: "qrc:/qml/assets/icons/download.png"
+                        text: {
+                            if (urlBox.text === "")
+                                return ""
 
-                    buttonEnabled: Helper.looksLikeUrl(urlBox.text) ? true : false
-                    opacity: buttonEnabled ? 1.0 : 0.5
+                            if (backend.isHeadReqActive)
+                                return "Calculating file size..."
 
-                    Layout.alignment: Qt.AlignBottom
+                            if (backend.fileSize > 0)
+                                return "File Size: " + Helper.formatFileSize(backend.fileSize)
 
-                    // Pass info to backend class to start download
-                    onClicked: {
-                        backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
-                        root.close()
+                            return ""
+                        }
+
+                        color: "white"
+                        font.family: appFont.name
+                        font.pixelSize: 16
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    UiButton {
+                        id: cancelButton
+
+                        buttonHeight: 32
+                        buttonWidth: 130
+                        buttonText: "Cancel"
+                        buttonIcon: "qrc:/qml/assets/icons/close.png"
+
+                        Layout.alignment: Qt.AlignBottom
+
+                        // Close the app
+                        onClicked: {
+                            resetForm()
+                            root.closeAnimated()
+                        }
+                    }
+
+                    UiButton {
+                        id: startButton
+
+                        buttonHeight: 32
+                        buttonWidth: 130
+                        buttonText: "Start"
+                        buttonIcon: "qrc:/qml/assets/icons/download.png"
+
+                        buttonEnabled: backend.fileSize !== 0 ? true : false
+
+                        Layout.alignment: Qt.AlignBottom
+
+                        // Pass info to backend class to start download
+                        onClicked: {
+                            backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
+                            resetForm()
+                            root.closeAnimated()
+                        }
                     }
                 }
+
+                Item {
+                    Layout.fillHeight: true
+                }
             }
 
-            Item {
-                Layout.fillHeight: true
-            }
+            color: "#100019"
         }
+    }
 
-        color: "#100019"
+    function openAnimated() {
+        show()
+        raise()
+        requestActivate()
+        openAnim.start()
+    }
+
+    ParallelAnimation {
+        id: openAnim
+        NumberAnimation { target: root; property: "opacity"; to: 1; duration: 100; easing.type: Easing.OutCubic }
+        NumberAnimation { target: contentWrapper; property: "scale"; to: 1; duration: 140;}
+    }
+
+    function closeAnimated() {
+        closeAnim.start()
+    }
+
+    ParallelAnimation {
+        id: closeAnim
+        NumberAnimation { target: root; property: "opacity"; to: 0; duration: 100; easing.type: Easing.InCubic }
+        NumberAnimation { target: contentWrapper; property: "scale"; to: 0.92; duration: 140 }
+        onFinished: root.hide()
     }
 }

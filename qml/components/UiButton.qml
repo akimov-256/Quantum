@@ -35,6 +35,12 @@ Item {
             }
         }
 
+        Behavior on opacity {
+            OpacityAnimator {
+                duration: 80
+            }
+        }
+
         Behavior on scale {
             NumberAnimation {
                 duration: 80
