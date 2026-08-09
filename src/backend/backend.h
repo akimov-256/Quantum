@@ -7,6 +7,9 @@
 #include <QObject>
 #include <QStandardPaths>
 #include <QNetworkAccessManager>
+#include <QRect>
+#include <QGuiApplication>
+#include <QScreen>
 
 class Backend : public QObject
 {
@@ -29,6 +32,7 @@ public:
     Q_INVOKABLE void cancelClicked(const int row);
     Q_INVOKABLE void pauseAll();
     Q_INVOKABLE void resumeAll();
+    Q_INVOKABLE QRect availableScreenGeometry() const;
 
     QString fileName() const;
     qint64 fileSize() const;

@@ -192,6 +192,12 @@ void Backend::resumeAll() {
     }
 }
 
+QRect Backend::availableScreenGeometry() const
+{
+    QScreen *screen = QGuiApplication::primaryScreen();
+    return screen ? screen->availableGeometry() : QRect(0, 0, 1200, 700);
+}
+
 int Backend::pausedCount() const
 {
     int count = 0;
