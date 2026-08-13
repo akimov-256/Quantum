@@ -18,6 +18,8 @@ Window {
     height: 320
     width: 650
 
+    color: "transparent"
+
     flags: Qt.Window | Qt.FramelessWindowHint
 
     function resetForm() {
@@ -108,7 +110,10 @@ Window {
                         buttonIcon: "qrc:/qml/assets/icons/close.png"
                         hoverColor: "#ff0000"
                         clickColor: "#700000"
-                        onClicked: root.closeAnimated()
+                        onClicked: {
+                            root.closeAnimated()
+                            root.resetForm()
+                        }
                     }
                 }
             }
@@ -150,12 +155,17 @@ Window {
                     titleText: "FILE NAME"
                     placeHolderText: "File name (optional)"
 
-                    text: backend.fileName
-
                     Layout.fillWidth: true
 
                     Layout.leftMargin: 25
                     Layout.rightMargin: 25
+
+                    Connections {
+                        target: backend
+                        function onFileNameChanged() {
+                            fileNameBox.text = backend.fileName
+                        }
+                    }
                 }
 
                 // Save to box
@@ -289,8 +299,8 @@ Window {
 
                         // Close the app
                         onClicked: {
-                            resetForm()
                             root.closeAnimated()
+                            root.resetForm()
                         }
                     }
 
@@ -309,8 +319,8 @@ Window {
                         // Pass info to backend class to start download
                         onClicked: {
                             backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
-                            resetForm()
                             root.closeAnimated()
+                            resetForm()
                         }
                     }
                 }
