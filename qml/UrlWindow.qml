@@ -18,6 +18,8 @@ Window {
     height: 320
     width: 650
 
+    color: "transparent"
+
     flags: Qt.Window | Qt.FramelessWindowHint
 
     function resetForm() {
