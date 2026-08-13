@@ -67,6 +67,9 @@ void DownloadModel::removeRow(int row)
         return;
 
     beginRemoveRows(QModelIndex(), row, row);
+
+    m_downloads->remove(row);
+
     endRemoveRows();
 }
 
