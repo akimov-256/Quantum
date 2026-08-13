@@ -155,12 +155,17 @@ Window {
                     titleText: "FILE NAME"
                     placeHolderText: "File name (optional)"
 
-                    text: backend.fileName
-
                     Layout.fillWidth: true
 
                     Layout.leftMargin: 25
                     Layout.rightMargin: 25
+
+                    Connections {
+                        target: backend
+                        function onFileNameChanged() {
+                            fileNameBox.text = backend.fileName
+                        }
+                    }
                 }
 
                 // Save to box
