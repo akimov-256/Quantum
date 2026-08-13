@@ -110,7 +110,10 @@ Window {
                         buttonIcon: "qrc:/qml/assets/icons/close.png"
                         hoverColor: "#ff0000"
                         clickColor: "#700000"
-                        onClicked: root.closeAnimated()
+                        onClicked: {
+                            root.closeAnimated()
+                            root.resetForm()
+                        }
                     }
                 }
             }
@@ -291,8 +294,8 @@ Window {
 
                         // Close the app
                         onClicked: {
-                            resetForm()
                             root.closeAnimated()
+                            root.resetForm()
                         }
                     }
 
@@ -311,8 +314,8 @@ Window {
                         // Pass info to backend class to start download
                         onClicked: {
                             backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
-                            resetForm()
                             root.closeAnimated()
+                            resetForm()
                         }
                     }
                 }
