@@ -189,14 +189,14 @@ Window {
                         }
                     }
 
-                    FileDialog {
+                    FolderDialog {
                         id: folderDialog
 
                         title: "Select download location"
-                        currentFile: pathBox.text !== "" ? "file:///" + pathBox.text : StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+                        currentFolder: pathBox.text !== "" ? "file:///" + pathBox.text : StandardPaths.writableLocation(StandardPaths.DownloadLocation)
 
                         onAccepted: {
-                            pathBox.text = Helper.formatFilePaths(selectedFile)
+                            pathBox.text = Helper.formatFilePaths(selectedFolder)
                         }
                     }
 
