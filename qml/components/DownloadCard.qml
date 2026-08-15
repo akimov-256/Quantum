@@ -120,7 +120,7 @@ Rectangle {
                 buttonWidth: 90
 
                 buttonText: isPaused ? "Resume" : "Pause"
-                buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.png" : "qrc:/qml/assets/icons/pause.png"
+                buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.svg" : "qrc:/qml/assets/icons/pause.svg"
 
                 onClicked: root.buttonClicked()
             }
@@ -132,7 +132,7 @@ Rectangle {
                 buttonWidth: 90
 
                 buttonText: "Cancel"
-                buttonIcon: "qrc:/qml/assets/icons/close.png"
+                buttonIcon: "qrc:/qml/assets/icons/close.svg"
 
                 onClicked: root.cancelClicked()
             }

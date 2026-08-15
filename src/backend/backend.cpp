@@ -198,6 +198,29 @@ QRect Backend::availableScreenGeometry() const
     return screen ? screen->availableGeometry() : QRect(0, 0, 1200, 700);
 }
 
+QString Backend::coloredSvg(const QString &path, const QString &color)
+{
+    QString resourcePath = path;
+    if (resourcePath.startsWith("qrc:"))
+        resourcePath = resourcePath.mid(3); // "qrc:/..." -> ":/..."
+
+    QFile file(resourcePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qWarning() << "Failed to load SVG:" << resourcePath;
+        return QString();
+    }
+
+    QString svgText = QString::fromUtf8(file.readAll());
+    file.close();
+
+    static QRegularExpression fillRe(R"(fill="#[0-9a-fA-F]{3,8}")");
+    svgText.replace(fillRe, "fill=\"" + color + "\"");
+
+    QByteArray base64 = svgText.toUtf8().toBase64();
+    return "data:image/svg+xml;base64," + QString::fromLatin1(base64);
+}
+
 int Backend::pausedCount() const
 {
     int count = 0;

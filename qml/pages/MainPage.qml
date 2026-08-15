@@ -146,7 +146,7 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "All Downloads"
-                        tabIcon: "qrc:/qml/assets/icons/download.png"
+                        tabIcon: "qrc:/qml/assets/icons/download.svg"
 
                         isSelected: true
                     }
@@ -155,7 +155,7 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Compressed"
-                        tabIcon: "qrc:/qml/assets/icons/compressed.png"
+                        tabIcon: "qrc:/qml/assets/icons/compressed.svg"
 
                         isSelected: false
                     }
@@ -164,7 +164,7 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Documents"
-                        tabIcon: "qrc:/qml/assets/icons/document.png"
+                        tabIcon: "qrc:/qml/assets/icons/document.svg"
 
                         isSelected: false
                     }
@@ -173,7 +173,7 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Music"
-                        tabIcon: "qrc:/qml/assets/icons/music.png"
+                        tabIcon: "qrc:/qml/assets/icons/music.svg"
 
                         isSelected: false
                     }
@@ -182,7 +182,7 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Videos"
-                        tabIcon: "qrc:/qml/assets/icons/video.png"
+                        tabIcon: "qrc:/qml/assets/icons/video.svg"
 
                         isSelected: false
                     }
@@ -191,7 +191,7 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Programs"
-                        tabIcon: "qrc:/qml/assets/icons/program.png"
+                        tabIcon: "qrc:/qml/assets/icons/program.svg"
 
                         isSelected: false
                     }
@@ -227,7 +227,7 @@ Item {
                     borderColor: borderColor
 
                     buttonText: "Settings"
-                    buttonIcon: "qrc:/qml/assets/icons/setting.png"
+                    buttonIcon: "qrc:/qml/assets/icons/setting.svg"
                 }
             }
         }
@@ -304,7 +304,7 @@ Item {
                         borderColor: borderColor
 
                         buttonText: "New Download"
-                        buttonIcon: "qrc:/qml/assets/icons/download.png"
+                        buttonIcon: "qrc:/qml/assets/icons/download.svg"
 
                         onClicked: root.newDownloadRequested()
                     }
@@ -333,7 +333,7 @@ Item {
                         borderColor: borderColor
 
                         buttonText: "Pause All"
-                        buttonIcon: "qrc:/qml/assets/icons/pause.png"
+                        buttonIcon: "qrc:/qml/assets/icons/pause.svg"
 
                         onClicked: backend.pauseAll()
                     }
@@ -353,7 +353,7 @@ Item {
                         borderColor: borderColor
 
                         buttonText: "Resume All"
-                        buttonIcon: "qrc:/qml/assets/icons/play.png"
+                        buttonIcon: "qrc:/qml/assets/icons/play.svg"
 
                         onClicked: backend.resumeAll()
                     }

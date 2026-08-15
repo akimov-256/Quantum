@@ -10,6 +10,8 @@
 #include <QRect>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QFile>
+#include <QRegularExpression>
 
 class Backend : public QObject
 {
@@ -33,6 +35,7 @@ public:
     Q_INVOKABLE void pauseAll();
     Q_INVOKABLE void resumeAll();
     Q_INVOKABLE QRect availableScreenGeometry() const;
+    Q_INVOKABLE QString coloredSvg(const QString &path, const QString &color);
 
     QString fileName() const;
     qint64 fileSize() const;

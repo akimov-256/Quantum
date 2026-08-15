@@ -66,7 +66,7 @@ Item {
             // TabIcon
             Image {
                 id: icon
-                source: tabIcon
+                source: backend.coloredSvg(tabIcon, "white")
 
                 visible: false
             }
