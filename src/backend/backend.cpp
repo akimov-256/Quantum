@@ -152,7 +152,6 @@ void Backend::cancelClicked(const int row)
     if (currentRow == -1)
         return;
 
-    m_downloads.remove(currentRow);
     m_activeDownloaders.remove(id);
     m_downloadModel.removeRow(currentRow);
     emit countChanged();
