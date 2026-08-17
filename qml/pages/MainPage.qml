@@ -393,6 +393,7 @@ Item {
                             fileSize: Helper.formatFileSize(model.downloaded) + "/" + Helper.formatFileSize(model.fileSize)
                             status: model.status
 
+                            isCompleted: status === "Completed"
                             isPaused: status === "Paused"
 
                             onButtonClicked: {

@@ -11,6 +11,7 @@ Rectangle {
     property string fileSize
     property string status
     property string rta
+    property bool isCompleted: false
     property bool isPaused: false
 
     signal buttonClicked()
@@ -117,10 +118,10 @@ Rectangle {
                 id: pauseButton
 
                 buttonHeight: 32
-                buttonWidth: 90
+                buttonWidth: 100
 
-                buttonText: isPaused ? "Resume" : "Pause"
-                buttonIcon: isPaused ? "qrc:/qml/assets/icons/play.svg" : "qrc:/qml/assets/icons/pause.svg"
+                buttonText: isCompleted ? "Open" : isPaused ? "Resume" : "Pause"
+                buttonIcon: isCompleted ? "qrc:/qml/assets/icons/play.svg" : isPaused ? "qrc:/qml/assets/icons/play.svg" : "qrc:/qml/assets/icons/pause.svg"
 
                 onClicked: root.buttonClicked()
             }
@@ -129,9 +130,9 @@ Rectangle {
                 id: cancelButton
 
                 buttonHeight: 32
-                buttonWidth: 90
+                buttonWidth: 100
 
-                buttonText: "Cancel"
+                buttonText: isCompleted ? "Remove" : "Cancel"
                 buttonIcon: "qrc:/qml/assets/icons/close.svg"
 
                 onClicked: root.cancelClicked()
