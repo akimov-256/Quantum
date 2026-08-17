@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import "../components"
 import "../js/Helper.js" as Helper
 
@@ -12,6 +13,46 @@ Item {
     signal newDownloadRequested()
 
     anchors.fill: parent
+
+    MessageDialog {
+        id: cancelWarning
+
+        property int targetIndex: -1
+
+        title: "Cancel download"
+        text: "This download will be canceled.\nAre you sure?"
+
+        buttons: MessageDialog.No | MessageDialog.Yes
+
+        onAccepted: {
+            backend.cancelClicked(targetIndex)
+            targetIndex = -1
+        }
+
+        onRejected: {
+            targetIndex = -1
+        }
+    }
+
+    MessageDialog {
+        id: removeWarning
+
+        property int targetIndex: -1
+
+        title: "Remove download"
+        text: "This download will be removed.\nAre you sure?"
+
+        buttons: MessageDialog.Yes | MessageDialog.No
+
+        onAccepted: {
+            backend.removeRequested(targetIndex)
+            targetIndex = -1
+        }
+
+        onRejected: {
+            targetIndex = -1
+        }
+    }
 
     // The main layout
     RowLayout {
@@ -404,10 +445,15 @@ Item {
                             }
 
                             onCancelClicked: {
-                                if (isCompleted)
-                                    backend.removeRequested(index)
+                                if (isCompleted) {
+                                    removeWarning.targetIndex = index
+                                    removeWarning.open()
+                                }
                                 else
-                                    backend.cancelClicked(index)
+                                {
+                                    cancelWarning.targetIndex = index
+                                    cancelWarning.open()
+                                }
                             }
                         }
                     }

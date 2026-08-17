@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QRegularExpression>
 #include <QDesktopServices>
+#include <QMessageBox>
 
 class Backend : public QObject
 {
