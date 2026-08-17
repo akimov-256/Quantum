@@ -162,6 +162,11 @@ void Backend::openRequested(const int row)
     QDesktopServices::openUrl(QUrl::fromLocalFile(m_downloads[row].savePath));
 }
 
+void Backend::removeRequested(const int row)
+{
+    m_downloadModel.removeRow(row);
+}
+
 void Backend::pauseAll() {
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {

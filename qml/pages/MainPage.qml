@@ -405,7 +405,7 @@ Item {
 
                             onCancelClicked: {
                                 if (isCompleted)
-                                    backend.deleteRequested(index)
+                                    backend.removeRequested(index)
                                 else
                                     backend.cancelClicked(index)
                             }
