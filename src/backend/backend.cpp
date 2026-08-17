@@ -157,6 +157,11 @@ void Backend::cancelClicked(const int row)
     emit countChanged();
 }
 
+void Backend::openRequested(const int row)
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_downloads[row].savePath));
+}
+
 void Backend::pauseAll() {
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {

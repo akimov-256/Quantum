@@ -397,11 +397,17 @@ Item {
                             isPaused: status === "Paused"
 
                             onButtonClicked: {
-                                backend.buttonClicked(index)
+                                if (isCompleted)
+                                    backend.openRequested(index)
+                                else
+                                    backend.buttonClicked(index)
                             }
 
                             onCancelClicked: {
-                                backend.cancelClicked(index)
+                                if (isCompleted)
+                                    backend.deleteRequested(index)
+                                else
+                                    backend.cancelClicked(index)
                             }
                         }
                     }
