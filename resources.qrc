@@ -31,5 +31,6 @@
         <file>qml/assets/icons/video.svg</file>
         <file>qml/assets/icons/close.png</file>
         <file>qml/assets/icons/compressed.svg</file>
+        <file>qml/pages/DownloadsPage.qml</file>
     </qresource>
 </RCC>
