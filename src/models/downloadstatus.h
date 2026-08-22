@@ -5,6 +5,7 @@
 #include <QMetaType>
 #include <QList>
 #include <QFile>
+#include "downloadcategories.h"
 
 class Downloader;
 
@@ -38,6 +39,7 @@ struct downloadInformations
     QVector<qint64> chunkProgress;
     QString SHA256;
     QList<Part> fileParts;
+    DownloadCategory category;
 };
 
 Q_DECLARE_METATYPE(downloadInformations)

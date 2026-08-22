@@ -4,6 +4,7 @@
 #include "src/models/downloadstatus.h"
 #include "src/backend/downloadmodel.h"
 #include "src/core/downloader.h"
+#include "src/models/downloadcategories.h"
 #include <QObject>
 #include <QStandardPaths>
 #include <QNetworkAccessManager>
@@ -40,6 +41,9 @@ public:
     Q_INVOKABLE void resumeAll();
     Q_INVOKABLE QRect availableScreenGeometry() const;
     Q_INVOKABLE QString coloredSvg(const QString &path, const QString &color);
+    Q_INVOKABLE void setCategory(int category);
+
+    DownloadCategory detectCategory(const QString &filename);
 
     QString fileName() const;
     qint64 fileSize() const;
@@ -65,6 +69,7 @@ private:
     bool m_isHeadReqActive = false;
     QList<downloadInformations> m_downloads;
     DownloadModel m_downloadModel;
+    int m_currentCategory;
 
 };
 

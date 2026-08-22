@@ -16,6 +16,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         info.savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     else
         info.savePath = filePath;
+    info.category = detectCategory(fileName);
     info.savePath += "/" + fileName;
     info.url = fileUrl;
     info.SHA256 = SHA256;
@@ -106,6 +107,43 @@ void Backend::GetHeadInfo(const QString &fileUrl)
 
         reply->deleteLater();
     });
+}
+
+DownloadCategory Backend::detectCategory(const QString &fileName) {
+    QString extension = QFileInfo(fileName)
+    .suffix()
+        .toLower();
+
+    if (extension == "zip" ||
+        extension == "rar" ||
+        extension == "7z") {
+        return DownloadCategory::Compressed;
+    }
+
+    if (extension == "pdf" ||
+        extension == "docx" ||
+        extension == "txt") {
+        return DownloadCategory::Documents;
+    }
+
+    if (extension == "mp3" ||
+        extension == "wav" ||
+        extension == "flac") {
+        return DownloadCategory::Music;
+    }
+
+    if (extension == "mp4" ||
+        extension == "mkv" ||
+        extension == "avi") {
+        return DownloadCategory::Videos;
+    }
+
+    if (extension == "exe" ||
+        extension == "msi") {
+        return DownloadCategory::Programs;
+    }
+
+    return DownloadCategory::Other;
 }
 
 void Backend::buttonClicked(const int row) {
@@ -228,6 +266,13 @@ QString Backend::coloredSvg(const QString &path, const QString &color)
 
     QByteArray base64 = svgText.toUtf8().toBase64();
     return "data:image/svg+xml;base64," + QString::fromLatin1(base64);
+}
+
+void Backend::setCategory(int category)
+{
+    m_currentCategory = category;
+
+    m_downloadModel.setCategory(category);
 }
 
 int Backend::pausedCount() const

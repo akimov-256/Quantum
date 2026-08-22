@@ -27,11 +27,14 @@ public:
     void addDownload(int row);
     void updateDownload(int row);
     void removeRow(int row);
+    void setCategory(int category);
 
     QHash<int, QByteArray> roleNames() const override;
 
 private:
     QList<downloadInformations> *m_downloads = nullptr;
+    QList<downloadInformations> m_filteredDownloads;
+    int m_currentCategory;
 
 signals:
 };

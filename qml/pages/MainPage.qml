@@ -7,6 +7,7 @@ Item {
 
     property color fillColor: "#100019"
     property color borderColor: "#35003D"
+    property int currentCategory: 0
 
     signal newDownloadRequested()
 
@@ -147,7 +148,11 @@ Item {
                         tabText: "All Downloads"
                         tabIcon: "qrc:/qml/assets/icons/download.svg"
 
-                        isSelected: true
+                        isSelected: root.currentCategory == 0
+                        onClicked: {
+                            root.currentCategory = 0
+                            backend.setCategory(0)
+                        }
                     }
 
                     CategoryTab {
@@ -156,7 +161,11 @@ Item {
                         tabText: "Compressed"
                         tabIcon: "qrc:/qml/assets/icons/compressed.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 1
+                        onClicked: {
+                            root.currentCategory = 1
+                            backend.setCategory(1)
+                        }
                     }
 
                     CategoryTab {
@@ -165,7 +174,11 @@ Item {
                         tabText: "Documents"
                         tabIcon: "qrc:/qml/assets/icons/document.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 2
+                        onClicked: {
+                            root.currentCategory = 2
+                            backend.setCategory(2)
+                        }
                     }
 
                     CategoryTab {
@@ -174,7 +187,11 @@ Item {
                         tabText: "Music"
                         tabIcon: "qrc:/qml/assets/icons/music.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 3
+                        onClicked: {
+                            root.currentCategory = 3
+                            backend.setCategory(3)
+                        }
                     }
 
                     CategoryTab {
@@ -183,7 +200,11 @@ Item {
                         tabText: "Videos"
                         tabIcon: "qrc:/qml/assets/icons/video.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 4
+                        onClicked: {
+                            root.currentCategory = 4
+                            backend.setCategory(4)
+                        }
                     }
 
                     CategoryTab {
@@ -192,7 +213,11 @@ Item {
                         tabText: "Programs"
                         tabIcon: "qrc:/qml/assets/icons/program.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 5
+                        onClicked: {
+                            root.currentCategory = 5
+                            backend.setCategory(5)
+                        }
                     }
 
                     Item {

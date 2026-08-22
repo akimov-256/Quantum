@@ -6,21 +6,18 @@ DownloadModel::DownloadModel(QObject *parent)
 
 int DownloadModel::rowCount(const QModelIndex &) const
 {
-    if (!m_downloads)
-        return 0;
-    return m_downloads->size();
+    return m_filteredDownloads.size();
 }
 
 QVariant DownloadModel::data(const QModelIndex &index, int role) const
 {
-    if (!m_downloads)
+    if (index.row() < 0 ||
+        index.row() >= m_filteredDownloads.size())
+    {
         return {};
-    if (!index.isValid())
-        return {};
-    if (index.row() < 0 || index.row() >= m_downloads->size())
-        return {};
+    }
 
-    const auto &download = m_downloads->at(index.row());
+    const auto &download = m_filteredDownloads.at(index.row());
 
     switch (role)
     {
@@ -69,6 +66,25 @@ void DownloadModel::removeRow(int row)
     beginRemoveRows(QModelIndex(), row, row);
     m_downloads->remove(row);
     endRemoveRows();
+}
+
+void DownloadModel::setCategory(int category)
+{
+    beginResetModel();
+
+    m_currentCategory = category;
+
+    m_filteredDownloads.clear();
+
+    for (const auto &download : *m_downloads) {
+        if (category == 0 ||
+            static_cast<int>(download.category) + 1 == category)
+        {
+            m_filteredDownloads.push_back(download);
+        }
+    }
+
+    endResetModel();
 }
 
 QHash<int, QByteArray> DownloadModel::roleNames() const

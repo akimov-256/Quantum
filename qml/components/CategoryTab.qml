@@ -18,7 +18,7 @@ Item {
     property color textSelectedColor: "#FFFFFF"
     property color textNormalColor: "#656565"
     property bool isSelected: false
-    signal pressed()
+    signal clicked()
 
     height: tabHeight
     width: tabWidth
@@ -41,7 +41,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onPressed: root.pressed()
+            onClicked: root.clicked()
         }
 
         // Right border
