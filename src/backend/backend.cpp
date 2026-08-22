@@ -146,11 +146,10 @@ DownloadCategory Backend::detectCategory(const QString &fileName) {
     return DownloadCategory::Other;
 }
 
-void Backend::buttonClicked(const int row) {
-    if (row < 0 || row >= m_activeDownloaders.size())
+void Backend::buttonClicked(const QString id) {
+    if (rowForId(id) < 0 || rowForId(id) >= m_activeDownloaders.size())
         return;
 
-    QString id = m_downloads[row].ID;
     Downloader *downloader = m_activeDownloaders.value(id, nullptr);
     if (!downloader)
         return;
@@ -174,12 +173,11 @@ void Backend::buttonClicked(const int row) {
     m_downloadModel.updateDownload(m_downloads[currentRow].ID);
 }
 
-void Backend::cancelClicked(const int row)
+void Backend::cancelClicked(const QString id)
 {
-    if (row < 0 || row >= m_activeDownloaders.size())
+    if (rowForId(id) < 0 || rowForId(id) >= m_activeDownloaders.size())
         return;
 
-    QString id = m_downloads[row].ID;
     Downloader *downloader = m_activeDownloaders.value(id, nullptr);
     if (!downloader)
         return;
@@ -195,14 +193,14 @@ void Backend::cancelClicked(const int row)
     emit countChanged();
 }
 
-void Backend::openRequested(const int row)
+void Backend::openRequested(const QString id)
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(m_downloads[row].savePath));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_downloads[rowForId(id)].savePath));
 }
 
-void Backend::removeRequested(const int row)
+void Backend::removeRequested(const QString id)
 {
-    m_downloadModel.removeRow(row);
+    m_downloadModel.removeRow(rowForId(id));
 }
 
 void Backend::pauseAll() {

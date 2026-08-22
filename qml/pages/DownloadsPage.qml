@@ -12,7 +12,7 @@ Item {
     MessageDialog {
         id: cancelWarning
 
-        property int targetIndex: -1
+        property string targetID: ""
 
         title: "Cancel download"
         text: "This download will be canceled.\nAre you sure?"
@@ -20,19 +20,19 @@ Item {
         buttons: MessageDialog.No | MessageDialog.Yes
 
         onAccepted: {
-            backend.cancelClicked(targetIndex)
-            targetIndex = -1
+            backend.cancelClicked(targetID)
+            targetID = ""
         }
 
         onRejected: {
-            targetIndex = -1
+            targetID = ""
         }
     }
 
     MessageDialog {
         id: removeWarning
 
-        property int targetIndex: -1
+        property string targetID: ""
 
         title: "Remove download"
         text: "This download will be removed.\nAre you sure?"
@@ -40,12 +40,12 @@ Item {
         buttons: MessageDialog.Yes | MessageDialog.No
 
         onAccepted: {
-            backend.removeRequested(targetIndex)
-            targetIndex = -1
+            backend.removeRequested(targetID)
+            targetID = ""
         }
 
         onRejected: {
-            targetIndex = -1
+            targetID = ""
         }
     }
 
@@ -221,12 +221,12 @@ Item {
 
                         onCancelClicked: {
                             if (isCompleted) {
-                                removeWarning.targetIndex = index
+                                removeWarning.targetID = downloadID
                                 removeWarning.open()
                             }
                             else
                             {
-                                cancelWarning.targetIndex = index
+                                cancelWarning.targetID = downloadID
                                 cancelWarning.open()
                             }
                         }
