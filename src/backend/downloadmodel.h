@@ -10,7 +10,8 @@ class DownloadModel : public QAbstractListModel
     Q_OBJECT
 public:
     enum Roles {
-        FileNameRole = Qt::UserRole + 1,
+        IDRole = Qt::UserRole + 1,
+        FileNameRole,
         ProgressRole,
         SpeedRole,
         FileSizeRole,
@@ -25,13 +26,16 @@ public:
 
     void setDownloads(QList<downloadInformations> *downloads);
     void addDownload(int row);
-    void updateDownload(int row);
+    void updateDownload(QString downloadID);
     void removeRow(int row);
+    void setCategory(int category);
 
     QHash<int, QByteArray> roleNames() const override;
 
 private:
     QList<downloadInformations> *m_downloads = nullptr;
+    QList<QString> m_filteredDownloadIDs;
+    int m_currentCategory = 0;
 
 signals:
 };

@@ -16,6 +16,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         info.savePath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     else
         info.savePath = filePath;
+    info.category = detectCategory(fileName);
     info.savePath += "/" + fileName;
     info.url = fileUrl;
     info.SHA256 = SHA256;
@@ -43,7 +44,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         m_downloads[row].currentSize = bytesReceived;
         if (bytesTotal > 0)
             m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
-        m_downloadModel.updateDownload(row);
+        m_downloadModel.updateDownload(m_downloads[row].ID);
     });
 
     connect(downloader, &Downloader::speedChanged, this, [this, id = info.ID](qint64 bps) {
@@ -51,7 +52,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         if (row == -1) return;
 
         m_downloads[row].speed = bps;
-        m_downloadModel.updateDownload(row);
+        m_downloadModel.updateDownload(m_downloads[row].ID);
     });
 
     connect(downloader, &Downloader::downloadFinished, this, [this, id = info.ID, downloader](bool success, const QString &message) {
@@ -60,7 +61,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
         m_downloads[row].status = success ? "Completed" : "Failed";
         emit countChanged();
-        m_downloadModel.updateDownload(row);
+        m_downloadModel.updateDownload(m_downloads[row].ID);
         qDebug() << message;
 
         // Clean up
@@ -108,11 +109,47 @@ void Backend::GetHeadInfo(const QString &fileUrl)
     });
 }
 
-void Backend::buttonClicked(const int row) {
-    if (row < 0 || row >= m_activeDownloaders.size())
+DownloadCategory Backend::detectCategory(const QString &fileName) {
+    QString extension = QFileInfo(fileName)
+    .suffix()
+        .toLower();
+
+    if (extension == "zip" ||
+        extension == "rar" ||
+        extension == "7z") {
+        return DownloadCategory::Compressed;
+    }
+
+    if (extension == "pdf" ||
+        extension == "docx" ||
+        extension == "txt") {
+        return DownloadCategory::Documents;
+    }
+
+    if (extension == "mp3" ||
+        extension == "wav" ||
+        extension == "flac") {
+        return DownloadCategory::Music;
+    }
+
+    if (extension == "mp4" ||
+        extension == "mkv" ||
+        extension == "avi") {
+        return DownloadCategory::Videos;
+    }
+
+    if (extension == "exe" ||
+        extension == "msi") {
+        return DownloadCategory::Programs;
+    }
+
+    return DownloadCategory::Other;
+}
+
+void Backend::buttonClicked(const QString id) {
+    if (rowForId(id) < 0 || rowForId(id) >= m_activeDownloaders.size())
         return;
 
-    QString id = m_downloads[row].ID;
     Downloader *downloader = m_activeDownloaders.value(id, nullptr);
     if (!downloader)
         return;
@@ -133,15 +170,14 @@ void Backend::buttonClicked(const int row) {
     }
 
     emit countChanged();
-    m_downloadModel.updateDownload(currentRow);
+    m_downloadModel.updateDownload(m_downloads[currentRow].ID);
 }
 
-void Backend::cancelClicked(const int row)
+void Backend::cancelClicked(const QString id)
 {
-    if (row < 0 || row >= m_activeDownloaders.size())
+    if (rowForId(id) < 0 || rowForId(id) >= m_activeDownloaders.size())
         return;
 
-    QString id = m_downloads[row].ID;
     Downloader *downloader = m_activeDownloaders.value(id, nullptr);
     if (!downloader)
         return;
@@ -157,6 +193,16 @@ void Backend::cancelClicked(const int row)
     emit countChanged();
 }
 
+void Backend::openRequested(const QString id)
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_downloads[rowForId(id)].savePath));
+}
+
+void Backend::removeRequested(const QString id)
+{
+    m_downloadModel.removeRow(rowForId(id));
+}
+
 void Backend::pauseAll() {
     for (int i = 0; i < m_activeDownloaders.size(); i++)
     {
@@ -170,7 +216,7 @@ void Backend::pauseAll() {
         }
 
         emit countChanged();
-        m_downloadModel.updateDownload(i);
+        m_downloadModel.updateDownload(m_downloads[i].ID);
     }
 }
 
@@ -187,7 +233,7 @@ void Backend::resumeAll() {
         }
 
         emit countChanged();
-        m_downloadModel.updateDownload(i);
+        m_downloadModel.updateDownload(m_downloads[i].ID);
     }
 }
 
@@ -195,6 +241,36 @@ QRect Backend::availableScreenGeometry() const
 {
     QScreen *screen = QGuiApplication::primaryScreen();
     return screen ? screen->availableGeometry() : QRect(0, 0, 1200, 700);
+}
+
+QString Backend::coloredSvg(const QString &path, const QString &color)
+{
+    QString resourcePath = path;
+    if (resourcePath.startsWith("qrc:"))
+        resourcePath = resourcePath.mid(3); // "qrc:/..." -> ":/..."
+
+    QFile file(resourcePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qWarning() << "Failed to load SVG:" << resourcePath;
+        return QString();
+    }
+
+    QString svgText = QString::fromUtf8(file.readAll());
+    file.close();
+
+    static QRegularExpression fillRe(R"(fill="#[0-9a-fA-F]{3,8}")");
+    svgText.replace(fillRe, "fill=\"" + color + "\"");
+
+    QByteArray base64 = svgText.toUtf8().toBase64();
+    return "data:image/svg+xml;base64," + QString::fromLatin1(base64);
+}
+
+void Backend::setCategory(int category)
+{
+    m_currentCategory = category;
+
+    m_downloadModel.setCategory(category);
 }
 
 int Backend::pausedCount() const

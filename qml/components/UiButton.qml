@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts
+import QtQuick.Effects
 
 Item {
     id: root
@@ -71,12 +72,12 @@ Item {
 
             Image {
                 id: icon
-                source: buttonIcon
-
                 Layout.preferredHeight: 16.25
                 Layout.preferredWidth: 16.25
                 Layout.fillHeight: false
                 Layout.fillWidth: false
+
+                source: backend.coloredSvg(buttonIcon, "white")
             }
 
             FontLoader {

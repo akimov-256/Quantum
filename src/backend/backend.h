@@ -4,12 +4,17 @@
 #include "src/models/downloadstatus.h"
 #include "src/backend/downloadmodel.h"
 #include "src/core/downloader.h"
+#include "src/models/downloadcategories.h"
 #include <QObject>
 #include <QStandardPaths>
 #include <QNetworkAccessManager>
 #include <QRect>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QFile>
+#include <QRegularExpression>
+#include <QDesktopServices>
+#include <QMessageBox>
 
 class Backend : public QObject
 {
@@ -28,11 +33,17 @@ public:
 
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
-    Q_INVOKABLE void buttonClicked(const int row);
-    Q_INVOKABLE void cancelClicked(const int row);
+    Q_INVOKABLE void buttonClicked(const QString id);
+    Q_INVOKABLE void cancelClicked(const QString id);
+    Q_INVOKABLE void openRequested(const QString id);
+    Q_INVOKABLE void removeRequested(const QString id);
     Q_INVOKABLE void pauseAll();
     Q_INVOKABLE void resumeAll();
     Q_INVOKABLE QRect availableScreenGeometry() const;
+    Q_INVOKABLE QString coloredSvg(const QString &path, const QString &color);
+    Q_INVOKABLE void setCategory(int category);
+
+    DownloadCategory detectCategory(const QString &filename);
 
     QString fileName() const;
     qint64 fileSize() const;
@@ -58,6 +69,7 @@ private:
     bool m_isHeadReqActive = false;
     QList<downloadInformations> m_downloads;
     DownloadModel m_downloadModel;
+    int m_currentCategory;
 
 };
 

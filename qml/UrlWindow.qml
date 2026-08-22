@@ -206,7 +206,7 @@ Window {
                         buttonHeight: 32
                         buttonWidth: 130
                         buttonText: "Browse"
-                        buttonIcon: "qrc:/qml/assets/icons/folder.png"
+                        buttonIcon: "qrc:/qml/assets/icons/folder.svg"
 
                         Layout.alignment: Qt.AlignBottom
 
@@ -293,7 +293,7 @@ Window {
                         buttonHeight: 32
                         buttonWidth: 130
                         buttonText: "Cancel"
-                        buttonIcon: "qrc:/qml/assets/icons/close.png"
+                        buttonIcon: "qrc:/qml/assets/icons/close.svg"
 
                         Layout.alignment: Qt.AlignBottom
 
@@ -310,7 +310,7 @@ Window {
                         buttonHeight: 32
                         buttonWidth: 130
                         buttonText: "Start"
-                        buttonIcon: "qrc:/qml/assets/icons/download.png"
+                        buttonIcon: "qrc:/qml/assets/icons/download.svg"
 
                         buttonEnabled: backend.fileSize !== 0 ? true : false
 

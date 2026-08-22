@@ -1,13 +1,13 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import "../components"
-import "../js/Helper.js" as Helper
 
 Item {
     id: root
 
     property color fillColor: "#100019"
     property color borderColor: "#35003D"
+    property int currentCategory: 0
 
     signal newDownloadRequested()
 
@@ -146,54 +146,78 @@ Item {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "All Downloads"
-                        tabIcon: "qrc:/qml/assets/icons/download.png"
+                        tabIcon: "qrc:/qml/assets/icons/download.svg"
 
-                        isSelected: true
+                        isSelected: root.currentCategory == 0
+                        onClicked: {
+                            root.currentCategory = 0
+                            backend.setCategory(0)
+                        }
                     }
 
                     CategoryTab {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Compressed"
-                        tabIcon: "qrc:/qml/assets/icons/compressed.png"
+                        tabIcon: "qrc:/qml/assets/icons/compressed.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 1
+                        onClicked: {
+                            root.currentCategory = 1
+                            backend.setCategory(1)
+                        }
                     }
 
                     CategoryTab {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Documents"
-                        tabIcon: "qrc:/qml/assets/icons/document.png"
+                        tabIcon: "qrc:/qml/assets/icons/document.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 2
+                        onClicked: {
+                            root.currentCategory = 2
+                            backend.setCategory(2)
+                        }
                     }
 
                     CategoryTab {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Music"
-                        tabIcon: "qrc:/qml/assets/icons/music.png"
+                        tabIcon: "qrc:/qml/assets/icons/music.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 3
+                        onClicked: {
+                            root.currentCategory = 3
+                            backend.setCategory(3)
+                        }
                     }
 
                     CategoryTab {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Videos"
-                        tabIcon: "qrc:/qml/assets/icons/video.png"
+                        tabIcon: "qrc:/qml/assets/icons/video.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 4
+                        onClicked: {
+                            root.currentCategory = 4
+                            backend.setCategory(4)
+                        }
                     }
 
                     CategoryTab {
                         Layout.alignment: Qt.AlignRight
 
                         tabText: "Programs"
-                        tabIcon: "qrc:/qml/assets/icons/program.png"
+                        tabIcon: "qrc:/qml/assets/icons/program.svg"
 
-                        isSelected: false
+                        isSelected: root.currentCategory == 5
+                        onClicked: {
+                            root.currentCategory = 5
+                            backend.setCategory(5)
+                        }
                     }
 
                     Item {
@@ -227,188 +251,18 @@ Item {
                     borderColor: borderColor
 
                     buttonText: "Settings"
-                    buttonIcon: "qrc:/qml/assets/icons/setting.png"
+                    buttonIcon: "qrc:/qml/assets/icons/setting.svg"
                 }
             }
         }
 
-        // The downloads layout
-        ColumnLayout {
-            id: downloadsLayout
-
-            spacing: 0
-
+        DownloadsPage {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            Rectangle {
-                Layout.preferredHeight: 50
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                color: fillColor
-
-                // Top border
-                Rectangle {
-                    height: 2
-                    width: parent.width
-
-                    color: borderColor
-
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                }
-
-                // Bottom border
-                Rectangle {
-                    height: 2
-                    width: parent.width
-
-                    color: borderColor
-
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                }
-
-                // Right border
-                Rectangle {
-                    height: parent.height
-                    width: 2
-
-                    color: borderColor
-
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                }
-
-                RowLayout {
-                    id: downloadsToolbarBox
-
-                    anchors.fill: parent
-                    anchors.leftMargin: 10
-                    spacing: 10
-
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-
-                    // New download
-                    UiButton {
-                        id: newDownloadButton
-
-                        Layout.alignment: Qt.AlignVCenter
-
-                        buttonHeight: 32
-                        buttonWidth: 170
-
-                        fillColor: fillColor
-                        borderColor: borderColor
-
-                        buttonText: "New Download"
-                        buttonIcon: "qrc:/qml/assets/icons/download.png"
-
-                        onClicked: root.newDownloadRequested()
-                    }
-
-                    // Separator border
-                    Rectangle {
-                        Layout.fillHeight: true
-                        Layout.preferredWidth: 2
-                        Layout.fillWidth: false
-
-                        color: borderColor
-                    }
-
-                    // Pause all
-                    UiButton {
-                        id: pauseAllButton
-
-                        Layout.alignment: Qt.AlignVCenter
-
-                        buttonEnabled: backend.activeCount > 0
-
-                        buttonHeight: 32
-                        buttonWidth: 120
-
-                        fillColor: fillColor
-                        borderColor: borderColor
-
-                        buttonText: "Pause All"
-                        buttonIcon: "qrc:/qml/assets/icons/pause.png"
-
-                        onClicked: backend.pauseAll()
-                    }
-
-                    // Resume all
-                    UiButton {
-                        id: resumeAllButton
-
-                        Layout.alignment: Qt.AlignVCenter
-
-                        buttonEnabled: backend.pausedCount > 0
-
-                        buttonHeight: 32
-                        buttonWidth: 120
-
-                        fillColor: fillColor
-                        borderColor: borderColor
-
-                        buttonText: "Resume All"
-                        buttonIcon: "qrc:/qml/assets/icons/play.png"
-
-                        onClicked: backend.resumeAll()
-                    }
-
-                    Item {
-                        Layout.fillWidth: true
-                    }
-                }
-            }
-
-            // Download cards box
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                color: "transparent"
-
-                ColumnLayout {
-                    anchors.fill: parent
-
-                    ListView {
-                        Layout.margins: 15
-
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        clip: true
-
-                        spacing: 15
-
-                        model: backend.downloadModel
-                        delegate: DownloadCard {
-                            width: ListView.view.width
-
-                            fileName: model.fileName
-                            downloadProgress: model.progress
-                            speed: Helper.formatSpeed(model.speed)
-                            rta: Helper.handleRTA(model.speed, model.downloaded, model.fileSize)
-                            fileSize: Helper.formatFileSize(model.downloaded) + "/" + Helper.formatFileSize(model.fileSize)
-                            status: model.status
-
-                            isPaused: status === "Paused"
-
-                            onButtonClicked: {
-                                backend.buttonClicked(index)
-                            }
-
-                            onCancelClicked: {
-                                backend.cancelClicked(index)
-                            }
-                        }
-                    }
-
-                    Item {
-                        Layout.fillHeight: true
-                    }
-                }
+            // Signals
+            onNewDownloadRequested: {
+                root.newDownloadRequested()
             }
         }
     }
