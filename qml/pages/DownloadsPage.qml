@@ -202,6 +202,7 @@ Item {
                         width: ListView.view.width
 
                         fileName: model.fileName
+                        downloadID: model.id
                         downloadProgress: model.progress
                         speed: Helper.formatSpeed(model.speed)
                         rta: Helper.handleRTA(model.speed, model.downloaded, model.fileSize)
@@ -213,9 +214,9 @@ Item {
 
                         onButtonClicked: {
                             if (isCompleted)
-                                backend.openRequested(index)
+                                backend.openRequested(downloadID)
                             else
-                                backend.buttonClicked(index)
+                                backend.buttonClicked(downloadID)
                         }
 
                         onCancelClicked: {

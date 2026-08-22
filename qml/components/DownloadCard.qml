@@ -5,6 +5,7 @@ Rectangle {
     id: root
 
     property string fileName
+    property string downloadID
     property int downloadProgress
     property string speed
     property string downloaded
