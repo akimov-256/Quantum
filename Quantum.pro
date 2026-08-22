@@ -29,6 +29,7 @@ HEADERS += \
     src/backend/downloadmodel.h \
     src/core/appglobals.h \
     src/core/downloader.h \
+    src/models/downloadcategories.h \
     src/ui/downloadinfo.h \
     src/models/downloadstatus.h \
     src/ui/downloadwindow.h \

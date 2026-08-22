@@ -335,6 +335,7 @@ void Downloader::onDownloadFinished()
             file.write(senderReply->readAll());
 
         file.close();
+        info.status = "Completed";
         emit downloadFinished(true, "Download completed successfully.");
     }
 

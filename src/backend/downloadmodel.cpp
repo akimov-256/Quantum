@@ -6,24 +6,39 @@ DownloadModel::DownloadModel(QObject *parent)
 
 int DownloadModel::rowCount(const QModelIndex &) const
 {
-    if (!m_downloads)
-        return 0;
-    return m_downloads->size();
+    return m_filteredDownloadIDs.size();
 }
 
 QVariant DownloadModel::data(const QModelIndex &index, int role) const
 {
-    if (!m_downloads)
-        return {};
-    if (!index.isValid())
-        return {};
-    if (index.row() < 0 || index.row() >= m_downloads->size())
+    if (!m_downloads || !index.isValid())
         return {};
 
-    const auto &download = m_downloads->at(index.row());
+    if (index.row() < 0 ||
+        index.row() >= m_filteredDownloadIDs.size())
+    {
+        return {};
+    }
+
+    QString id = m_filteredDownloadIDs.at(index.row());
+
+    const auto it = std::find_if(
+        m_downloads->begin(),
+        m_downloads->end(),
+        [id](const downloadInformations &download) {
+            return download.ID == id;
+        }
+        );
+
+    if (it == m_downloads->end())
+        return {};
+
+    const auto &download = *it;
 
     switch (role)
     {
+    case IDRole:
+        return download.ID;
     case FileNameRole:
         return download.fileName;
     case ProgressRole:
@@ -52,13 +67,39 @@ void DownloadModel::setDownloads(QList<downloadInformations> *downloads)
 
 void DownloadModel::addDownload(int row)
 {
-    beginInsertRows(QModelIndex(), row, row);
+    if (!m_downloads ||
+        row < 0 ||
+        row >= m_downloads->size())
+        return;
+
+    const auto &download = m_downloads->at(row);
+
+    if (m_currentCategory != 0 &&
+        static_cast<int>(download.category) + 1 != m_currentCategory)
+    {
+        return;
+    }
+
+    int filteredRow = m_filteredDownloadIDs.size();
+
+    beginInsertRows(QModelIndex(), filteredRow, filteredRow);
+
+    m_filteredDownloadIDs.append(download.ID);
+
     endInsertRows();
 }
 
-void DownloadModel::updateDownload(int row)
+void DownloadModel::updateDownload(QString downloadID)
 {
-    emit dataChanged(index(row), index(row));
+    int filteredRow = m_filteredDownloadIDs.indexOf(downloadID);
+
+    if (filteredRow == -1)
+        return;
+
+    emit dataChanged(
+        index(filteredRow),
+        index(filteredRow)
+    );
 }
 
 void DownloadModel::removeRow(int row)
@@ -67,12 +108,35 @@ void DownloadModel::removeRow(int row)
         return;
 
     beginRemoveRows(QModelIndex(), row, row);
+    m_downloads->remove(row);
     endRemoveRows();
+}
+
+void DownloadModel::setCategory(int category)
+{
+    if (!m_downloads)
+        return;
+
+    beginResetModel();
+
+    m_currentCategory = category;
+    m_filteredDownloadIDs.clear();
+
+    for (const auto &download : *m_downloads) {
+        if (category == 0 ||
+            download.category + 1 == category)
+        {
+            m_filteredDownloadIDs.append(download.ID);
+        }
+    }
+
+    endResetModel();
 }
 
 QHash<int, QByteArray> DownloadModel::roleNames() const
 {
     return {
+        { IDRole, "id" },
         { FileNameRole, "fileName" },
         { ProgressRole, "progress" },
         { SpeedRole, "speed" },
