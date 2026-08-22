@@ -1,21 +1,30 @@
 name: CI
-
 on:
   push:
     branches: [ main ]
+    tags:
+      - "v*.*.*"
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-
 env:
   QT_VERSION: "6.9.1"
-
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Derive version
+        id: ver
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=0.0.0-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install Qt (MinGW)
         uses: jurplel/install-qt-action@v4
@@ -25,11 +34,11 @@ jobs:
           target: desktop
           arch: win64_mingw
           cache: true
-
       # install-qt-action@v4 puts the matching MinGW toolchain on PATH
       # automatically for the win64_mingw arch. If mingw32-make isn't found,
       # check the action's README for the exact "tools_mingwXXXX" name that
       # ships with Qt 6.9.1 and add it under `tools:` above.
+
       - name: Locate .pro file
         id: proj
         shell: bash
@@ -42,21 +51,68 @@ jobs:
           echo "pro_file=$PRO_FILE" >> "$GITHUB_OUTPUT"
           echo "pro_dir=$(dirname "$PRO_FILE")" >> "$GITHUB_OUTPUT"
 
-      - name: qmake
+      - name: qmake (Release)
         shell: bash
         working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")"
+        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")" CONFIG+=release "DEFINES+=APP_VERSION=\\\"${{ steps.ver.outputs.version }}\\\""
 
       - name: Build
         shell: bash
         working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: mingw32-make -j$(nproc 2>/dev/null || echo 4)
+        run: mingw32-make -j$(nproc 2>/dev/null || echo 4) release
+
+      - name: Locate built exe
+        id: exe
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: |
+          EXE=$(find . -iname "*.exe" -path "*release*" | head -n 1)
+          if [ -z "$EXE" ]; then
+            EXE=$(find . -iname "*.exe" | head -n 1)
+          fi
+          echo "exe_path=$EXE" >> "$GITHUB_OUTPUT"
+          echo "exe_dir=$(dirname "$EXE")" >> "$GITHUB_OUTPUT"
+
+      - name: windeployqt (bundle Qt DLLs)
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: windeployqt --release "${{ steps.exe.outputs.exe_path }}"
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer with Inno Setup
+        shell: pwsh
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          $exeDir = (Resolve-Path "${{ steps.exe.outputs.exe_dir }}").Path
+          & $iscc `
+            "/DMyAppVersion=${{ steps.ver.outputs.version }}" `
+            "/DMyAppExeDir=$exeDir" `
+            "packaging\quantum.iss"
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: ${{ steps.proj.outputs.pro_dir }}/installer-output/*.exe
 
   build-linux:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Derive version
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=0.0.0-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -78,10 +134,64 @@ jobs:
           echo "pro_file=$PRO_FILE" >> "$GITHUB_OUTPUT"
           echo "pro_dir=$(dirname "$PRO_FILE")" >> "$GITHUB_OUTPUT"
 
-      - name: qmake
+      - name: qmake (Release)
         working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")"
+        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")" CONFIG+=release "DEFINES+=APP_VERSION=\\\"${{ steps.ver.outputs.version }}\\\""
 
       - name: Build
         working-directory: ${{ steps.proj.outputs.pro_dir }}
         run: make -j$(nproc)
+
+      - name: Locate built binary
+        id: bin
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        run: |
+          BIN=$(find . -maxdepth 2 -type f -executable ! -name "*.so*" | grep -v "\.o$" | head -n 1)
+          echo "bin_path=$BIN" >> "$GITHUB_OUTPUT"
+
+      - name: Install linuxdeploy tools
+        run: |
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
+
+      - name: Build AppImage
+        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        env:
+          QML_SOURCES_PATHS: ${{ github.workspace }}
+        run: |
+          mkdir -p AppDir/usr/bin
+          cp "${{ steps.bin.outputs.bin_path }}" AppDir/usr/bin/Quantum
+          ../linuxdeploy-x86_64.AppImage --appdir AppDir \
+            -e AppDir/usr/bin/Quantum \
+            --plugin qt \
+            --output appimage \
+            || true
+          mv Quantum*.AppImage "Quantum-${{ steps.ver.outputs.version }}-linux-x86_64.AppImage" || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-package
+          path: ${{ steps.proj.outputs.pro_dir }}/Quantum-*.AppImage
+
+  publish-release:
+    needs: [ build-windows, build-linux ]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Quantum ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            dist/windows-installer/*.exe
+            dist/linux-package/*.AppImage
