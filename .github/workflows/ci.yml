@@ -177,8 +177,35 @@ jobs:
           name: linux-package
           path: ${{ steps.proj.outputs.pro_dir }}/Quantum-*.AppImage
 
+  package-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read extension version from manifest.json
+        id: ext_ver
+        run: |
+          VERSION=$(jq -r '.version' web-integration/chrome/manifest.json)
+          if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
+            echo "Could not read version from manifest.json" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Zip Chrome extension
+        run: |
+          cd web-integration/chrome
+          zip -r "../../QDM-Integration-${{ steps.ext_ver.outputs.version }}-chrome.zip" .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-extension
+          path: Quantum-*-chrome-extension.zip
+
   publish-release:
-    needs: [ build-windows ] # Later add build-linux
+    needs: [ build-windows, package-extension ] # Later add build-linux
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
@@ -196,4 +223,5 @@ jobs:
           generate_release_notes: true
           files: |
             dist/windows-installer/*.exe
+            dist/chrome-extension/*.zip
 #           dist/linux-package/*.AppImage
