@@ -77,8 +77,8 @@ jobs:
       - name: windeployqt (bundle Qt DLLs)
         shell: bash
         working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: windeployqt --release "${{ steps.exe.outputs.exe_path }}"
-
+        run: windeployqt --release --qmldir . "${{ steps.exe.outputs.exe_path }}"
+         
       - name: Install Inno Setup
         shell: pwsh
         run: choco install innosetup --no-progress -y
