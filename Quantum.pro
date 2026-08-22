@@ -57,3 +57,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    web-integration/chrome/background.js \
+    web-integration/chrome/content.js \
+    web-integration/chrome/manifest.json \
+    web-integration/chrome/popup.html \
+    web-integration/chrome/popup.js

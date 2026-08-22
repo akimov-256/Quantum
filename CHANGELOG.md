@@ -8,12 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Added download duplicate with a numbered file name option when a file already exists.
+- Added extension manifest file.
 
 ### Changed
-- Used dynamic chunking instead of fixed chunking.
 
 ### Fixed
-- Fixed the cancel warning dialog showing on download finish window.
 
 ### Known Issues
