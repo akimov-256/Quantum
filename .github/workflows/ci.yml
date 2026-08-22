@@ -33,6 +33,7 @@ jobs:
           host: windows
           target: desktop
           arch: win64_mingw
+          tools: 'tools_mingw1310,qt.tools.win64_mingw1310'
           cache: true
       # install-qt-action@v4 puts the matching MinGW toolchain on PATH
       # automatically for the win64_mingw arch. If mingw32-make isn't found,
