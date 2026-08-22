@@ -23,8 +23,7 @@ SolidCompression=yes
 WizardStyle=modern
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ArchitecturesInstallIn64BitMode=x64compatible
-; If you have an .ico for the app, uncomment and point to it:
-; SetupIconFile=..\resources\icons\app.ico
+SetupIconFile=..\qml\assets\icons\icon.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
