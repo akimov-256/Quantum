@@ -67,13 +67,39 @@ void DownloadModel::setDownloads(QList<downloadInformations> *downloads)
 
 void DownloadModel::addDownload(int row)
 {
-    beginInsertRows(QModelIndex(), row, row);
+    if (!m_downloads ||
+        row < 0 ||
+        row >= m_downloads->size())
+        return;
+
+    const auto &download = m_downloads->at(row);
+
+    if (m_currentCategory != 0 &&
+        static_cast<int>(download.category) + 1 != m_currentCategory)
+    {
+        return;
+    }
+
+    int filteredRow = m_filteredDownloadIDs.size();
+
+    beginInsertRows(QModelIndex(), filteredRow, filteredRow);
+
+    m_filteredDownloadIDs.append(download.ID);
+
     endInsertRows();
 }
 
-void DownloadModel::updateDownload(int row)
+void DownloadModel::updateDownload(QString downloadID)
 {
-    emit dataChanged(index(row), index(row));
+    int filteredRow = m_filteredDownloadIDs.indexOf(downloadID);
+
+    if (filteredRow == -1)
+        return;
+
+    emit dataChanged(
+        index(filteredRow),
+        index(filteredRow)
+    );
 }
 
 void DownloadModel::removeRow(int row)

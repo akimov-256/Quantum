@@ -44,7 +44,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         m_downloads[row].currentSize = bytesReceived;
         if (bytesTotal > 0)
             m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
-        m_downloadModel.updateDownload(row);
+        m_downloadModel.updateDownload(m_downloads[row].ID);
     });
 
     connect(downloader, &Downloader::speedChanged, this, [this, id = info.ID](qint64 bps) {
@@ -52,7 +52,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         if (row == -1) return;
 
         m_downloads[row].speed = bps;
-        m_downloadModel.updateDownload(row);
+        m_downloadModel.updateDownload(m_downloads[row].ID);
     });
 
     connect(downloader, &Downloader::downloadFinished, this, [this, id = info.ID, downloader](bool success, const QString &message) {
@@ -61,7 +61,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
         m_downloads[row].status = success ? "Completed" : "Failed";
         emit countChanged();
-        m_downloadModel.updateDownload(row);
+        m_downloadModel.updateDownload(m_downloads[row].ID);
         qDebug() << message;
 
         // Clean up
@@ -171,7 +171,7 @@ void Backend::buttonClicked(const int row) {
     }
 
     emit countChanged();
-    m_downloadModel.updateDownload(currentRow);
+    m_downloadModel.updateDownload(m_downloads[currentRow].ID);
 }
 
 void Backend::cancelClicked(const int row)
@@ -218,7 +218,7 @@ void Backend::pauseAll() {
         }
 
         emit countChanged();
-        m_downloadModel.updateDownload(i);
+        m_downloadModel.updateDownload(m_downloads[i].ID);
     }
 }
 
@@ -235,7 +235,7 @@ void Backend::resumeAll() {
         }
 
         emit countChanged();
-        m_downloadModel.updateDownload(i);
+        m_downloadModel.updateDownload(m_downloads[i].ID);
     }
 }
 
