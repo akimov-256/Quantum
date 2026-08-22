@@ -102,6 +102,7 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-22.04
+    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -177,7 +178,7 @@ jobs:
           path: ${{ steps.proj.outputs.pro_dir }}/Quantum-*.AppImage
 
   publish-release:
-    needs: [ build-windows, build-linux ]
+    needs: [ build-windows ] # Later add build-linux
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
@@ -195,4 +196,4 @@ jobs:
           generate_release_notes: true
           files: |
             dist/windows-installer/*.exe
-            dist/linux-package/*.AppImage
+#           dist/linux-package/*.AppImage
