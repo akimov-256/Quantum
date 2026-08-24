@@ -202,7 +202,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chrome-extension
-          path: Quantum-*-chrome-extension.zip
+          path: QDM-Integration-*-chrome.zip
 
   publish-release:
     needs: [ build-windows, package-extension ] # Later add build-linux
