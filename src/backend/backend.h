@@ -15,6 +15,8 @@
 #include <QRegularExpression>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QTcpServer>
+#include <QTcpSocket>
 
 class Backend : public QObject
 {
@@ -31,6 +33,7 @@ class Backend : public QObject
 public:
     explicit Backend(QObject *parent = nullptr);
 
+    void StartWebServer();
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
     Q_INVOKABLE void buttonClicked(const QString id);
@@ -56,12 +59,14 @@ public:
     int rowForId(const QString &id) const;
 
 signals:
+    void urlRecieved(const QString &url);
     void fileNameChanged();
     void fileSizeChanged();
     void isHeadReqActiveChanged();
     void countChanged();
 
 private:
+    QTcpServer *m_webServer;
     QNetworkAccessManager *manager;
     QHash<QString, Downloader*> m_activeDownloaders;
     QString m_fileName;

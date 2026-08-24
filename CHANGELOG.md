@@ -9,9 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added extension manifest file.
-
-### Changed
-
-### Fixed
-
-### Known Issues
+- Added extension link to the app using local HTTP connection.
