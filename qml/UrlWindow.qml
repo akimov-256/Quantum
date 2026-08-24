@@ -9,6 +9,8 @@ import "js/Helper.js" as Helper
 Window {
     id: root
 
+    property alias downloadUrl: urlBox.text
+
     opacity: 0
 
     visible: false
@@ -23,7 +25,7 @@ Window {
     flags: Qt.Window | Qt.FramelessWindowHint
 
     function resetForm() {
-        urlBox.text = ""
+        downloadUrl = ""
         fileNameBox.text = ""
         pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
         sha256Box.text = ""
@@ -138,6 +140,8 @@ Window {
 
                     titleText: "DOWNLOAD URL"
                     placeHolderText: "Paste download URL..."
+
+                    text: ""
 
                     Layout.fillWidth: true
 

@@ -21,6 +21,20 @@ ApplicationWindow
     property bool isMaximized: false
     property rect normalGeometry: Qt.rect(x, y, width, height)
 
+    // Handle connections
+    Connections {
+        target: backend
+
+        function onUrlRecieved(recUrl) {
+            if (!urlWindow.visible)
+                urlWindow.openAnimated()
+            urlWindow.downloadUrl = recUrl
+
+            urlWindow.raise()
+            urlWindow.requestActivate()
+        }
+    }
+
     // Remove the Default title bar
     flags: Qt.Window | Qt.FramelessWindowHint
 

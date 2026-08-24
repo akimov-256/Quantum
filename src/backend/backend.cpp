@@ -2,9 +2,63 @@
 
 Backend::Backend(QObject *parent)
     : QObject{parent}
+    , m_webServer(new QTcpServer(this))
     , manager(new QNetworkAccessManager(this))
 {
     m_downloadModel.setDownloads(&m_downloads);
+
+    StartWebServer();
+}
+
+void Backend::StartWebServer()
+{
+    connect(
+        m_webServer,
+        &QTcpServer::newConnection,
+        this,
+        [this]()
+        {
+            QTcpSocket *socket =
+                m_webServer->nextPendingConnection();
+
+            connect(
+                socket,
+                &QTcpSocket::readyRead,
+                this,
+                [ socket, this ]()
+                {
+                    QByteArray request = socket->readAll();
+
+                    int bodyStart = request.indexOf("\r\n\r\n");
+
+                    if (bodyStart == -1)
+                        return;
+
+                    QByteArray body = request.mid(bodyStart + 4);
+
+                    QJsonDocument doc = QJsonDocument::fromJson(body);
+                    if (!doc.isObject())
+                        return;
+                    QJsonObject json = doc.object();
+
+                    emit urlRecieved(json["url"].toString());
+                });
+        }
+        );
+
+    if (!m_webServer->listen(
+            QHostAddress::LocalHost,
+            8421))
+    {
+        qWarning()
+        << "Could not start web server:"
+        << m_webServer->errorString();
+    }
+    else
+    {
+        qDebug()
+        << "Quantum web server running on port 8421";
+    }
 }
 
 void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256)
