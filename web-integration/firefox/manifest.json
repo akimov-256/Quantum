@@ -28,6 +28,13 @@
 	"host_permissions": [
         "http://127.0.0.1:8421/*"
     ],
+	"browser_specific_settings": {
+	  "gecko": {
+	    "data_collection_permissions": {
+	      "required": ["none"]
+	    }
+	  }
+	},
 	"content_scripts": [
 		{
 			"matches": [
