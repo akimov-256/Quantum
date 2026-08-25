@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Added firefox extension initial files.
+- Added firefox integration initial files.
+- Added firefox integration redirect logic.
 
 ## [v1.1.0]
 
