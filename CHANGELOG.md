@@ -8,5 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.1.0]
 
 ### Added
-- Added extension manifest file.
-- Added extension link to the app using local HTTP connection.
+- Added firefox integration initial files.
+- Added firefox integration redirect logic.
+
+## [v1.1.0]
+
+### Added
+- Added chrome extension manifest file.
+- Added chrome extension link to the app using local HTTP connection.
