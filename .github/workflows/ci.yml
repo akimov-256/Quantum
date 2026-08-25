@@ -245,4 +245,5 @@ jobs:
           files: |
             dist/windows-installer/*.exe
             dist/chrome-extension/*.zip
+            dist/firefox-extension/*.xpi
 #           dist/linux-package/*.AppImage
