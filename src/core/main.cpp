@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 {
     QQuickStyle::setStyle("Fusion");
 
-    QGuiApplication a(argc, argv);
+    QApplication a(argc, argv);
 
     a.setWindowIcon(QIcon(":/qml/assets/icon.svg"));
 

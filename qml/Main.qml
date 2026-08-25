@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
+import Qt.labs.platform
 import "components"
 import "pages"
 
@@ -21,17 +22,19 @@ ApplicationWindow
     property bool isMaximized: false
     property rect normalGeometry: Qt.rect(x, y, width, height)
 
+    onClosing: {
+        close.accepted = false;
+        closeAnimated();
+    }
+
     // Handle connections
     Connections {
         target: backend
 
         function onUrlRecieved(recUrl) {
+            urlWindow.downloadUrl = recUrl
             if (!urlWindow.visible)
                 urlWindow.openAnimated()
-            urlWindow.downloadUrl = recUrl
-
-            urlWindow.raise()
-            urlWindow.requestActivate()
         }
     }
 
@@ -40,6 +43,41 @@ ApplicationWindow
 
     onWindowStateChanged: {
         isMaximized = (visibility === Window.Maximized)
+    }
+
+    SystemTrayIcon {
+        id: trayIcon
+
+        visible: true
+        tooltip: "Quantum Download Manager"
+
+        icon.source: "qrc:/qml/assets/icon.svg"
+
+        onActivated: function(reason) {
+            if (reason === SystemTrayIcon.Trigger ||
+                reason === SystemTrayIcon.DoubleClick) {
+
+                root.openAnimated()
+            }
+        }
+
+        menu: Menu {
+            MenuItem {
+                text: "Open Quantum"
+
+                onTriggered: {
+                    root.openAnimated()
+                }
+            }
+
+            MenuSeparator {}
+
+            MenuItem {
+                text: "Quit"
+
+                onTriggered: Qt.quit()
+            }
+        }
     }
 
     // wrap existing content
