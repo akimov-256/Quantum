@@ -177,18 +177,18 @@ jobs:
           name: linux-package
           path: ${{ steps.proj.outputs.pro_dir }}/Quantum-*.AppImage
 
-  package-extension:
+  package-extensions:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Read extension version from manifest.json
-        id: ext_ver
+      - name: Read Chrome extension version from manifest.json
+        id: ext_ver_chrome
         run: |
           VERSION=$(jq -r '.version' web-integration/chrome/manifest.json)
           if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
-            echo "Could not read version from manifest.json" >&2
+            echo "Could not read version from chrome manifest.json" >&2
             exit 1
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -196,16 +196,37 @@ jobs:
       - name: Zip Chrome extension
         run: |
           cd web-integration/chrome
-          zip -r "../../QDM-Integration-${{ steps.ext_ver.outputs.version }}-chrome.zip" .
+          zip -r "../../QDM-Integration-${{ steps.ext_ver_chrome.outputs.version }}-chrome.zip" .
 
-      - name: Upload artifact
+      - name: Read Firefox extension version from manifest.json
+        id: ext_ver_firefox
+        run: |
+          VERSION=$(jq -r '.version' web-integration/firefox/manifest.json)
+          if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
+            echo "Could not read version from firefox manifest.json" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Zip Firefox extension
+        run: |
+          cd web-integration/firefox
+          zip -r "../../QDM-Integration-${{ steps.ext_ver_firefox.outputs.version }}-firefox.xpi" .
+
+      - name: Upload Chrome extension
         uses: actions/upload-artifact@v4
         with:
           name: chrome-extension
           path: QDM-Integration-*-chrome.zip
 
+      - name: Upload Firefox extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-extension
+          path: QDM-Integration-*-firefox.xpi
+
   publish-release:
-    needs: [ build-windows, package-extension ] # Later add build-linux
+    needs: [ build-windows, package-extensions ] # Later add build-linux
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
