@@ -14,13 +14,8 @@ SOURCES += \
     src/backend/downloadmodel.cpp \
     src/core/appglobals.cpp \
     src/core/downloader.cpp \
-    src/ui/downloadinfo.cpp \
-    src/ui/downloadwindow.cpp \
     src/core/downloadworker.cpp \
-    src/ui/finishwindow.cpp \
-    src/core/main.cpp \
-    src/ui/qdman.cpp \
-    src/ui/urldialog.cpp
+    src/core/main.cpp
 
 HEADERS += \
     src/backend/backend.h \
@@ -28,20 +23,10 @@ HEADERS += \
     src/core/appglobals.h \
     src/core/downloader.h \
     src/models/downloadcategories.h \
-    src/ui/downloadinfo.h \
     src/models/downloadstatus.h \
-    src/ui/downloadwindow.h \
-    src/core/downloadworker.h \
-    src/ui/finishwindow.h \
-    src/ui/qdman.h \
-    src/ui/urldialog.h
+    src/core/downloadworker.h
 
-FORMS += \
-    src/ui/downloadinfo.ui \
-    src/ui/downloadwindow.ui \
-    src/ui/finishwindow.ui \
-    src/ui/qdman.ui \
-    src/ui/urldialog.ui
+FORMS +=
 
 TRANSLATIONS += \
     Quantum_en_US.ts
