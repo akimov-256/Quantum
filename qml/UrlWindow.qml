@@ -29,7 +29,6 @@ Window {
         fileNameBox.text = ""
         pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
         sha256Box.text = ""
-        connectionsList.currentIndex = 3
     }
 
     FontLoader {
@@ -43,9 +42,14 @@ Window {
         repeat: false
 
         onTriggered: {
-            if (urlBox.text.length > 8) {
-                if (Helper.looksLikeUrl(urlBox.text))
-                    backend.GetHeadInfo(urlBox.text)
+            if (urlBox.text.length <= 8) {
+                return
+            }
+            if (Helper.looksLikeUrl(urlBox.text))
+                backend.GetHeadInfo(urlBox.text)
+            else {
+                connectionsList.dropdownEnabled = false
+                startButton.buttonEnabled = false
             }
         }
     }
@@ -241,8 +245,8 @@ Window {
                         buttonHeight: 32
                         buttonWidth: 130
 
-                        model: ["1", "2", "4", "8", "16"]
-                        currentIndex: 3
+                        model: Helper.getThreadSelectionModel(backend.fileSize)
+                        currentIndex: model.length > 2 ? model.indexOf("8") : model.length - 1
 
                         Layout.alignment: Qt.AlignBottom
 

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.3.1]
 
+### Added
+- Enabled the dropdown element to exceed parent window boundaries without rendering problems.
+- Added dynamic connection range determination by checking the file size first to prevent using too many connections on small files resulting in crashes and instabillity.
+- Added version label at the main window title bar to indicate the current version of the app.
+
+### Fixed
+- Fixed the weak buttons disabling when the link is not valid, preventing starting unexisting downloads.
+
 ### Changed
 - Removed old classes and ui elements from the QWidgets setup.
 - Disabled thread selection dropdown until the download is inserted and Header reply is recieved.

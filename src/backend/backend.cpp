@@ -126,6 +126,12 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
 void Backend::GetHeadInfo(const QString &fileUrl)
 {
+    m_fileSize = 0;
+    emit fileSizeChanged();
+
+    m_fileName.clear();
+    emit fileNameChanged();
+
     // Update GetHeadInfo status
     m_isHeadReqActive = true;
     emit isHeadReqActiveChanged();

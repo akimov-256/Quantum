@@ -79,3 +79,15 @@ function formatFilePaths(url) {
 function getNumberFromStr(str) {
     return String(str);
 }
+
+function getThreadSelectionModel(fileSize) {
+    // Convert file size to Mb
+    let fileMbSize = fileSize / (1024 * 1024);
+
+    // Dynamically set the available thread range to maintain stabillity
+    if (fileMbSize < 20)
+        return [ "1" ];                 // Use only one thread for downloads under 20Mb.
+    if (fileMbSize < 40)
+        return [ "1", "2" ];            // Use a maximum of 2 threads for downloads between 20-40Mb.
+    return ["1", "2", "4", "8", "16"];  // Use the default number of threads for downloads over 40Mb.
+}

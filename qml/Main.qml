@@ -122,6 +122,14 @@ ApplicationWindow
                     Layout.alignment: Qt.AlignVCenter
                 }
 
+                Text {
+                    text: "v1.3.1";
+                    font.family: appFont.name
+                    font.pixelSize: 13
+                    color: "#616161"
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
                 // Add spacer
                 Item {
                     Layout.fillWidth: true

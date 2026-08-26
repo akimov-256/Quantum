@@ -19,6 +19,7 @@ Item {
     property var model: []
     property int currentIndex: 0
     readonly property string currentText: model.length > 0 ? model[currentIndex] : ""
+    readonly property int itemHeight: 32
 
     property bool dropdownEnabled: false
     property bool openDownward: true
@@ -39,13 +40,8 @@ Item {
 
         radius: 10
 
-        Behavior on color {
-            ColorAnimation { duration: 80 }
-        }
-
-        Behavior on scale {
-            NumberAnimation { duration: 80 }
-        }
+        Behavior on color { ColorAnimation { duration: 80 } }
+        Behavior on scale { NumberAnimation { duration: 80 } }
 
         border.color: borderColor
         border.width: 2
@@ -56,29 +52,38 @@ Item {
             hoverEnabled: true
 
             onClicked: {
-                if (dropdownEnabled) {
-                    var globalY = root.mapToItem(null, 0, 0).y
-                    var windowHeight = root.Window.window ? root.Window.window.height : 0
-                    var spaceBelow = windowHeight - (globalY + root.height)
+                if (!dropdownEnabled)
+                    return
 
-                    root.openDownward = spaceBelow >= popup.height + 4
-                    isActivated = !isActivated
+                if (isActivated) {
+                    isActivated = false
+                    return
                 }
+
+                var globalPos = root.mapToGlobal(0, 0)
+                var screenHeight = root.Window.window ? root.Window.window.screen.height : Screen.height
+                var spaceBelow = screenHeight - (globalPos.y + root.height)
+
+                root.openDownward = spaceBelow >= popupWindow.height + 4
+
+                popupWindow.x = globalPos.x
+                popupWindow.y = root.openDownward
+                    ? globalPos.y + root.height + 4
+                    : globalPos.y - popupWindow.height - 4
+
+                isActivated = true
             }
         }
 
         RowLayout {
             anchors.fill: parent
 
-            Item {
-                Layout.fillWidth: true
-            }
+            Item { Layout.fillWidth: true }
 
             Image {
                 id: icon
                 source: buttonIcon
                 visible: buttonIcon !== ""
-
                 Layout.preferredHeight: 16.25
                 Layout.preferredWidth: 16.25
                 Layout.fillHeight: false
@@ -91,80 +96,80 @@ Item {
             }
 
             Text {
-                id: text
                 text: root.currentText
                 font.family: appFont.name
                 font.pixelSize: 15
                 color: "#ffffff"
             }
 
-            // Arrow indicator
             Text {
-                text: popup.visible ? "▲" : "▼"
+                text: isActivated ? "▲" : "▼"
                 font.pixelSize: 10
                 color: "#ffffff"
             }
 
-            Item {
-                Layout.fillWidth: true
-            }
+            Item { Layout.fillWidth: true }
         }
     }
 
-    // Popup list
-    Popup {
-        id: popup
-        parent: root
+    // Separate top-level window so the list can render outside UrlWindow's bounds
+    Window {
+        id: popupWindow
 
-        y: openDownward ? root.height + 4 : -popup.height - 4
+        flags: Qt.Popup | Qt.FramelessWindowHint
+        color: "transparent"
+
         width: root.width
-        padding: 0
+        height: root.model.length * root.itemHeight
 
         visible: isActivated
 
-        background: Rectangle {
+        onActiveChanged: {
+            if (!active)
+                isActivated = false
+        }
+
+        Rectangle {
+            anchors.fill: parent
             color: popupColor
             border.color: borderColor
             border.width: 2
             radius: 8
-        }
 
-        contentItem: ColumnLayout {
-            spacing: 0
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
 
-            Repeater {
-                model: root.model
+                Repeater {
+                    model: root.model
 
-                delegate: Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 32
+                    delegate: Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: root.itemHeight
 
-                    color: itemMouseArea.containsMouse ? itemHoverColor : "transparent"
+                        color: itemMouseArea.containsMouse ? itemHoverColor : "transparent"
+                        Behavior on color { ColorAnimation { duration: 80 } }
 
-                    Behavior on color {
-                        ColorAnimation { duration: 80 }
-                    }
+                        Text {
+                            anchors.fill: parent
+                            anchors.leftMargin: 10
+                            verticalAlignment: Text.AlignVCenter
+                            text: modelData
+                            color: "#ffffff"
+                            font.family: appFont.name
+                            font.pixelSize: 14
+                        }
 
-                    Text {
-                        anchors.fill: parent
-                        anchors.leftMargin: 10
-                        verticalAlignment: Text.AlignVCenter
+                        MouseArea {
+                            id: itemMouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
 
-                        text: modelData
-                        color: "#ffffff"
-                        font.family: appFont.name
-                        font.pixelSize: 14
-                    }
-
-                    MouseArea {
-                        id: itemMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-
-                        onClicked: {
-                            root.currentIndex = index
-                            root.activated(index)
-                            popup.close()
+                            onClicked: {
+                                root.currentIndex = index
+                                root.activated(index)
+                                isActivated = false
+                            }
                         }
                     }
                 }
