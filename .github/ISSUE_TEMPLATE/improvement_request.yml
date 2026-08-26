@@ -1,0 +1,56 @@
+name: 🔧 Improvement request
+description: An existing feature works, but could work better (performance, reliability, code quality)
+title: "[Improvement]: "
+labels: ["improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For "this doesn't exist yet," use a Feature request instead. This one's for "this exists and works, but here's how it could be better."
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: What currently happens?
+      description: Describe the existing behavior you want to improve.
+      placeholder: The download progress bar updates on every byte received, causing high CPU usage and lag when downloading large files. The queue also re-renders the entire list on each update.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-improvement
+    attributes:
+      label: What would you change?
+      description: Be as specific as you can — a different approach, a selector fix, a performance tweak, etc.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: What kind of improvement is this?
+      options:
+        - Performance
+        - Reliability (selector breaks less often)
+        - Code quality / maintainability
+        - Accessibility
+        - Developer experience (build, CI, tooling)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Why does this matter?
+      description: What gets better once this is done? Who benefits?
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Anything else?
+      description: Benchmarks, links, related issues/PRs.
+    validations:
+      required: false

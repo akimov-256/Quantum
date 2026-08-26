@@ -1,0 +1,73 @@
+name: 🐛 Bug report
+description: Something isn't working the way it should
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Quantum download manager fails to handle downloads correctly. The more specifics you give, the faster this gets fixed.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you expect, and what did you get instead?
+      placeholder: I clicked the download button for a file, but the download never started, or I got an error message.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we see this ourselves?
+      placeholder: |
+        1. Navigate to a page with a downloadable file (e.g., a PDF, image, or direct link).
+        2. Click the Quantum download button or the file link.
+        3. Observe that the download does not begin, or the progress bar stays at 0%.
+    validations:
+      required: true
+
+  - type: input
+    id: page
+    attributes:
+      label: Which website or page?
+      description: Provide the specific URL or type of site where the issue occurs.
+      placeholder: https://example.com/files/sample.pdf
+    validations:
+      required: true
+
+  - type: input
+    id: extension-version
+    attributes:
+      label: Extension version
+      description: Found in chrome://extensions or manifest.json
+      placeholder: "1.2.3"
+    validations:
+      required: true
+
+  - type: input
+    id: chrome-version
+    attributes:
+      label: Chrome version
+      placeholder: "128.0.6613.84"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or screen recording
+      description: Drag and drop images/video here if you have them. This helps a lot for UI/UX bugs.
+    validations:
+      required: false
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console errors
+      description: Open DevTools (F12) → Console tab, and paste any red error messages here.
+      render: shell
+    validations:
+      required: false

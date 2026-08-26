@@ -1,0 +1,58 @@
+name: ✨ Feature request
+description: Propose something new that Quantum download manager doesn't do yet
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This extension is intentionally focused on download management. That doesn't mean no to new ideas — just be ready to make the case for why it belongs here.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What are you trying to do that you currently can't?
+      placeholder: I want to pause and resume downloads, but Quantum currently only supports start and cancel. Also, I'd like to schedule downloads for later.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like to see?
+      description: Describe the feature as you imagine it working.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Any other way to solve this, including workarounds you're currently using?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Where should this apply?
+      multiple: true
+      options:
+        - Download queue
+        - Download history
+        - Popup UI
+        - Options page
+        - Context menu
+        - Notifications
+        - Other (explain below)
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Anything else?
+      description: Mockups, links, related issues, whatever's useful.
+    validations:
+      required: false
