@@ -246,6 +246,8 @@ Window {
 
                         Layout.alignment: Qt.AlignBottom
 
+                        dropdownEnabled: backend.fileSize !== 0
+
                         onActivated: (index) => {
                             currentIndex = index
                         }
@@ -316,7 +318,7 @@ Window {
                         buttonText: "Start"
                         buttonIcon: "qrc:/qml/assets/icons/download.svg"
 
-                        buttonEnabled: backend.fileSize !== 0 ? true : false
+                        buttonEnabled: backend.fileSize !== 0
 
                         Layout.alignment: Qt.AlignBottom
 

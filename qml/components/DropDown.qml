@@ -20,8 +20,8 @@ Item {
     property int currentIndex: 0
     readonly property string currentText: model.length > 0 ? model[currentIndex] : ""
 
+    property bool dropdownEnabled: false
     property bool openDownward: true
-
     property bool isActivated: false
 
     signal activated(int index)
@@ -33,8 +33,9 @@ Item {
         id: background
         anchors.fill: parent
 
-        color: mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : fillColor
-        scale: mouseArea.pressed ? 0.98 : 1.0
+        color: dropdownEnabled ? mouseArea.pressed ? pressedColor : mouseArea.containsMouse ? hoverColor : fillColor : fillColor
+        scale: dropdownEnabled ? mouseArea.pressed ? 0.98 : 1.0 : 1.0
+        opacity: dropdownEnabled ? 1.0 : 0.5
 
         radius: 10
 
@@ -55,12 +56,14 @@ Item {
             hoverEnabled: true
 
             onClicked: {
-                var globalY = root.mapToItem(null, 0, 0).y
-                var windowHeight = root.Window.window ? root.Window.window.height : 0
-                var spaceBelow = windowHeight - (globalY + root.height)
+                if (dropdownEnabled) {
+                    var globalY = root.mapToItem(null, 0, 0).y
+                    var windowHeight = root.Window.window ? root.Window.window.height : 0
+                    var spaceBelow = windowHeight - (globalY + root.height)
 
-                root.openDownward = spaceBelow >= popup.height + 4
-                isActivated = !isActivated
+                    root.openDownward = spaceBelow >= popup.height + 4
+                    isActivated = !isActivated
+                }
             }
         }
 

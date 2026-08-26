@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Removed old classes and ui elements from the QWidgets setup.
+- Disabled thread selection dropdown until the download is inserted and Header reply is recieved.
 
 ## [v1.3.0]
 
