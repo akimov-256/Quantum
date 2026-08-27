@@ -200,35 +200,148 @@ void Backend::getHeadInfo(const QString &fileUrl, const QString &targetPath)
 
 DownloadCategory Backend::detectCategory(const QString &fileName) {
     QString extension = QFileInfo(fileName)
-    .suffix()
+    .completeSuffix()
         .toLower();
 
-    if (extension == "zip" ||
-        extension == "rar" ||
-        extension == "7z") {
+    if (extension == "zip"    ||
+        extension == "rar"    ||
+        extension == "7z"     ||
+        extension == "tar"    ||
+        extension == "gz"     ||
+        extension == "bz2"    ||
+        extension == "xz"     ||
+        extension == "zst"    ||
+        extension == "lz"     ||
+        extension == "lzma"   ||
+        extension == "cab"    ||
+        extension == "arj"    ||
+        extension == "z"      ||
+        extension == "tar.gz" ||
+        extension == "tgz"    ||
+        extension == "tbz2"   ||
+        extension == "txz"    ||
+        extension == "taz"    ||
+        extension == "jar"    ||
+        extension == "war"    ||
+        extension == "ear"    ||
+        extension == "apk"    ||
+        extension == "aar") {
         return DownloadCategory::Compressed;
     }
 
-    if (extension == "pdf" ||
-        extension == "docx" ||
-        extension == "txt") {
+    if (extension == "pdf"      ||
+        extension == "doc"      ||
+        extension == "docx"     ||
+        extension == "xls"      ||
+        extension == "xlsx"     ||
+        extension == "xlsm"     ||
+        extension == "ppt"      ||
+        extension == "pptx"     ||
+        extension == "ppsx"     ||
+        extension == "odt"      ||
+        extension == "ods"      ||
+        extension == "odp"      ||
+        extension == "odg"      ||
+        extension == "txt"      ||
+        extension == "rtf"      ||
+        extension == "log"      ||
+        extension == "md"       ||
+        extension == "markdown" ||
+        extension == "html"     ||
+        extension == "htm"      ||
+        extension == "xml"      ||
+        extension == "xhtml"    ||
+        extension == "csv"      ||
+        extension == "tsv"      ||
+        extension == "json"     ||
+        extension == "yml"      ||
+        extension == "yaml"     ||
+        extension == "epub"     ||
+        extension == "mobi"     ||
+        extension == "azw"      ||
+        extension == "azw3"     ||
+        extension == "fb2"      ||
+        extension == "tex"      ||
+        extension == "pages"    ||
+        extension == "numbers"  ||
+        extension == "key"      ||
+        extension == "wps") {
         return DownloadCategory::Documents;
     }
 
-    if (extension == "mp3" ||
-        extension == "wav" ||
-        extension == "flac") {
+    if (extension == "mp3"  ||
+        extension == "wav"  ||
+        extension == "flac" ||
+        extension == "aac"  ||
+        extension == "ogg"  ||
+        extension == "m4a"  ||
+        extension == "m4b"  ||
+        extension == "wma"  ||
+        extension == "alac" ||
+        extension == "aiff" ||
+        extension == "aif"  ||
+        extension == "au"   ||
+        extension == "snd"  ||
+        extension == "opus" ||
+        extension == "amr"  ||
+        extension == "mid"  ||
+        extension == "midi" ||
+        extension == "mpga" ||
+        extension == "mka"  ||
+        extension == "ra"   ||
+        extension == "rmi"  ||
+        extension == "ape"  ||
+        extension == "wv"   ||
+        extension == "dsd"  ||
+        extension == "dff"  ||
+        extension == "dsf") {
         return DownloadCategory::Music;
     }
 
-    if (extension == "mp4" ||
-        extension == "mkv" ||
-        extension == "avi") {
+    if (extension == "mp4"  ||
+        extension == "mkv"  ||
+        extension == "avi"  ||
+        extension == "mov"  ||
+        extension == "wmv"  ||
+        extension == "flv"  ||
+        extension == "webm" ||
+        extension == "m4v"  ||
+        extension == "mpg"  ||
+        extension == "mpeg" ||
+        extension == "m2ts" ||
+        extension == "ts"   ||
+        extension == "vob"  ||
+        extension == "3gp"  ||
+        extension == "3g2"  ||
+        extension == "ogv"  ||
+        extension == "rm"   ||
+        extension == "rmvb" ||
+        extension == "divx" ||
+        extension == "asf"  ||
+        extension == "mts"  ||
+        extension == "m2v"  ||
+        extension == "f4v"  ||
+        extension == "m4p"  ||
+        extension == "mpv"  ||
+        extension == "mpe"  ||
+        extension == "m1v"  ||
+        extension == "m2p"  ||
+        extension == "mp2v" ||
+        extension == "m4e") {
         return DownloadCategory::Videos;
     }
 
-    if (extension == "exe" ||
-        extension == "msi") {
+    if (extension == "exe"        ||
+        extension == "msi"        ||
+        extension == "msp"        ||
+        extension == "msm"        ||
+        extension == "appx"       ||
+        extension == "appxbundle" ||
+        extension == "msix"       ||
+        extension == "msixbundle" ||
+        extension == "com"        ||
+        extension == "scr"        ||
+        extension == "cpl") {
         return DownloadCategory::Programs;
     }
 

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replaced the Warning dialogs with native windows dialogs.
 - Changed dynamic connections selection to use a maximum of 2 when download is 20-50Mb and a maximum of 4 when download is 50-100Mb.
+- Extended the file types of each Category for better detection and sorting.
 
 ## [v1.3.1]
 
