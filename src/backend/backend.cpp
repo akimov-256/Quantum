@@ -62,6 +62,22 @@ void Backend::StartWebServer()
     }
 }
 
+bool Backend::downloadRequested(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256)
+{
+    const QString path = filePath + "/" + fileName;         // Build the complete path.
+    const bool exists = QFileInfo::exists(path);            // Check if the file already exists in the directory.
+    if (exists)
+    {
+        auto reply = QMessageBox::warning(nullptr, "Replace File", "The file \"" + fileName + "\" already exists in the target directory.\nDo you want to replace it?", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::No)
+            return false;                                   // Show the warning dialog and do not start the download if the user selected no.
+    }
+
+    CreateDownload(fileUrl, fileName, filePath,             // Create the download normally if the user selected otherwise.
+                       connections, SHA256);
+    return true;
+}
+
 void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256)
 {
     downloadInformations info;

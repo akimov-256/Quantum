@@ -336,9 +336,10 @@ Window {
 
                         // Pass info to backend class to start download
                         onClicked: {
-                            backend.CreateDownload(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)
-                            root.closeAnimated()
-                            resetForm()
+                            if (backend.downloadRequested(urlBox.text, fileNameBox.text, pathBox.text, Helper.getNumberFromStr(connectionsList.model[connectionsList.currentIndex]), sha256Box.text)) {
+                                root.closeAnimated()
+                                resetForm()
+                            }
                         }
                     }
                 }

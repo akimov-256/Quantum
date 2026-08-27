@@ -37,6 +37,7 @@ public:
     explicit Backend(QObject *parent = nullptr);
 
     void StartWebServer();
+    Q_INVOKABLE bool downloadRequested(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void getHeadInfo(const QString &fileUrl, const QString &targetPath);
     Q_INVOKABLE void buttonClicked(const QString id);
