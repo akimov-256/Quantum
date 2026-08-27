@@ -235,6 +235,11 @@ void Backend::buttonClicked(const QString id) {
 
 void Backend::cancelClicked(const QString id)
 {
+    auto reply = QMessageBox::warning(nullptr, "Cancel Download", "This download will be canceled.\nAre you sure?", QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::No)
+        return;
+
+
     if (rowForId(id) < 0 || rowForId(id) >= m_activeDownloaders.size())
         return;
 
@@ -260,6 +265,10 @@ void Backend::openRequested(const QString id)
 
 void Backend::removeRequested(const QString id)
 {
+    auto reply = QMessageBox::warning(nullptr, "Remove Download", "This download will be removed.\nAre you sure?", QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::No)
+        return;
+
     m_downloadModel.removeRow(rowForId(id));
 }
 

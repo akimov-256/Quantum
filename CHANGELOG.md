@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed clicking "Pause All" and "Resume All" buttons result in crashing.
 
+### Changed
+- Replaced the Warning dialogs with native windows dialogs.
+
 ## [v1.3.1]
 
 ### Added

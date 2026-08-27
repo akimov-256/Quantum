@@ -9,46 +9,6 @@ Item {
 
     signal newDownloadRequested();
 
-    MessageDialog {
-        id: cancelWarning
-
-        property string targetID: ""
-
-        title: "Cancel download"
-        text: "This download will be canceled.\nAre you sure?"
-
-        buttons: MessageDialog.No | MessageDialog.Yes
-
-        onAccepted: {
-            backend.cancelClicked(targetID)
-            targetID = ""
-        }
-
-        onRejected: {
-            targetID = ""
-        }
-    }
-
-    MessageDialog {
-        id: removeWarning
-
-        property string targetID: ""
-
-        title: "Remove download"
-        text: "This download will be removed.\nAre you sure?"
-
-        buttons: MessageDialog.Yes | MessageDialog.No
-
-        onAccepted: {
-            backend.removeRequested(targetID)
-            targetID = ""
-        }
-
-        onRejected: {
-            targetID = ""
-        }
-    }
-
     ColumnLayout {
         id: downloadsLayout
 
@@ -221,13 +181,11 @@ Item {
 
                         onCancelClicked: {
                             if (isCompleted) {
-                                removeWarning.targetID = downloadID
-                                removeWarning.open()
+                                backend.removeRequested(downloadID)
                             }
                             else
                             {
-                                cancelWarning.targetID = downloadID
-                                cancelWarning.open()
+                                backend.cancelClicked(downloadID)
                             }
                         }
                     }
