@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added title for the connections dropdown list for simplicity.
+
 ### Fixed
 - Fixed clicking "Pause All" and "Resume All" buttons result in crashing.
 

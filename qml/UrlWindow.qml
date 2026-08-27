@@ -239,21 +239,33 @@ Window {
                         Layout.fillWidth: true
                     }
 
-                    DropDown {
-                        id: connectionsList
+                    ColumnLayout {
 
-                        buttonHeight: 32
-                        buttonWidth: 130
+                        Text {
+                            text: "CONNECTIONS"
 
-                        model: Helper.getThreadSelectionModel(backend.fileSize)
-                        currentIndex: model.length > 2 ? model.indexOf("8") : model.length - 1
+                            color: "#656565"
 
-                        Layout.alignment: Qt.AlignBottom
+                            font.pixelSize: 10
+                            font.family: appFont.name
+                        }
 
-                        dropdownEnabled: backend.fileSize !== 0
+                        DropDown {
+                            id: connectionsList
 
-                        onActivated: (index) => {
-                            currentIndex = index
+                            buttonHeight: 32
+                            buttonWidth: 130
+
+                            model: Helper.getThreadSelectionModel(backend.fileSize)
+                            currentIndex: model.length > 2 ? model.indexOf("8") : model.length - 1
+
+                            Layout.alignment: Qt.AlignBottom
+
+                            dropdownEnabled: backend.fileSize !== 0
+
+                            onActivated: (index) => {
+                                currentIndex = index
+                            }
                         }
                     }
                 }
