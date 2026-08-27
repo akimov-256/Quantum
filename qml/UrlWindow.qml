@@ -29,8 +29,6 @@ Window {
         fileNameBox.text = ""
         pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
         sha256Box.text = ""
-        connectionsList.dropdownEnabled = false
-        startButton.buttonEnabled = false
     }
 
     FontLoader {
@@ -49,10 +47,6 @@ Window {
             }
             if (Helper.looksLikeUrl(urlBox.text))
                 backend.GetHeadInfo(urlBox.text)
-            else {
-                connectionsList.dropdownEnabled = false
-                startButton.buttonEnabled = false
-            }
         }
     }
 
@@ -263,7 +257,7 @@ Window {
 
                             Layout.alignment: Qt.AlignBottom
 
-                            dropdownEnabled: backend.fileSize !== 0
+                            dropdownEnabled: backend.headReqCompleted
 
                             onActivated: (index) => {
                                 currentIndex = index
@@ -336,7 +330,7 @@ Window {
                         buttonText: "Start"
                         buttonIcon: "qrc:/qml/assets/icons/download.svg"
 
-                        buttonEnabled: backend.fileSize !== 0
+                        buttonEnabled: backend.headReqCompleted
 
                         Layout.alignment: Qt.AlignBottom
 

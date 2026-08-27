@@ -126,6 +126,9 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
 void Backend::GetHeadInfo(const QString &fileUrl)
 {
+    m_headReqCompleted= false;
+    emit headReqCompletedChanged();
+
     m_fileSize = 0;
     emit fileSizeChanged();
 
@@ -164,6 +167,9 @@ void Backend::GetHeadInfo(const QString &fileUrl)
         // Update GetHeadInfo status
         m_isHeadReqActive = false;
         emit isHeadReqActiveChanged();
+
+        m_headReqCompleted = true;
+        emit headReqCompletedChanged();
 
         reply->deleteLater();
     });
@@ -412,6 +418,11 @@ DownloadModel *Backend::downloadModel()
 bool Backend::isHeadReqActive() const
 {
     return m_isHeadReqActive;
+}
+
+bool Backend::headReqCompleted() const
+{
+    return m_headReqCompleted;
 }
 
 int Backend::downloadCount() const

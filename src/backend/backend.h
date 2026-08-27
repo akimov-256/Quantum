@@ -29,6 +29,7 @@ class Backend : public QObject
     Q_PROPERTY(int completedCount READ completedCount NOTIFY countChanged)
     Q_PROPERTY(int pausedCount READ pausedCount NOTIFY countChanged FINAL)
     Q_PROPERTY(int activeCount READ activeCount NOTIFY countChanged FINAL)
+    Q_PROPERTY(bool headReqCompleted READ headReqCompleted NOTIFY headReqCompletedChanged FINAL)
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -56,6 +57,7 @@ public:
     int completedCount() const;
     int pausedCount() const;
     int activeCount() const;
+    bool headReqCompleted() const;
     int rowForId(const QString &id) const;
 
 signals:
@@ -63,6 +65,7 @@ signals:
     void fileNameChanged();
     void fileSizeChanged();
     void isHeadReqActiveChanged();
+    void headReqCompletedChanged();
     void countChanged();
 
 private:
@@ -72,6 +75,7 @@ private:
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;
+    bool m_headReqCompleted = false;
     QList<downloadInformations> m_downloads;
     DownloadModel m_downloadModel;
     int m_currentCategory = 0;
