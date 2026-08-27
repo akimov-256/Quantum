@@ -84,10 +84,12 @@ function getThreadSelectionModel(fileSize) {
     // Convert file size to Mb
     let fileMbSize = fileSize / (1024 * 1024);
 
-    // Dynamically set the available thread range to maintain stabillity
+    // Dynamically set the available connection range to maintain stabillity
     if (fileMbSize < 20)
-        return [ "1" ];                 // Use only one thread for downloads under 20Mb.
-    if (fileMbSize < 40)
-        return [ "1", "2" ];            // Use a maximum of 2 threads for downloads between 20-40Mb.
-    return ["1", "2", "4", "8", "16"];  // Use the default number of threads for downloads over 40Mb.
+        return [ "1" ];                 // Use only one  for downloads under 40Mb.
+    if (fileMbSize < 50)
+        return [ "1", "2" ];            // Use a maximum of 2 connections for downloads between 20-50Mb.
+    if (fileMbSize < 100)
+        return [ "1", "2", "4"];        // Use a maximum of 4 connections for downloads between 50-100Mb
+    return ["1", "2", "4", "8", "16"];  // Use the default number of connections for downloads over 100Mb.
 }
