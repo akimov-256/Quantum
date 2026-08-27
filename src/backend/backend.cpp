@@ -515,10 +515,15 @@ void Backend::setCategory(int category)
 int Backend::pausedCount() const
 {
     int count = 0;
-    for (int i = 0; i < m_activeDownloaders.size(); i++)
+    for (const auto &download : m_downloads)
     {
-        QString id = m_downloads[i].ID;
-        if (m_activeDownloaders.value(id, nullptr)->downloadInfo().status == "Paused")
+        if (m_currentCategory != 0 &&
+            static_cast<int>(download.category) + 1 != m_currentCategory)
+        {
+            continue;
+        }
+
+        if (download.status == "Paused")
             count++;
     }
     return count;
@@ -527,10 +532,15 @@ int Backend::pausedCount() const
 int Backend::activeCount() const
 {
     int count = 0;
-    for (int i = 0; i < m_activeDownloaders.size(); i++)
+    for (const auto &download : m_downloads)
     {
-        QString id = m_downloads[i].ID;
-        if (m_activeDownloaders.value(id, nullptr)->downloadInfo().status != "Paused")
+        if (m_currentCategory != 0 &&
+            static_cast<int>(download.category) + 1 != m_currentCategory)
+        {
+            continue;
+        }
+
+        if (download.status == "Downloading..." || download.status == "Starting...")
             count++;
     }
     return count;
