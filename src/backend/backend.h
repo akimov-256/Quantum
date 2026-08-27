@@ -74,7 +74,7 @@ private:
     bool m_isHeadReqActive = false;
     QList<downloadInformations> m_downloads;
     DownloadModel m_downloadModel;
-    int m_currentCategory;
+    int m_currentCategory = 0;
 
 };
 

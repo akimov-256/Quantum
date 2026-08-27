@@ -218,7 +218,7 @@ void Backend::buttonClicked(const QString id) {
     if (currentRow == -1)
         return;
 
-    if (downloader->downloadInfo().status == "Paused")
+    if (m_downloads[currentRow].status == "Paused")
     {
         downloader->downloadResume(downloader->downloadInfo());
         m_downloads[currentRow].status = "Downloading...";
@@ -264,36 +264,64 @@ void Backend::removeRequested(const QString id)
 }
 
 void Backend::pauseAll() {
-    for (int i = 0; i < m_activeDownloaders.size(); i++)
+    for (auto &download : m_downloads)
     {
-        QString id = m_downloads[i].ID;
-        Downloader *downloader = m_activeDownloaders.value(id, nullptr);
-
-        if (downloader->downloadInfo().status != "Paused")
+        if (m_currentCategory != 0 &&
+            static_cast<int>(download.category) + 1!= m_currentCategory)
         {
-            downloader->downloadPause();
-            m_downloads[i].status = "Paused";
+            continue;
         }
 
-        emit countChanged();
-        m_downloadModel.updateDownload(m_downloads[i].ID);
+        const QString id = download.ID;
+
+        Downloader *downloader =
+            m_activeDownloaders.value(id, nullptr);
+
+        if (!downloader)
+            continue;
+
+        if (download.status != "Paused" &&
+            download.status != "Completed" &&
+            download.status != "Failed")
+        {
+            downloader->downloadPause();
+
+            int row = rowForId(id);
+
+            if (row != -1)
+            {
+                download.status = "Paused";
+                m_downloadModel.updateDownload(id);
+            }
+        }
     }
+
+    emit countChanged();
 }
 
 void Backend::resumeAll() {
-    for (int i = 0; i < m_activeDownloaders.size(); i++)
+    for (auto &download : m_downloads)
     {
-        QString id = m_downloads[i].ID;
+        if (m_currentCategory != 0 &&
+            static_cast<int>(download.category) + 1 != m_currentCategory)
+        {
+            continue;
+        }
+
+        const QString id = download.ID;
         Downloader *downloader = m_activeDownloaders.value(id, nullptr);
 
-        if (downloader->downloadInfo().status == "Paused")
+        if (!downloader)
+            continue;
+
+        if (download.status == "Paused")
         {
             downloader->downloadResume(downloader->downloadInfo());
-            m_downloads[i].status = "Downloading...";
+            download.status = "Downloading...";
         }
 
         emit countChanged();
-        m_downloadModel.updateDownload(m_downloads[i].ID);
+        m_downloadModel.updateDownload(download.ID);
     }
 }
 
