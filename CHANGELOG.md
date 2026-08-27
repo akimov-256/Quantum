@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.4.0]
+
 ### Added
 - Added title for the connections dropdown list for simplicity.
 - Added automatically renaming the file to a numbered name if file already exists.
