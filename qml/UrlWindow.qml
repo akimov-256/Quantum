@@ -93,13 +93,6 @@ Window {
                         onPressed: (mouse) => {
                             root.startSystemMove()
                         }
-
-                        onDoubleClicked: (mouse) => {
-                            if (root.isMaximized)
-                                root.showNormal()
-                            else
-                                root.showMaximized()
-                        }
                     }
                 }
 
