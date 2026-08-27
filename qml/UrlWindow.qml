@@ -29,6 +29,8 @@ Window {
         fileNameBox.text = ""
         pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
         sha256Box.text = ""
+        connectionsList.dropdownEnabled = false
+        startButton.buttonEnabled = false
     }
 
     FontLoader {

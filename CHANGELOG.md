@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed clicking "Pause All" and "Resume All" buttons result in crashing.
+- Fixed download button and connections dropdown menu still enabled after download has started resulting in possible launch of invalid downloads.
 
 ### Changed
 - Replaced the Warning dialogs with native windows dialogs.
