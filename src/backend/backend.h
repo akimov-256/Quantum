@@ -5,6 +5,8 @@
 #include "src/backend/downloadmodel.h"
 #include "src/core/downloader.h"
 #include "src/models/downloadcategories.h"
+#include "src/backend/filenamehandler.h"
+
 #include <QObject>
 #include <QStandardPaths>
 #include <QNetworkAccessManager>
@@ -36,7 +38,7 @@ public:
 
     void StartWebServer();
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
-    Q_INVOKABLE void GetHeadInfo(const QString &fileUrl);
+    Q_INVOKABLE void getHeadInfo(const QString &fileUrl, const QString &targetPath);
     Q_INVOKABLE void buttonClicked(const QString id);
     Q_INVOKABLE void cancelClicked(const QString id);
     Q_INVOKABLE void openRequested(const QString id);
@@ -72,6 +74,7 @@ private:
     QTcpServer *m_webServer;
     QNetworkAccessManager *manager;
     QHash<QString, Downloader*> m_activeDownloaders;
+    FileNameHandler m_fileNameHandler;
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;

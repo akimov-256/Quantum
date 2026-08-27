@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     src/backend/backend.cpp \
     src/backend/downloadmodel.cpp \
+    src/backend/filenamehandler.cpp \
     src/core/downloader.cpp \
     src/core/downloadworker.cpp \
     src/core/main.cpp
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     src/backend/backend.h \
     src/backend/downloadmodel.h \
+    src/backend/filenamehandler.h \
     src/core/downloader.h \
     src/models/downloadcategories.h \
     src/models/downloadstatus.h \

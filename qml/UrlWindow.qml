@@ -46,7 +46,7 @@ Window {
                 return
             }
             if (Helper.looksLikeUrl(urlBox.text))
-                backend.GetHeadInfo(urlBox.text)
+                backend.getHeadInfo(urlBox.text, pathBox.text)
         }
     }
 

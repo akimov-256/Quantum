@@ -4,6 +4,7 @@ Backend::Backend(QObject *parent)
     : QObject{parent}
     , m_webServer(new QTcpServer(this))
     , manager(new QNetworkAccessManager(this))
+    , m_fileNameHandler(new FileNameHandler(this))
 {
     m_downloadModel.setDownloads(&m_downloads);
 
@@ -124,7 +125,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
     });
 }
 
-void Backend::GetHeadInfo(const QString &fileUrl)
+void Backend::getHeadInfo(const QString &fileUrl, const QString &targetPath)
 {
     m_headReqCompleted= false;
     emit headReqCompletedChanged();
@@ -160,7 +161,13 @@ void Backend::GetHeadInfo(const QString &fileUrl)
         else
             m_fileName = QFileInfo(reply->url().path()).fileName();
 
-        if (m_fileName.isEmpty()) m_fileName = "download";
+        if (m_fileName.isEmpty())
+            m_fileName = "download";
+        else
+        {
+            const QString filePath = targetPath + "/" + m_fileName;
+            m_fileName = m_fileNameHandler.CheckFile(filePath);
+        }
 
         emit fileNameChanged();
 
