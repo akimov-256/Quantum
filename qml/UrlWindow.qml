@@ -360,6 +360,8 @@ Window {
     }
 
     function closeAnimated() {
+        if (connectionsList.isActivated)
+            connectionsList.isActivated = false
         closeAnim.start()
     }
 

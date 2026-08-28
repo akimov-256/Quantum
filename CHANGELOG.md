@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed "Pause all" button staying active even when all downloads are completed resulting in a crash upon clicking it.
 - Fixed "New download" dialog maximizing when double clicking its title bar.
+- Fixed connections dropdown keeps open if it wasn't closed when url dialog is closed.
 
 ## [v1.4.0]
 
