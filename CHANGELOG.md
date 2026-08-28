@@ -5,15 +5,20 @@ All notable changes to Quantum will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v1.4.1]
 
 ### Added
 - Added icon for quantum to show in the taskbar.
+- Added header to requests to mimic browser requests.
+- Added restriction to HTTP/1.1 for requests.
 
 ### Fixed
 - Fixed "Pause all" button staying active even when all downloads are completed resulting in a crash upon clicking it.
 - Fixed "New download" dialog maximizing when double clicking its title bar.
 - Fixed connections dropdown keeps open if it wasn't closed when url dialog is closed.
+
+### Known Issues
+- Some Servers require referer header, Browser integration must include the header when passing url to Quantum.
 
 ## [v1.4.0]
 

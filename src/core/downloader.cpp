@@ -46,6 +46,15 @@ void Downloader::download(downloadInformations Info)
     m_file.resize(info.fileByteSize);
 
     QNetworkRequest request(m_url);
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute     // Restrict HTTP/1.1 on HEAD requests.
+                         , false);
+    request.setHeader(QNetworkRequest::UserAgentHeader,             // Mimic a browser so modern servers do not ignore the request.
+                      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/120.0.0.0 Safari/537.36");
+    QUrl reqUrl = request.url();
+    request.setRawHeader("Referer",                                 // Add a referer to handle particular server exceptions.
+                         (reqUrl.scheme() + "://" + reqUrl.host() + "/").toUtf8());
     QNetworkReply *reply = manager->head(request);
     connect (reply, &QNetworkReply::finished, this, &Downloader::onHeadFinished);
 }
@@ -87,6 +96,15 @@ void Downloader::onHeadFinished()
     else
     {
         QNetworkRequest request(m_url);
+        request.setAttribute(QNetworkRequest::Http2AllowedAttribute     // Restrict HTTP/1.1 on HEAD requests.
+                             , false);
+        request.setHeader(QNetworkRequest::UserAgentHeader,             // Mimic a browser so modern servers do not ignore the request.
+                          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/120.0.0.0 Safari/537.36");
+        QUrl reqUrl = request.url();
+        request.setRawHeader("Referer",                                 // Add a referer to handle particular server exceptions.
+                             (reqUrl.scheme() + "://" + reqUrl.host() + "/").toUtf8());
         QByteArray rangeHeader = "bytes=0-0";
         request.setRawHeader("Range", rangeHeader);
         QNetworkReply *test = manager->get(request);
@@ -369,6 +387,12 @@ void Downloader::downloadResume(downloadInformations Info)
     for (qint64 p : chunkProgress) info.currentSize += p;
 
     QNetworkRequest req(m_url);
+    req.setAttribute(QNetworkRequest::Http2AllowedAttribute     // Restrict HTTP/1.1 on HEAD requests.
+                    , false);
+    req.setHeader(QNetworkRequest::UserAgentHeader,             // Mimic a browser so modern servers do not ignore the request.
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/120.0.0.0 Safari/537.36");
     QNetworkReply *headReply = manager->head(req);
     connect(headReply, &QNetworkReply::finished, this, [this, headReply]() mutable {
         headReply->deleteLater();

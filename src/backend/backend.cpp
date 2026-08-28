@@ -158,6 +158,15 @@ void Backend::getHeadInfo(const QString &fileUrl, const QString &targetPath)
 
     QUrl url = QUrl::fromUserInput(fileUrl);
     QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute     // Restrict HTTP/1.1 on HEAD requests.
+                         , false);
+    request.setHeader(QNetworkRequest::UserAgentHeader,             // Mimic a browser so modern servers do not ignore the request.
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36");
+    QUrl reqUrl = request.url();
+    request.setRawHeader("Referer",                                 // Add a referer to handle particular server exceptions.
+        (reqUrl.scheme() + "://" + reqUrl.host() + "/").toUtf8());
     QNetworkReply *reply = manager->head(request);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {

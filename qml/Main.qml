@@ -123,7 +123,7 @@ ApplicationWindow
                 }
 
                 Text {
-                    text: "v1.4.0";
+                    text: "v1.4.1";
                     font.family: appFont.name
                     font.pixelSize: 13
                     color: "#616161"
