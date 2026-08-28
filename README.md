@@ -50,7 +50,7 @@ This project is licensed under the GPLv3 License - see the [LICENSE](https://git
 
 ## Acknowledgments
 - Qt Company for the framework
-- Contributors and testers
+- Contributors and testers (Special thanks to [@Dayziii1](https://github.com/Dayziii1))
 - Open source community
 
 ## Support
