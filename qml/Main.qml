@@ -9,8 +9,9 @@ import "pages"
 ApplicationWindow 
 {
     id: root
-    width: 1200
-    height: 700
+
+    minimumWidth: 1000
+    minimumHeight: 600
 
     title: "Quantum"
 
@@ -21,6 +22,99 @@ ApplicationWindow
 
     property bool isMaximized: false
     property rect normalGeometry: Qt.rect(x, y, width, height)
+
+    // Border thickness for resizing
+    readonly property int borderThickness: 8
+
+    // Left Edge
+    MouseArea {
+        width: borderThickness
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        cursorShape: Qt.SizeHorCursor
+        onPressed: root.startSystemResize(Qt.LeftEdge)
+    }
+
+    // Right Edge
+    MouseArea {
+        width: borderThickness
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        cursorShape: Qt.SizeHorCursor
+        onPressed: root.startSystemResize(Qt.RightEdge)
+    }
+
+    // Top Edge
+    MouseArea {
+        height: borderThickness
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        cursorShape: Qt.SizeVerCursor
+        onPressed: root.startSystemResize(Qt.TopEdge)
+    }
+
+    // Bottom Edge
+    MouseArea {
+        height: borderThickness
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeVerCursor
+        onPressed: root.startSystemResize(Qt.BottomEdge)
+    }
+
+    // Bottom-Right Corner
+    MouseArea {
+        width: borderThickness * 2
+        height: borderThickness * 2
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.RightEdge | Qt.BottomEdge)
+    }
+
+    // Bottom-Right Corner
+    MouseArea {
+        width: borderThickness * 2
+        height: borderThickness * 2
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.RightEdge | Qt.BottomEdge)
+    }
+
+    // Bottom-Left Corner
+    MouseArea {
+        width: borderThickness * 2
+        height: borderThickness * 2
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.LeftEdge | Qt.BottomEdge)
+    }
+
+    // Top-Right Corner
+    MouseArea {
+        width: borderThickness * 2
+        height: borderThickness * 2
+        anchors.right: parent.right
+        anchors.top: parent.top
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.RightEdge | Qt.TopEdge)
+    }
+
+    // Top-Left Corner
+    MouseArea {
+        width: borderThickness * 2
+        height: borderThickness * 2
+        anchors.left: parent.left
+        anchors.top: parent.top
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: root.startSystemResize(Qt.LeftEdge | Qt.TopEdge)
+    }
 
     onClosing: {
         close.accepted = false;
