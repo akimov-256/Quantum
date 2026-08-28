@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added delays for download related buttons to prevent crashes and undefined behavior for downloads.
 - Added resizing feature for the App.
 
+### Fixed
+- Fixed connections dropdown list not closing on url dialog movement.
+
 ## [v1.4.1]  28-08-2026
 
 ### Added

@@ -91,6 +91,8 @@ Window {
                         property point clickPos: "0,0"
 
                         onPressed: (mouse) => {
+                            if (connectionsList.isActivated)
+                                connectionsList.isActivated = false
                             root.startSystemMove()
                         }
                     }
