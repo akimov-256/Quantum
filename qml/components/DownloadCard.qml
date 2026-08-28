@@ -14,6 +14,7 @@ Rectangle {
     property string rta
     property bool isCompleted: false
     property bool isPaused: false
+    property int delayTargetButton: 0           // 0 As default, 1 for the pause/resume button, 2 for the cancel button.
 
     signal buttonClicked()
     signal cancelClicked()
@@ -30,6 +31,20 @@ Rectangle {
         id: appFont
 
         source: "qrc:/qml/assets/fonts/Lexend.ttf"
+    }
+
+    Timer {
+        id: delayTimer
+        interval: 800
+        repeat: false
+
+        onTriggered: {
+            if (delayTargetButton == 1)
+                pauseButton.buttonEnabled = true
+            else if (delayTargetButton == 2)
+                cancelButton.buttonEnabled = true
+            delayTargetButton = 0
+        }
     }
 
     RowLayout {
@@ -124,7 +139,12 @@ Rectangle {
                 buttonText: isCompleted ? "Open" : isPaused ? "Resume" : "Pause"
                 buttonIcon: isCompleted ? "qrc:/qml/assets/icons/play.svg" : isPaused ? "qrc:/qml/assets/icons/play.svg" : "qrc:/qml/assets/icons/pause.svg"
 
-                onClicked: root.buttonClicked()
+                onClicked: {
+                    buttonEnabled = false
+                    root.buttonClicked()
+                    root.delayTargetButton = 1
+                    delayTimer.start()
+                }
             }
 
             UiButton {
@@ -136,7 +156,12 @@ Rectangle {
                 buttonText: isCompleted ? "Remove" : "Cancel"
                 buttonIcon: "qrc:/qml/assets/icons/close.svg"
 
-                onClicked: root.cancelClicked()
+                onClicked: {
+                    buttonEnabled = false
+                    root.cancelClicked()
+                    root.delayTargetButton = 2
+                    delayTimer.start()
+                }
             }
         }
     }

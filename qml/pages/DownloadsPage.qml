@@ -7,7 +7,25 @@ import "../js/Helper.js" as Helper
 Item {
     id: root
 
+    property int delayTargetButton: 0               // 0 for default, 1 for pause all button, 2 for resume all button.
+
     signal newDownloadRequested();
+
+    Timer {
+        id: delayTimer
+        interval: 500
+        repeat: false
+
+        onTriggered: {
+            if (delayTargetButton == 1) {
+                backend.pauseAll()
+            }
+            else if (delayTargetButton == 2) {
+                backend.resumeAll()
+            }
+            delayTargetButton = 0
+        }
+    }
 
     ColumnLayout {
         id: downloadsLayout
@@ -110,7 +128,10 @@ Item {
                     buttonText: "Pause All"
                     buttonIcon: "qrc:/qml/assets/icons/pause.svg"
 
-                    onClicked: backend.pauseAll()
+                    onClicked: {
+                        root.delayTargetButton = 1
+                        delayTimer.start()
+                    }
                 }
 
                 // Resume all
@@ -130,7 +151,10 @@ Item {
                     buttonText: "Resume All"
                     buttonIcon: "qrc:/qml/assets/icons/play.svg"
 
-                    onClicked: backend.resumeAll()
+                    onClicked: {
+                        root.delayTargetButton = 2
+                        delayTimer.start()
+                    }
                 }
 
                 Item {
