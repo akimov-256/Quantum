@@ -23,7 +23,6 @@ UninstallDisplayIcon={app}\{#MyAppExeName}
 ArchitecturesInstallIn64BitMode=x64compatible
 SetupIconFile=..\qml\assets\icons\icon.ico
 LicenseFile=..\LICENSE.txt
-LicenseText=Please read the following license agreement carefully.
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
