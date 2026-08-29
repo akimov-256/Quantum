@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed connections dropdown list not closing on url dialog movement.
+- Fixed firefox integration failing to stop the download from the browser correctly.
 
 ## [v1.4.1]  28-08-2026
 

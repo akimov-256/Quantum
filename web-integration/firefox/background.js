@@ -1,10 +1,8 @@
-// Firefox background script (e.g., background.js)
+browser.downloads.onCreated.addListener(async (downloadItem) => {
+    await browser.downloads
+        .erase({ id: downloadItem.id });        // Immediately cancel the download.
 
-browser.downloads.onCreated.addListener((downloadItem) => {
-    browser.downloads.cancel(downloadItem.id);      // Cancel the download in the browser
-
-    console.log("url: " + downloadItem.url);        // Log and forward the URL
-    sendToManager(downloadItem.url);
+    sendToManager(downloadItem.url);            // Pass url to send function.
 });
 
 async function sendToManager(url) {
