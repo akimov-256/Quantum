@@ -23,12 +23,22 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QQmlContext>
+#include <QLockFile>
 
 int main(int argc, char *argv[])
 {
     QQuickStyle::setStyle("Fusion");
 
     QApplication a(argc, argv);
+
+    const QString lockFilePath = QDir::temp().absoluteFilePath("com.guenane.quantum.lock");
+    QLockFile lockFile(lockFilePath);
+
+    if (!lockFile.tryLock())
+    {
+        QMessageBox::critical(nullptr, "Quantum already running", "Another instance of quantum is already running.\nRecheck and try again.");
+        return 0;
+    }
 
     a.setWindowIcon(QIcon(":/qml/assets/icons/icon.ico"));
 

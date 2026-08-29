@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed connections dropdown list not closing on url dialog movement.
 - Fixed firefox integration failing to stop the download from the browser correctly.
+- Fixed multiple instances execution bug by throwing an error each time the user attempts to reopen Quantum while another instance is already running.
 
 ## [v1.4.1]  28-08-2026
 
