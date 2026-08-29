@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added delays for download related buttons to prevent crashes and undefined behavior for downloads.
 - Added resizing feature for the App.
+- Added popup files for firefox integration.
 
 ### Fixed
 - Fixed connections dropdown list not closing on url dialog movement.

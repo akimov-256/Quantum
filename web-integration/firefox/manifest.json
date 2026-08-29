@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Quantum Web Integration",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "The web integration for Quantum download manager.",
 	"icons": {
 		"16": "assets/icon-16.png",
