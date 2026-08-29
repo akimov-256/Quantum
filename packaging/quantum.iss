@@ -28,8 +28,8 @@ LicenseFile=..\LICENSE
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: checked
-Name: "startup"; Description: "Start {#MyAppName} when Windows starts"; GroupDescription: "Startup options:"; Flags: checked
+Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"
+Name: "startup"; Description: "Start {#MyAppName} when Windows starts"; GroupDescription: "Startup options:"
 
 [Files]
 Source: "{#MyAppExeDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
