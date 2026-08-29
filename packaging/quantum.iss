@@ -22,7 +22,7 @@ WizardStyle=modern
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ArchitecturesInstallIn64BitMode=x64compatible
 SetupIconFile=..\qml\assets\icons\icon.ico
-LicenseFile=..\LICENSE.txt
+LicenseFile=..\LICENSE
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
