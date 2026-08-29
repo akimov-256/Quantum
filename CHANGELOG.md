@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added resizing feature for the App.
 - Added popup files for firefox integration.
 - Added launch on startup option in windows installer, by selecting the option, a registery key will be created.
+- Added license display in the installer.
 
 ### Fixed
 - Fixed connections dropdown list not closing on url dialog movement.
