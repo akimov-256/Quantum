@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed start download button remaining active after a download started resulting in possible start of invalid downloads.
 
+### Changed
+- Removed download speed after the download is completed.
+
 ## [v1.4.2]  29-08-2026
 
 ### Added

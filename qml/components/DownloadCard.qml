@@ -95,7 +95,7 @@ Rectangle {
 
                     Layout.alignment: Qt.AlignRight
 
-                    text: speed
+                    text: downloadProgress === 100 ? "" : speed
 
                     color: "gray"
                     font.family: appFont.name
