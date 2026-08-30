@@ -580,6 +580,12 @@ bool Backend::headReqCompleted() const
     return m_headReqCompleted;
 }
 
+void Backend::setHeadReqCompleted(bool val)
+{
+    m_headReqCompleted = val;
+    emit headReqCompletedChanged();
+}
+
 int Backend::downloadCount() const
 {
     int count = 0;

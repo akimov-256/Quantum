@@ -29,6 +29,7 @@ Window {
         fileNameBox.text = ""
         pathBox.text = Helper.formatFilePaths(StandardPaths.writableLocation(StandardPaths.DownloadLocation))
         sha256Box.text = ""
+        backend.setHeadReqCompleted(false)
     }
 
     FontLoader {
