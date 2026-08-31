@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added database initialization logic.
+
 ### Fixed
 - Fixed start download button remaining active after a download started resulting in possible start of invalid downloads.
 

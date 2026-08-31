@@ -17,6 +17,7 @@
 */
 
 #include "src/backend/backend.h"
+#include "src/core/databasemanager.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -43,6 +44,8 @@ int main(int argc, char *argv[])
     a.setWindowIcon(QIcon(":/qml/assets/icons/icon.ico"));
 
     Backend backend;
+
+    DatabaseManager dbMan;
 
     QQmlApplicationEngine engine;
 

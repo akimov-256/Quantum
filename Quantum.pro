@@ -1,6 +1,6 @@
 QT       += core gui
 QT += quick qml quickcontrols2 network
-QT += svg
+QT += svg sql
 LIBS += -lShell32
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -15,6 +15,7 @@ SOURCES += \
     src/backend/backend.cpp \
     src/backend/downloadmodel.cpp \
     src/backend/filenamehandler.cpp \
+    src/core/databasemanager.cpp \
     src/core/downloader.cpp \
     src/core/downloadworker.cpp \
     src/core/main.cpp
@@ -23,6 +24,7 @@ HEADERS += \
     src/backend/backend.h \
     src/backend/downloadmodel.h \
     src/backend/filenamehandler.h \
+    src/core/databasemanager.h \
     src/core/downloader.h \
     src/models/downloadcategories.h \
     src/models/downloadstatus.h \
