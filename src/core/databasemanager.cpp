@@ -31,8 +31,27 @@ void DatabaseManager::initDatabase()
         "end_date INTEGER"
         ");";
 
-    if (!query.exec(sql))
+    if (!query.exec(sql))                   // Execute the qurey and handle failures.
         qDebug() << "Database query error: " << query.lastError().text();
-    else
-        qDebug() << "Tables Created";
+}
+
+void DatabaseManager::insertDownload(const downloadInformations &info)
+{
+    QSqlQuery query;                        // Create the query variable.
+
+    query.prepare(                          // Prepare the query.
+        "INSERT INTO downloads (id, name, url, size, connections, sha256, start_date)"
+        "values (:id, :name, :url, :size, :connections, :sha256, :start_date)");
+
+    // Bind values.
+    query.bindValue(":id", info.ID);
+    query.bindValue(":name", info.fileName);
+    query.bindValue(":url", info.url);
+    query.bindValue(":size", info.fileByteSize);
+    query.bindValue(":connections", info.chunkCount);
+    query.bindValue(":sha256", info.SHA256);
+    query.bindValue(":start_date", QDateTime::currentDateTime().toSecsSinceEpoch());
+
+    if (!query.exec())
+        qDebug() << "Database insert error: " << query.lastError().text();
 }

@@ -5,6 +5,7 @@ Backend::Backend(QObject *parent)
     , m_webServer(new QTcpServer(this))
     , manager(new QNetworkAccessManager(this))
     , m_fileNameHandler(new FileNameHandler(this))
+    , m_databaseManager(new DatabaseManager(this))
 {
     m_downloadModel.setDownloads(&m_downloads);
 
@@ -102,6 +103,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
     Downloader *downloader = new Downloader(this);
     m_activeDownloaders.insert(info.ID, downloader);
+    m_databaseManager->insertDownload(info);                // Insert new download to database.
 
     downloader->download(info);
 

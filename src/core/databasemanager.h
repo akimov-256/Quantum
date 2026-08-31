@@ -1,11 +1,14 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include "src/models/downloadstatus.h"
+
 #include <QObject>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QDir>
+#include <QDateTime>
 
 class DatabaseManager : public QObject
 {
@@ -14,6 +17,7 @@ public:
     explicit DatabaseManager(QObject *parent = nullptr);
 
     void initDatabase();
+    void insertDownload(const downloadInformations &info);
 
 private:
     QSqlDatabase m_db;              // Define the database variable
