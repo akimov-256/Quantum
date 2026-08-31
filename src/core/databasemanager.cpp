@@ -26,6 +26,7 @@ void DatabaseManager::initDatabase()
         "url TEXT NOT NULL,"
         "size INTEGER NOT NULL,"
         "connections INTEGER NOT NULL,"
+        "status TEXT,"
         "sha256 TEXT,"
         "start_date INTEGER NOT NULL,"
         "end_date INTEGER"
@@ -50,8 +51,25 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     query.bindValue(":size", info.fileByteSize);
     query.bindValue(":connections", info.chunkCount);
     query.bindValue(":sha256", info.SHA256);
-    query.bindValue(":start_date", QDateTime::currentDateTime().toSecsSinceEpoch());
+    query.bindValue(":start_date", QDateTime::currentSecsSinceEpoch());
 
     if (!query.exec())
         qDebug() << "Database insert error: " << query.lastError().text();
+}
+
+void DatabaseManager::downloadFinished(const QString &id, const QString &status)
+{
+    QSqlQuery query;
+
+    query.prepare("UPDATE downloads SET "
+                  "status = :status, "
+                  "end_date = :end_date "
+                  "WHERE id = :id");
+
+    query.bindValue(":status", status);
+    query.bindValue(":end_date", QDateTime::currentSecsSinceEpoch());
+    query.bindValue(":id", id);
+
+    if (!query.exec())
+        qDebug() << "Database update error: " << query.lastError().text();
 }

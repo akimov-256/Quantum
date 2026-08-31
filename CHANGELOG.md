@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added database initialization logic.
+- Added download insertion into database.
+- Added updating download end time and status on finish.
 
 ### Fixed
 - Fixed start download button remaining active after a download started resulting in possible start of invalid downloads.

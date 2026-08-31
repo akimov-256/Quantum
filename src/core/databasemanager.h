@@ -16,10 +16,14 @@ class DatabaseManager : public QObject
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
 
-    void initDatabase();
     void insertDownload(const downloadInformations &info);
+    void downloadFinished(const QString &id, const QString &status);
 
 private:
+    // Functions
+    void initDatabase();
+
+    // Variables
     QSqlDatabase m_db;              // Define the database variable
 
 signals:

@@ -133,6 +133,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
         if (row == -1) return;
 
         m_downloads[row].status = success ? "Completed" : "Failed";
+        m_databaseManager->downloadFinished(m_downloads[row].ID, m_downloads[row].status);
         emit countChanged();
         m_downloadModel.updateDownload(m_downloads[row].ID);
         qDebug() << message;
