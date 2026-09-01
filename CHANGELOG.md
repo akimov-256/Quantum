@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed start download button remaining active after a download started resulting in possible start of invalid downloads.
 - Fixed download count not updating after a download is removed.
+- Fixed download category property not being saved into database.
 
 ### Changed
 - Removed download speed after the download is completed.

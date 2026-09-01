@@ -26,6 +26,7 @@ void DatabaseManager::initDatabase()
         "url TEXT NOT NULL,"
         "size INTEGER NOT NULL,"
         "connections INTEGER NOT NULL,"
+        "category INTEGER NOT NULL,"
         "status TEXT,"
         "sha256 TEXT,"
         "start_date INTEGER NOT NULL,"
@@ -41,8 +42,8 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     QSqlQuery query;                        // Create the query variable.
 
     query.prepare(                          // Prepare the query.
-        "INSERT INTO downloads (id, name, url, size, connections, sha256, start_date)"
-        "values (:id, :name, :url, :size, :connections, :sha256, :start_date)");
+        "INSERT INTO downloads (id, name, url, size, connections, category, sha256, start_date)"
+        "values (:id, :name, :url, :size, :connections, :category, :sha256, :start_date)");
 
     // Bind values.
     // Set the start date as the date of insertion.
@@ -51,6 +52,7 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     query.bindValue(":url", info.url);
     query.bindValue(":size", info.fileByteSize);
     query.bindValue(":connections", info.chunkCount);
+    query.bindValue(":category", info.category);
     query.bindValue(":sha256", info.SHA256);
     query.bindValue(":start_date", QDateTime::currentSecsSinceEpoch());
 
@@ -97,7 +99,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
 
     QString sql = "SELECT id, name, url, "  // Create the query statement.
                   "size, connections, "
-                  "sha256, status "
+                  "category, sha256, status "
                   "FROM downloads";
 
     if (!query.exec(sql))                   // Execute query and handle failures.
@@ -115,6 +117,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.url = query.value("url").toString();
         download.fileByteSize = query.value("size").toLongLong();
         download.chunkCount = query.value("connections").toInt();
+        download.category = static_cast<DownloadCategory>(query.value("category").toInt());
         download.SHA256 = query.value("sha256").toString();
         download.status = query.value("status").toString();
 
