@@ -90,3 +90,36 @@ void DatabaseManager::removeDownload(const QString &id)
     if (!query.exec())                      // Execute query and handle failures.
         qDebug() << "Database update error:" << query.lastError().text();
 }
+
+QVector<downloadInformations> DatabaseManager::getDownloads()
+{
+    QSqlQuery query;                        // Create the query variable.
+
+    QString sql = "SELECT id, name, url, "  // Create the query statement.
+                  "size, connections, "
+                  "sha256, status "
+                  "FROM downloads";
+
+    if (!query.exec(sql))                   // Execute query and handle failures.
+        qDebug() << "Database extract error: " << query.lastError().text();
+
+    QVector<downloadInformations> result;   // Create the downloads vector.
+
+    while(query.next())
+    {
+        downloadInformations download;      // Create the current download info.
+
+        // Get each property and assign it to the download info.
+        download.ID = query.value("id").toString();
+        download.fileName = query.value("name").toString();
+        download.url = query.value("url").toString();
+        download.fileByteSize = query.value("size").toLongLong();
+        download.chunkCount = query.value("connections").toInt();
+        download.SHA256 = query.value("sha256").toString();
+        download.status = query.value("status").toString();
+
+        result.push_back(download);         // Add the extracted download to the result list.
+    }
+
+    return result;                          // Return the result vector.
+}

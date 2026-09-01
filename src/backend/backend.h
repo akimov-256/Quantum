@@ -74,6 +74,10 @@ signals:
     void countChanged();
 
 private:
+    // Functions
+    void loadDownloads();
+
+    // Variables
     QTcpServer *m_webServer;
     QNetworkAccessManager *manager;
     QHash<QString, Downloader*> m_activeDownloaders;

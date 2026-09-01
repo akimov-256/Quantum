@@ -9,7 +9,21 @@ Backend::Backend(QObject *parent)
 {
     m_downloadModel.setDownloads(&m_downloads);
 
+    loadDownloads();
     StartWebServer();
+}
+
+void Backend::loadDownloads()
+{
+    QVector<downloadInformations> downloads;        // Create the downloads variable.
+    downloads = m_databaseManager->getDownloads();  // Get the downloads from the database.
+
+    for (downloadInformations download : downloads)
+    {
+        m_downloads.append(download);               // Add the download to the backend downloads vector.
+        int row = m_downloads.size() - 1;           // Get the new download row.
+        m_downloadModel.addDownload(row);           // Add the download to the donwload model.
+    }
 }
 
 void Backend::StartWebServer()
