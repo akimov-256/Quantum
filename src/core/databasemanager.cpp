@@ -25,6 +25,8 @@ void DatabaseManager::initDatabase()
         "name TEXT NOT NULL,"
         "url TEXT NOT NULL,"
         "size INTEGER NOT NULL,"
+        "downloaded INTEGER NOT NULL,"
+        "progress INTEGER NOT NULL,"
         "connections INTEGER NOT NULL,"
         "category INTEGER NOT NULL,"
         "status TEXT,"
@@ -42,8 +44,8 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     QSqlQuery query;                        // Create the query variable.
 
     query.prepare(                          // Prepare the query.
-        "INSERT INTO downloads (id, name, url, size, connections, category, sha256, start_date)"
-        "values (:id, :name, :url, :size, :connections, :category, :sha256, :start_date)");
+        "INSERT INTO downloads (id, name, url, size, downloaded, progress, connections, category, sha256, start_date)"
+        "values (:id, :name, :url, :size, :downloaded, :progress, :connections, :category, :sha256, :start_date)");
 
     // Bind values.
     // Set the start date as the date of insertion.
@@ -51,6 +53,8 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     query.bindValue(":name", info.fileName);
     query.bindValue(":url", info.url);
     query.bindValue(":size", info.fileByteSize);
+    query.bindValue(":downloaded", info.currentSize);
+    query.bindValue(":progress", info.progress);
     query.bindValue(":connections", info.chunkCount);
     query.bindValue(":category", info.category);
     query.bindValue(":sha256", info.SHA256);
@@ -60,13 +64,35 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
         qDebug() << "Database insert error: " << query.lastError().text();
 }
 
+void DatabaseManager::updateDownload(const downloadInformations &info)
+{
+    QSqlQuery query;                        // Create the query variable.
+
+    query.prepare("UPDATE downloads SET "   // Prepare the query.
+                  "downloaded = :downloaded, "
+                  "progress = :progress, "
+                  "status = :status "
+                  "WHERE id = :id");
+
+    // Bind values.
+    query.bindValue(":downloaded", info.currentSize);
+    query.bindValue(":progress", info.progress);
+    query.bindValue(":status", info.status);
+    query.bindValue(":id", info.ID);
+
+    if (!query.exec())                      // Execute query and handle failures.
+        qDebug() << "Database update error: " << query.lastError().text();
+}
+
 void DatabaseManager::downloadFinished(const QString &id, const QString &status)
 {
     QSqlQuery query;                        // Create the query variable.
 
     query.prepare("UPDATE downloads SET "   // Prepare the query.
+                  "downloaded = :downloaded, "
+                  "progress = :progress, "
                   "status = :status, "
-                  "end_date = :end_date "
+                  "end_date = :end_date, "
                   "WHERE id = :id");
 
     // Bind values.
@@ -99,6 +125,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
 
     QString sql = "SELECT id, name, url, "  // Create the query statement.
                   "size, connections, "
+                  "downloaded, progress, "
                   "category, sha256, status "
                   "FROM downloads";
 
@@ -116,6 +143,8 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.fileName = query.value("name").toString();
         download.url = query.value("url").toString();
         download.fileByteSize = query.value("size").toLongLong();
+        download.currentSize = query.value("downloaded").toLongLong();
+        download.progress = query.value("progress").toInt();
         download.chunkCount = query.value("connections").toInt();
         download.category = static_cast<DownloadCategory>(query.value("category").toInt());
         download.SHA256 = query.value("sha256").toString();

@@ -123,15 +123,25 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
     emit countChanged();
 
-    connect(downloader, &Downloader::progressChanged, this, [this, id = info.ID](qint64 bytesReceived, qint64 bytesTotal) {
+    QElapsedTimer *timer = new QElapsedTimer();
+    timer->start();
+
+    connect(downloader, &Downloader::progressChanged, this, [this, timer, id = info.ID](qint64 bytesReceived, qint64 bytesTotal) {
         int row = rowForId(id);
         if (row == -1) return;
 
         m_downloads[row].fileByteSize = bytesTotal;
         m_downloads[row].currentSize = bytesReceived;
-        if (bytesTotal > 0)
+        if (bytesTotal > 0)                                     // Calculate progress.
             m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
-        m_downloadModel.updateDownload(m_downloads[row].ID);
+
+        if (timer->elapsed() > 5000)                            // Wait until 5secs have passed since the last database update.
+        {
+            m_databaseManager->                                 // Update download at the database.
+                updateDownload(m_downloads[row]);
+            timer->restart();                                   // Restart timer
+        }
+        m_downloadModel.updateDownload(m_downloads[row].ID);    // Update download at the model.
     });
 
     connect(downloader, &Downloader::speedChanged, this, [this, id = info.ID](qint64 bps) {

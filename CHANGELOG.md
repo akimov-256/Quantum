@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added updating download end time and status in database on download finish.
 - Added download removal logic from database.
 - Added download loading logic from database.
+- Added real time download updating to database.
 
 ### Fixed
 - Fixed start download button remaining active after a download started resulting in possible start of invalid downloads.
