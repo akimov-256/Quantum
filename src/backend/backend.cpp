@@ -423,6 +423,7 @@ void Backend::removeRequested(const QString id)
     if (reply == QMessageBox::No)
         return;
 
+    m_databaseManager->removeDownload(id);
     m_downloadModel.removeRow(rowForId(id));
 }
 

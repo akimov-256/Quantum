@@ -45,6 +45,7 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
         "values (:id, :name, :url, :size, :connections, :sha256, :start_date)");
 
     // Bind values.
+    // Set the start date as the date of insertion.
     query.bindValue(":id", info.ID);
     query.bindValue(":name", info.fileName);
     query.bindValue(":url", info.url);
@@ -59,17 +60,33 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
 
 void DatabaseManager::downloadFinished(const QString &id, const QString &status)
 {
-    QSqlQuery query;
+    QSqlQuery query;                        // Create the query variable.
 
-    query.prepare("UPDATE downloads SET "
+    query.prepare("UPDATE downloads SET "   // Prepare the query.
                   "status = :status, "
                   "end_date = :end_date "
                   "WHERE id = :id");
 
+    // Bind values.
+    // Set the end date as the date of modification.
     query.bindValue(":status", status);
     query.bindValue(":end_date", QDateTime::currentSecsSinceEpoch());
     query.bindValue(":id", id);
 
-    if (!query.exec())
+    if (!query.exec())                      // Execute query and handle failures.
         qDebug() << "Database update error: " << query.lastError().text();
+}
+
+void DatabaseManager::removeDownload(const QString &id)
+{
+    QSqlQuery query;                        // Create the query variable.
+
+    query.prepare("DELETE FROM downloads "  // Prepare the query.
+                  "WHERE id = :id");
+
+    // Bind values.
+    query.bindValue(":id", id);
+
+    if (!query.exec())                      // Execute query and handle failures.
+        qDebug() << "Database update error:" << query.lastError().text();
 }
