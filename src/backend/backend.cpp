@@ -425,6 +425,8 @@ void Backend::removeRequested(const QString id)
 
     m_databaseManager->removeDownload(id);
     m_downloadModel.removeRow(rowForId(id));
+
+    emit countChanged();                        // Signal that the download count changed.
 }
 
 void Backend::pauseAll() {
@@ -460,7 +462,7 @@ void Backend::pauseAll() {
         }
     }
 
-    emit countChanged();
+    emit countChanged();                        // Signal that the download count changed.
 }
 
 void Backend::resumeAll() {
