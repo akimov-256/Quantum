@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added download removal logic from database.
 - Added download loading logic from database.
 - Added real time download updating to database.
+- Added each connection progress saving to database to enable resuming later.
 
 ### Fixed
 - Fixed start download button remaining active after a download started resulting in possible start of invalid downloads.

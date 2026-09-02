@@ -125,12 +125,13 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
     QElapsedTimer *timer = new QElapsedTimer();
     timer->start();
 
-    connect(downloader, &Downloader::progressChanged, this, [this, timer, id = info.ID](qint64 bytesReceived, qint64 bytesTotal) {
+    connect(downloader, &Downloader::progressChanged, this, [this, timer, id = info.ID](qint64 bytesReceived, qint64 bytesTotal, QVector<qint64> chunkProgress) {
         int row = rowForId(id);
         if (row == -1) return;
 
         m_downloads[row].fileByteSize = bytesTotal;
         m_downloads[row].currentSize = bytesReceived;
+        m_downloads[row].chunkProgress = chunkProgress;
         m_downloads[row].status = "Downloading...";             // Update status.
         if (bytesTotal > 0)                                     // Calculate progress.
             m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;

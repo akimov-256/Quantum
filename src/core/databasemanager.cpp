@@ -30,6 +30,7 @@ void DatabaseManager::initDatabase()
         "downloaded INTEGER NOT NULL,"
         "progress INTEGER NOT NULL,"
         "connections INTEGER NOT NULL,"
+        "connections_progress STRING,"
         "category INTEGER NOT NULL,"
         "status TEXT,"
         "sha256 TEXT,"
@@ -46,11 +47,12 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     QSqlQuery query;                        // Create the query variable.
 
     query.prepare(                          // Prepare the query.
-        "INSERT INTO downloads (id, name, url, path, temp_path, size, downloaded, progress, connections, category, sha256, start_date)"
-        "values (:id, :name, :url, :path, :temp_path, :size, :downloaded, :progress, :connections, :category, :sha256, :start_date)");
+        "INSERT INTO downloads (id, name, url, path, temp_path, size, downloaded, progress, connections, connections_progress, category, sha256, start_date)"
+        "values (:id, :name, :url, :path, :temp_path, :size, :downloaded, :progress, :connections, :connections_progress, :category, :sha256, :start_date)");
 
     // Bind values.
     // Set the start date as the date of insertion.
+    // Serialize connections progress vector.
     query.bindValue(":id", info.ID);
     query.bindValue(":name", info.fileName);
     query.bindValue(":url", info.url);
@@ -60,6 +62,8 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     query.bindValue(":downloaded", info.currentSize);
     query.bindValue(":progress", info.progress);
     query.bindValue(":connections", info.chunkCount);
+    QString conProgressSerialized = serializeVector(info.chunkProgress);
+    query.bindValue(":connections_progress", conProgressSerialized);
     query.bindValue(":category", info.category);
     query.bindValue(":sha256", info.SHA256);
     query.bindValue(":start_date", QDateTime::currentSecsSinceEpoch());
@@ -74,12 +78,16 @@ void DatabaseManager::updateDownload(const downloadInformations &info)
 
     query.prepare("UPDATE downloads SET "   // Prepare the query.
                   "downloaded = :downloaded, "
+                  "connections_progress = :connections_progress, "
                   "progress = :progress, "
                   "status = :status "
                   "WHERE id = :id");
 
     // Bind values.
+    // Serialize connections progress vector.
     query.bindValue(":downloaded", info.currentSize);
+    QString conProgressSerialized = serializeVector(info.chunkProgress);
+    query.bindValue(":connections_progress", conProgressSerialized);
     query.bindValue(":progress", info.progress);
     query.bindValue(":status", info.status);
     query.bindValue(":id", info.ID);
@@ -109,6 +117,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
     QString sql = "SELECT id, name, url, "  // Create the query statement.
                   "path, temp_path, "
                   "size, connections, "
+                  "connections_progress, "
                   "downloaded, progress, "
                   "category, sha256, status "
                   "FROM downloads";
@@ -123,6 +132,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         downloadInformations download;      // Create the current download info.
 
         // Get each property and assign it to the download info.
+        // Deserialize connectons progress and assign it to the according property.
         download.ID = query.value("id").toString();
         download.fileName = query.value("name").toString();
         download.url = query.value("url").toString();
@@ -132,6 +142,8 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.currentSize = query.value("downloaded").toLongLong();
         download.progress = query.value("progress").toInt();
         download.chunkCount = query.value("connections").toInt();
+        QString conProgressSerialized = query.value("connections_progress").toString();
+        download.chunkProgress = deserializeString(conProgressSerialized);
         download.category = static_cast<DownloadCategory>(query.value("category").toInt());
         download.SHA256 = query.value("sha256").toString();
         download.status = query.value("status").toString();
@@ -140,4 +152,38 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
     }
 
     return result;                          // Return the result vector.
+}
+
+QString DatabaseManager::serializeVector(const QVector<qint64> &vector)
+{
+    QStringList stringList;                 // Create the serialized numbers list.
+
+    for (const qint64 &number : vector)     // Loop through the vector contents.
+    {
+        QString serialized =                // Convert each number to a string.
+            QString::number(number);
+
+        stringList.append(serialized);      // Add the serialized number to the serialized numbers list.
+    }
+
+    QString result = stringList.join(",");  // Join all the serialized number to a result string.
+
+    return result;                          // Return the result string.
+}
+
+QVector<qint64> DatabaseManager::deserializeString(const QString &serialized)
+{
+    QVector<qint64> result;                     // Create the result vector.
+
+    QStringList stringList =                    // Create the serialized numbers list.
+        serialized.split(",");
+
+    for (const QString &string : stringList)    // Loop through the serialized numbers list.
+    {
+        qint64 number = string.toLongLong();    // Convert each string back to a longlong number.
+
+        result.append(number);                  // Add the converted number to the result list.
+    }
+
+    return result;                              // Return the result vector.
 }

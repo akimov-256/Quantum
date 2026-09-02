@@ -63,7 +63,7 @@ public:
     downloadInformations downloadInfo();
 signals:
     void downloadStarted();
-    void progressChanged(qint64 bytesRecived, qint64 bytesTotal);
+    void progressChanged(qint64 bytesRecived, qint64 bytesTotal, QVector<qint64> chunkProgress);
     void downloadFinished(bool success, const QString &message);
     void speedChanged(qint64 bytesPerSecond);
 

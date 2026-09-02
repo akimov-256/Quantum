@@ -9,6 +9,7 @@
 #include <QtSql/QSqlQuery>
 #include <QDir>
 #include <QDateTime>
+#include <QStringList>
 
 class DatabaseManager : public QObject
 {
@@ -20,6 +21,10 @@ public:
     void updateDownload(const downloadInformations &info);
     void removeDownload(const QString &id);
     QVector<downloadInformations> getDownloads();
+
+    // Helper functions
+    QString serializeVector(const QVector<qint64> &vector);
+    QVector<qint64> deserializeString(const QString &serialized);
 
 private:
     // Functions

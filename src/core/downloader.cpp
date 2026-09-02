@@ -240,7 +240,7 @@ void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
     info.currentSize += bytes;
     if (chunkIndex >= 0 && chunkIndex < chunkProgress.size())
         chunkProgress[chunkIndex] += bytes;
-    emit progressChanged(info.currentSize, info.fileByteSize);
+    emit progressChanged(info.currentSize, info.fileByteSize, chunkProgress);
 }
 
 void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
@@ -445,7 +445,7 @@ void Downloader::downloadResume(downloadInformations Info)
             handleDownloadFinish();
     });
 
-    emit progressChanged(info.currentSize, info.fileByteSize);
+    emit progressChanged(info.currentSize, info.fileByteSize, chunkProgress);
 }
 
 void Downloader::downloadStop()
