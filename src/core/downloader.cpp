@@ -21,7 +21,9 @@
 #include <QUrl>
 #include <QTimer>
 
-Downloader::Downloader(QObject *parent) : QObject(parent)
+Downloader::Downloader(QObject *parent)
+    : QObject(parent)
+    , m_databaseManager(new DatabaseManager(this))
 {
     manager = new QNetworkAccessManager(this);
 }
@@ -44,6 +46,8 @@ void Downloader::download(downloadInformations Info)
     info.tempPath = m_qdmTempDir + "/" + info.ID + "/" + info.fileName + ".qdm";
     m_file.setFileName(info.tempPath);
     m_file.resize(info.fileByteSize);
+
+    m_databaseManager->insertDownload(info);            // Insert download to database.
 
     QNetworkRequest request(m_url);
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute     // Restrict HTTP/1.1 on HEAD requests.

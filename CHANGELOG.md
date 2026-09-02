@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Removed download speed after the download is completed.
+- Changed the database downloads table columns to include save and temp paths of each download.
 
 ## [v1.4.2]  29-08-2026
 

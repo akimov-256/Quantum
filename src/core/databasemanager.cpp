@@ -24,6 +24,8 @@ void DatabaseManager::initDatabase()
         "id TEXT NOT NULL,"
         "name TEXT NOT NULL,"
         "url TEXT NOT NULL,"
+        "path TEXT NOT NULL,"
+        "temp_path TEXT NOT NULL,"
         "size INTEGER NOT NULL,"
         "downloaded INTEGER NOT NULL,"
         "progress INTEGER NOT NULL,"
@@ -44,14 +46,16 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     QSqlQuery query;                        // Create the query variable.
 
     query.prepare(                          // Prepare the query.
-        "INSERT INTO downloads (id, name, url, size, downloaded, progress, connections, category, sha256, start_date)"
-        "values (:id, :name, :url, :size, :downloaded, :progress, :connections, :category, :sha256, :start_date)");
+        "INSERT INTO downloads (id, name, url, path, temp_path, size, downloaded, progress, connections, category, sha256, start_date)"
+        "values (:id, :name, :url, :path, :temp_path, :size, :downloaded, :progress, :connections, :category, :sha256, :start_date)");
 
     // Bind values.
     // Set the start date as the date of insertion.
     query.bindValue(":id", info.ID);
     query.bindValue(":name", info.fileName);
     query.bindValue(":url", info.url);
+    query.bindValue(":path", info.savePath);
+    query.bindValue(":temp_path", info.tempPath);
     query.bindValue(":size", info.fileByteSize);
     query.bindValue(":downloaded", info.currentSize);
     query.bindValue(":progress", info.progress);
@@ -103,6 +107,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
     QSqlQuery query;                        // Create the query variable.
 
     QString sql = "SELECT id, name, url, "  // Create the query statement.
+                  "path, temp_path, "
                   "size, connections, "
                   "downloaded, progress, "
                   "category, sha256, status "
@@ -121,6 +126,8 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.ID = query.value("id").toString();
         download.fileName = query.value("name").toString();
         download.url = query.value("url").toString();
+        download.savePath = query.value("path").toString();
+        download.tempPath = query.value("temp_path").toString();
         download.fileByteSize = query.value("size").toLongLong();
         download.currentSize = query.value("downloaded").toLongLong();
         download.progress = query.value("progress").toInt();

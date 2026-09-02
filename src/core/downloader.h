@@ -21,6 +21,8 @@
 
 #include "src/models/downloadstatus.h"
 #include "src/core/downloadworker.h"
+#include "src/core/databasemanager.h"
+
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QNetworkRequest>
@@ -79,6 +81,7 @@ private slots:
 private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
+    DatabaseManager *m_databaseManager;
     QFile file;
     QUrl m_url;
     int m_chunksCompleted;

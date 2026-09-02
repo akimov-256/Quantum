@@ -117,7 +117,6 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
     Downloader *downloader = new Downloader(this);
     m_activeDownloaders.insert(info.ID, downloader);
-    m_databaseManager->insertDownload(info);                // Insert new download to database.
 
     downloader->download(info);
 
@@ -132,6 +131,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
         m_downloads[row].fileByteSize = bytesTotal;
         m_downloads[row].currentSize = bytesReceived;
+        m_downloads[row].status = "Downloading...";             // Update status.
         if (bytesTotal > 0)                                     // Calculate progress.
             m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
 
@@ -409,6 +409,7 @@ void Backend::buttonClicked(const QString id) {
 
     emit countChanged();
     m_downloadModel.updateDownload(m_downloads[currentRow].ID);
+    m_databaseManager->updateDownload(m_downloads[currentRow]);
 }
 
 void Backend::cancelClicked(const QString id)
