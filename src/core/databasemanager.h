@@ -18,7 +18,6 @@ public:
 
     void insertDownload(const downloadInformations &info);
     void updateDownload(const downloadInformations &info);
-    void downloadFinished(const QString &id, const QString &status);
     void removeDownload(const QString &id);
     QVector<downloadInformations> getDownloads();
 

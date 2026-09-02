@@ -84,27 +84,6 @@ void DatabaseManager::updateDownload(const downloadInformations &info)
         qDebug() << "Database update error: " << query.lastError().text();
 }
 
-void DatabaseManager::downloadFinished(const QString &id, const QString &status)
-{
-    QSqlQuery query;                        // Create the query variable.
-
-    query.prepare("UPDATE downloads SET "   // Prepare the query.
-                  "downloaded = :downloaded, "
-                  "progress = :progress, "
-                  "status = :status, "
-                  "end_date = :end_date, "
-                  "WHERE id = :id");
-
-    // Bind values.
-    // Set the end date as the date of modification.
-    query.bindValue(":status", status);
-    query.bindValue(":end_date", QDateTime::currentSecsSinceEpoch());
-    query.bindValue(":id", id);
-
-    if (!query.exec())                      // Execute query and handle failures.
-        qDebug() << "Database update error: " << query.lastError().text();
-}
-
 void DatabaseManager::removeDownload(const QString &id)
 {
     QSqlQuery query;                        // Create the query variable.
