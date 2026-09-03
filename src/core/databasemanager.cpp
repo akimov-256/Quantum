@@ -149,6 +149,8 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
 
         // Get each property and assign it to the download info.
         // Deserialize connectons progress and assign it to the according property.
+        // If the donwload status is not completed or paused then make it paused,
+        // because mostly the app was closed in the middle of a download.
         download.ID = query.value("id").toString();
         download.fileName = query.value("name").toString();
         download.url = query.value("url").toString();
@@ -164,7 +166,10 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.fileParts = deserializeParts(filePartsSerialized);
         download.category = static_cast<DownloadCategory>(query.value("category").toInt());
         download.SHA256 = query.value("sha256").toString();
-        download.status = query.value("status").toString();
+        QString status = query.value("status").toString();
+        if (status != "Completed" || status != "Paused")
+            status = "Paused";
+        download.status = status;
 
         result.push_back(download);         // Add the extracted download to the result list.
     }
