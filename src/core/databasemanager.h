@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QDateTime>
 #include <QStringList>
+#include <QStandardPaths>
 
 class DatabaseManager : public QObject
 {

@@ -4,8 +4,14 @@ DatabaseManager::DatabaseManager(QObject *parent)
     : QObject{parent}
     , m_db(QSqlDatabase::addDatabase("QSQLITE"))
 {
-    const QString path =                    // Create the database path.
-        QDir::currentPath() + "/" + "database.db";
+    const QString dataDir =                 // Get the data directory path.
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+    QDir dir;
+    dir.mkpath(dataDir);                    // Ensure the directory exists.
+
+    const QString path =                    // Create the database path inside the data directory.
+        dataDir + "/database.qtm";
 
     m_db.setDatabaseName(path);             // Set the database path.
 
