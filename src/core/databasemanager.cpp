@@ -83,7 +83,7 @@ void DatabaseManager::updateDownload(const downloadInformations &info)
                   "downloaded = :downloaded, "
                   "size = :size, "
                   "connections_progress = :connections_progress, "
-                  "file_parts = :file_parts"
+                  "file_parts = :file_parts, "
                   "progress = :progress, "
                   "status = :status "
                   "WHERE id = :id");

@@ -26,6 +26,7 @@ void Backend::loadDownloads()
 
         Downloader *downloader =                        // Create a new downloader assigned to the current downlaod.
             new Downloader(m_databaseManager, this);
+        downloader->setDownloadInfo(download);          // Update the downloader local info with the new ones.
         m_activeDownloaders                             // Insert the current downloader to the active downloaders list.
             .insert(download.ID, downloader);
 
@@ -140,16 +141,13 @@ void Backend::wireDownloadConnections(Downloader *downloader, const downloadInfo
     QElapsedTimer *timer = new QElapsedTimer();
     timer->start();
 
-    connect(downloader, &Downloader::progressChanged, this, [this, timer, id = info.ID](qint64 bytesReceived, qint64 bytesTotal, QVector<qint64> chunkProgress) {
+    connect(downloader, &Downloader::progressChanged, this, [this, timer, id = info.ID](downloadInformations info , QVector<qint64> chunkProgress) {
         int row = rowForId(id);
         if (row == -1) return;
 
-        m_downloads[row].fileByteSize = bytesTotal;
-        m_downloads[row].currentSize = bytesReceived;
+        m_downloads[row]= info;
         m_downloads[row].chunkProgress = chunkProgress;
         m_downloads[row].status = "Downloading...";             // Update status.
-        if (bytesTotal > 0)                                     // Calculate progress.
-            m_downloads[row].progress = static_cast<double>(bytesReceived) * 100.0 / bytesTotal;
 
         if (timer->elapsed() > 5000)                            // Wait until 5secs have passed since the last database update.
         {
@@ -419,8 +417,12 @@ void Backend::buttonClicked(const QString id) {
     }
     else
     {
-        downloader->downloadPause();
-        m_downloads[currentRow].status = "Paused";
+        downloader->downloadPause();                // Pause the current download.
+
+        downloadInformations updated =              // Get the updated download info from the donwlaoder.
+            downloader->downloadInfo();
+        updated.status = "Paused";                  // Update the download status.
+        m_downloads[currentRow] = updated;          // Insert the updated download info into the donwloads list.
     }
 
     emit countChanged();

@@ -240,7 +240,9 @@ void Downloader::onChunkProgress(int chunkIndex, qint64 bytes)
     info.currentSize += bytes;
     if (chunkIndex >= 0 && chunkIndex < chunkProgress.size())
         chunkProgress[chunkIndex] += bytes;
-    emit progressChanged(info.currentSize, info.fileByteSize, chunkProgress);
+    if (info.fileByteSize > 0)                      // Calculate progress.
+        info.progress = static_cast<double>(info.currentSize) * 100.0 / info.fileByteSize;
+    emit progressChanged(info, chunkProgress);
 }
 
 void Downloader::onChunkFinished(DownloadWorker *worker, bool wasStopped)
@@ -445,7 +447,7 @@ void Downloader::downloadResume(downloadInformations Info)
             handleDownloadFinish();
     });
 
-    emit progressChanged(info.currentSize, info.fileByteSize, chunkProgress);
+    emit progressChanged(info, chunkProgress);
 }
 
 void Downloader::downloadStop()
@@ -527,6 +529,13 @@ void Downloader::onWorkerError(QString errStr)
     m_workerThreads.clear();
 
     emit downloadFinished(false, "Download failed: " + errStr);
+}
+
+void Downloader::setDownloadInfo(const downloadInformations &Info)
+{
+    // Update local properties with passed ones.
+    info = Info;
+    chunkProgress = Info.chunkProgress;
 }
 
 downloadInformations Downloader::downloadInfo() {
