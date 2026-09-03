@@ -47,8 +47,6 @@ void Downloader::download(downloadInformations Info)
     m_file.setFileName(info.tempPath);
     m_file.resize(info.fileByteSize);
 
-    m_databaseManager->insertDownload(info);            // Insert download to database.
-
     QNetworkRequest request(m_url);
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute     // Restrict HTTP/1.1 on HEAD requests.
                          , false);
@@ -114,6 +112,8 @@ void Downloader::onHeadFinished()
         QNetworkReply *test = manager->get(request);
         connect (test, &QNetworkReply::finished, this, &Downloader::onHeadTestFinished);
     }
+
+    m_databaseManager->insertDownload(info);            // Insert download to database.
 }
 
 void Downloader::onHeadTestFinished()

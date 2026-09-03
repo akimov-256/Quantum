@@ -13,10 +13,7 @@ void DownloadWorker::StartDownload(int chunkIndex, qint64 start, qint64 end, boo
     m_info = Info;
 
     m_Stopped = false;
-    qDebug() << "StartDownload called for chunk" << m_chunkIndex;
     m_file.setFileName(m_info.tempPath);
-
-    qDebug() << "fileName" + m_info.fileName;
 
     m_downloadOffset = m_start;
 
@@ -35,7 +32,6 @@ void DownloadWorker::StartDownload(int chunkIndex, qint64 start, qint64 end, boo
     request.setRawHeader("Range", rangeHeader);
 
     reply = manager->get(request);
-    qDebug() << "GET issued for chunk" << m_chunkIndex << "Range:" << rangeHeader;
 
     connect(reply, &QNetworkReply::readyRead, this, &DownloadWorker::OnReadReady);
     connect(reply, &QNetworkReply::finished, this, &DownloadWorker::OnReplyFinished);
@@ -93,8 +89,6 @@ void DownloadWorker::OnReplyFinished()
         emit Finished(this, true);
         return;
     }
-
-    qDebug() << "Chunk" << m_chunkIndex << "finished, error:" << error << "status:" << status;
 
     if (error != QNetworkReply::NoError)
     {

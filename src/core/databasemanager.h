@@ -24,7 +24,10 @@ public:
 
     // Helper functions
     QString serializeVector(const QVector<qint64> &vector);
-    QVector<qint64> deserializeString(const QString &serialized);
+    QVector<qint64> deserializeVector(const QString &serialized);
+
+    QString serializeParts(const QList<Part> &parts);
+    QList<Part> deserializeParts(const QString &serialized);
 
 private:
     // Functions

@@ -31,6 +31,7 @@ void DatabaseManager::initDatabase()
         "progress INTEGER NOT NULL,"
         "connections INTEGER NOT NULL,"
         "connections_progress STRING,"
+        "file_parts STRING,"
         "category INTEGER NOT NULL,"
         "status TEXT,"
         "sha256 TEXT,"
@@ -47,8 +48,8 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     QSqlQuery query;                        // Create the query variable.
 
     query.prepare(                          // Prepare the query.
-        "INSERT INTO downloads (id, name, url, path, temp_path, size, downloaded, progress, connections, connections_progress, category, sha256, start_date)"
-        "values (:id, :name, :url, :path, :temp_path, :size, :downloaded, :progress, :connections, :connections_progress, :category, :sha256, :start_date)");
+        "INSERT INTO downloads (id, name, url, path, temp_path, size, downloaded, progress, connections, connections_progress, file_parts, category, sha256, start_date)"
+        "values (:id, :name, :url, :path, :temp_path, :size, :downloaded, :progress, :connections, :connections_progress, :file_parts, :category, :sha256, :start_date)");
 
     // Bind values.
     // Set the start date as the date of insertion.
@@ -64,6 +65,8 @@ void DatabaseManager::insertDownload(const downloadInformations &info)
     query.bindValue(":connections", info.chunkCount);
     QString conProgressSerialized = serializeVector(info.chunkProgress);
     query.bindValue(":connections_progress", conProgressSerialized);
+    QString filePartsSerialized = serializeParts(info.fileParts);
+    query.bindValue(":file_parts", filePartsSerialized);
     query.bindValue(":category", info.category);
     query.bindValue(":sha256", info.SHA256);
     query.bindValue(":start_date", QDateTime::currentSecsSinceEpoch());
@@ -118,6 +121,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
                   "path, temp_path, "
                   "size, connections, "
                   "connections_progress, "
+                  "file_parts, "
                   "downloaded, progress, "
                   "category, sha256, status "
                   "FROM downloads";
@@ -143,7 +147,9 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.progress = query.value("progress").toInt();
         download.chunkCount = query.value("connections").toInt();
         QString conProgressSerialized = query.value("connections_progress").toString();
-        download.chunkProgress = deserializeString(conProgressSerialized);
+        download.chunkProgress = deserializeVector(conProgressSerialized);
+        QString filePartsSerialized = query.value("file_parts").toString();
+        download.fileParts = deserializeParts(filePartsSerialized);
         download.category = static_cast<DownloadCategory>(query.value("category").toInt());
         download.SHA256 = query.value("sha256").toString();
         download.status = query.value("status").toString();
@@ -171,7 +177,7 @@ QString DatabaseManager::serializeVector(const QVector<qint64> &vector)
     return result;                          // Return the result string.
 }
 
-QVector<qint64> DatabaseManager::deserializeString(const QString &serialized)
+QVector<qint64> DatabaseManager::deserializeVector(const QString &serialized)
 {
     QVector<qint64> result;                     // Create the result vector.
 
@@ -186,4 +192,64 @@ QVector<qint64> DatabaseManager::deserializeString(const QString &serialized)
     }
 
     return result;                              // Return the result vector.
+}
+
+QString DatabaseManager::serializeParts(const QList<Part> &parts)
+{
+    QStringList partsSerialized;                // Create the serialized strings list.
+
+    for (const Part &part : parts)              // Loop through download parts.
+    {
+        QStringList contentSerialized;          // Create the serialized content strings list.
+
+        // Populate the list with the part properties.
+        contentSerialized.append(QString::number(part.start));
+        contentSerialized.append(QString::number(part.end));
+        if (part.used)
+            contentSerialized.append("1");
+        else
+            contentSerialized.append("0");
+        if(part.done)
+            contentSerialized.append("1");
+        else
+            contentSerialized.append("0");
+
+        // Convert the list to a string by joining the serialized contents with ",".
+        QString res = contentSerialized.join(",");
+        // Append the string to the global parts list.
+        partsSerialized.append(res);
+    }
+
+    // Convert the list to a string by joining the serialized parts with "|".
+    QString result = partsSerialized.join("|");
+
+    return result;                              // Return the result string.
+}
+
+QList<Part> DatabaseManager::deserializeParts(const QString &serialized)
+{
+    if (serialized.isEmpty())                   // Guard incase the input is empty.
+        return  {};
+
+    QList<Part> result;                         // Create the result list.
+
+    QStringList parts = serialized.split("|");  // Separate each part from the serialized input.
+
+    for (const QString &partStr : parts)
+    {
+        QStringList contents =                  // Separate each part property from the current part.
+            partStr.split(",");
+
+        Part part;                              // Create the part.
+
+        // Assign each property from the serialized string back to the part.
+        part.start = contents[0].toLongLong();
+        part.end = contents[1].toLongLong();
+        part.used = contents[2] == "1";
+        part.done = contents[3] == "1";
+
+        result.append(part);                    // Add the part to the result list.
+    }
+
+    return result;                              // Return the result list.
 }
