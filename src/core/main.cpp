@@ -45,8 +45,6 @@ int main(int argc, char *argv[])
 
     Backend backend;
 
-    DatabaseManager dbMan;
-
     QQmlApplicationEngine engine;
 
     engine.rootContext()->setContextProperty("backend", &backend);

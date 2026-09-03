@@ -45,7 +45,7 @@ class Downloader : public QObject
     Q_OBJECT
 
 public:
-    explicit Downloader(QObject *parent = nullptr);
+    explicit Downloader(DatabaseManager *dbMan, QObject *parent = nullptr);
     void download(downloadInformations info);
     void WriteDownloadData();
     void StartDataTimer();

@@ -24,7 +24,8 @@ void Backend::loadDownloads()
         int row = m_downloads.size() - 1;               // Get the new download row.
         m_downloadModel.addDownload(row);               // Add the download to the donwload model.
 
-        Downloader *downloader = new Downloader(this);  // Create a new downloader assigned to the current downlaod.
+        Downloader *downloader =                        // Create a new downloader assigned to the current downlaod.
+            new Downloader(m_databaseManager, this);
         m_activeDownloaders                             // Insert the current downloader to the active downloaders list.
             .insert(download.ID, downloader);
 
@@ -124,7 +125,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
     int row = m_downloads.size() - 1;
     m_downloadModel.addDownload(row);
 
-    Downloader *downloader = new Downloader(this);
+    Downloader *downloader = new Downloader(m_databaseManager, this);
     m_activeDownloaders.insert(info.ID, downloader);
 
     downloader->download(info);

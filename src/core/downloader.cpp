@@ -21,9 +21,9 @@
 #include <QUrl>
 #include <QTimer>
 
-Downloader::Downloader(QObject *parent)
+Downloader::Downloader(DatabaseManager *dbMan, QObject *parent)
     : QObject(parent)
-    , m_databaseManager(new DatabaseManager(this))
+    , m_databaseManager(dbMan)
 {
     manager = new QNetworkAccessManager(this);
 }
