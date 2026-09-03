@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed download category property not being saved into database.
 - Fixed download finish status not being saved to the database.
 - Fixed download pause no longer working.
+- Fixed garbage file size in the start of download resulting in displaying and inserting wrong values.
 
 ### Changed
 - Removed download speed after the download is completed.

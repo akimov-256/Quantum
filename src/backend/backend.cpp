@@ -118,6 +118,7 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
     info.status = "Starting...";
     info.progress = 0;
     info.ID = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    info.fileByteSize = 0;
 
     m_downloads.append(info);
     int row = m_downloads.size() - 1;

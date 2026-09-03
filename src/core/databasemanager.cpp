@@ -81,16 +81,22 @@ void DatabaseManager::updateDownload(const downloadInformations &info)
 
     query.prepare("UPDATE downloads SET "   // Prepare the query.
                   "downloaded = :downloaded, "
+                  "size = :size, "
                   "connections_progress = :connections_progress, "
+                  "file_parts = :file_parts"
                   "progress = :progress, "
                   "status = :status "
                   "WHERE id = :id");
 
     // Bind values.
     // Serialize connections progress vector.
+    // Serialize file parts list.
     query.bindValue(":downloaded", info.currentSize);
+    query.bindValue(":size", info.fileByteSize);
     QString conProgressSerialized = serializeVector(info.chunkProgress);
     query.bindValue(":connections_progress", conProgressSerialized);
+    QString filePartsSerialized = serializeParts(info.fileParts);
+    query.bindValue(":file_parts", filePartsSerialized);
     query.bindValue(":progress", info.progress);
     query.bindValue(":status", info.status);
     query.bindValue(":id", info.ID);
