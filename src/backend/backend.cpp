@@ -145,7 +145,10 @@ void Backend::wireDownloadConnections(Downloader *downloader, const downloadInfo
         int row = rowForId(id);
         if (row == -1) return;
 
+        qint64 currentSpeed = m_downloads[row].speed;           // Preserve the original speed.
+
         m_downloads[row]= info;
+        m_downloads[row].speed = currentSpeed;                  // Set the original speed.
         m_downloads[row].chunkProgress = chunkProgress;
         m_downloads[row].status = "Downloading...";             // Update status.
 
