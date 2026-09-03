@@ -15,15 +15,23 @@ Backend::Backend(QObject *parent)
 
 void Backend::loadDownloads()
 {
-    QVector<downloadInformations> downloads;        // Create the downloads variable.
-    downloads = m_databaseManager->getDownloads();  // Get the downloads from the database.
+    QVector<downloadInformations> downloads;            // Create the downloads variable.
+    downloads = m_databaseManager->getDownloads();      // Get the downloads from the database.
 
     for (downloadInformations download : downloads)
     {
-        m_downloads.append(download);               // Add the download to the backend downloads vector.
-        int row = m_downloads.size() - 1;           // Get the new download row.
-        m_downloadModel.addDownload(row);           // Add the download to the donwload model.
+        m_downloads.append(download);                   // Add the download to the backend downloads vector.
+        int row = m_downloads.size() - 1;               // Get the new download row.
+        m_downloadModel.addDownload(row);               // Add the download to the donwload model.
+
+        Downloader *downloader = new Downloader(this);  // Create a new downloader assigned to the current downlaod.
+        m_activeDownloaders                             // Insert the current downloader to the active downloaders list.
+            .insert(download.ID, downloader);
+
+        wireDownloadConnections(downloader, download);  // Wire the downloader signals.
     }
+
+    emit countChanged();
 }
 
 void Backend::StartWebServer()
@@ -122,6 +130,11 @@ void Backend::CreateDownload(const QString &fileUrl, const QString &fileName, co
 
     emit countChanged();
 
+    wireDownloadConnections(downloader, info);      // Wire the downloader signals.
+}
+
+void Backend::wireDownloadConnections(Downloader *downloader, const downloadInformations &info)
+{
     QElapsedTimer *timer = new QElapsedTimer();
     timer->start();
 

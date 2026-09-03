@@ -76,6 +76,7 @@ signals:
 private:
     // Functions
     void loadDownloads();
+    void wireDownloadConnections(Downloader *downloader, const downloadInformations &info);
 
     // Variables
     QTcpServer *m_webServer;

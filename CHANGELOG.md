@@ -22,10 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed download count not updating after a download is removed.
 - Fixed download category property not being saved into database.
 - Fixed download finish status not being saved to the database.
+- Fixed download pause no longer working.
 
 ### Changed
 - Removed download speed after the download is completed.
 - Changed the database downloads table columns to include save and temp paths of each download.
+- Separated the downloader connections wiring logic into a different function.
 
 ## [v1.4.2]  29-08-2026
 
