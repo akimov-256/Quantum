@@ -1,0 +1,186 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    width: 300px;
+    height: 300px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 30%, #2d1a3a 0%, #120b16 100%);
+    padding: 20px;
+}
+.popup-overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: transparent;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: fadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.96) translateY(12px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.popup-card {
+    width: 100%;
+    max-width: 400px;
+    background: linear-gradient(145deg, rgba(57, 27, 66, 0.85), rgba(32, 14, 38, 0.92));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 32px;
+    padding: 40px 34px 36px;
+    border: 1px solid rgba(123, 75, 138, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+.popup-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 70% 20%, rgba(123, 75, 138, 0.08), transparent 60%);
+    pointer-events: none;
+}
+.popup-header {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+.popup-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #f0e6f2 0%, #c9a4d6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+.popup-header .subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(180, 150, 190, 0.7);
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+}
+.popup-body {
+    position: relative;
+    z-index: 1;
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.switch-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    height: 55px;
+}
+.switch-button .switch-outer {
+    height: 100%;
+    background: #391B42;
+    width: 115px;
+    border-radius: 165px;
+    box-shadow: transparent;
+    border: transparent;
+    padding: 6px;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.switch-button .switch-outer input[type="checkbox"] {
+    opacity: 0;
+    appearance: none;
+    position: absolute;
+}
+.switch-button .switch-outer .button-toggle {
+    height: 42px;
+    width: 42px;
+    background: linear-gradient(#3b3a4e, #272733);
+    border-radius: 100%;
+    box-shadow: inset 0px 5px 4px 0px #424151, 0px 4px 15px 0px #0f0e17;
+    position: relative;
+    z-index: 2;
+    transition: left 0.3s ease-in;
+    left: 0;
+}
+.switch-button .switch-outer input[type="checkbox"]:checked + .button .button-toggle {
+    left: 58%;
+}
+.switch-button .switch-outer .button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+}
+/* ── indicator with transition (no animation) ── */
+.switch-button .switch-outer .button-indicator {
+    height: 25px;
+    width: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    border: 3px solid #ef565f;
+    box-sizing: border-box;
+    right: 10px;
+    position: relative;
+    transition: left 0.3s ease-in, border-color 0.3s ease-in;
+}
+.switch-button .switch-outer input[type="checkbox"]:checked + .button .button-indicator {
+    left: -68%;
+    border-color: #60d480;
+}
+/* ── disable transitions during load ── */
+.switch-outer.no-transition .button-toggle,
+.switch-outer.no-transition .button-indicator {
+    transition: none !important;
+}
+/* status text */
+.status-text {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(180, 150, 190, 0.6);
+    letter-spacing: 0.2px;
+}
+.status-text .highlight {
+    font-weight: 600;
+    color: #b87bc4;
+    transition: color 0.3s ease;
+}
+.status-text .highlight.off {
+    color: #d0607a;
+}
+/* responsive */
+@media (max-width: 440px) {
+    .popup-card { padding: 28px 20px 26px; border-radius: 24px; }
+    .popup-header h1 { font-size: 24px; }
+    .switch-outer { width: 88px; height: 44px; }
+    .switch-outer .button-toggle { height: 32px; width: 32px; }
+    .switch-outer input[type="checkbox"]:checked + .button .button-toggle {
+        left: calc(100% - 32px - 4px);
+    }
+    .switch-outer .button-indicator { height: 17px; width: 17px; border-width: 2.5px; right: 6px; }
+    .switch-outer input[type="checkbox"]:checked + .button .button-indicator {
+        left: -68%;
+        border-color: #60d480;
+    }
+}
+@media (max-width: 360px) {
+    .popup-card { padding: 20px 14px 20px; }
+    .status-text { font-size: 12px; }
+}

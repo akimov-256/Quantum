@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum Download Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<div class="popup-overlay">
+        <div class="popup-header">
+            <h1>Quantum Download Manager</h1>
+            <p class="subtitle">Web Integration</p>
+        </div>
+
+        <div class="popup-body">
+            <div class="switch-button">
+                <label class="switch-outer">
+                    <input type="checkbox" id="activationSwitch" />
+                    <span class="button">
+                            <span class="button-toggle"></span>
+                            <span class="button-indicator"></span>
+                        </span>
+                </label>
+            </div>
+            <div class="status-text" id="statusText">
+                <span class="highlight off" id="statusHighlight">Turn on</span>
+                <span>the integration</span>
+            </div>
+        </div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

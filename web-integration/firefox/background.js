@@ -1,4 +1,11 @@
 browser.downloads.onCreated.addListener(async (downloadItem) => {
+    const { isActive = false } =
+        await browser.storage.local.get("isActive");
+
+    if (!isActive) {
+        return;
+    }
+
     await browser.downloads
         .erase({ id: downloadItem.id });        // Immediately cancel the download.
 

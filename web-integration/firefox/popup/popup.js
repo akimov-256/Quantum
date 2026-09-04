@@ -17,7 +17,7 @@ function updateStatus(isActive) {
 
 
 async function initialize() {
-    const { isActive = false } = await chrome.storage.local.get("isActive");
+    const { isActive = false } = await browser.storage.local.get("isActive");
 
     const switchOuter = document.querySelector('.switch-outer');
 
@@ -41,7 +41,7 @@ async function initialize() {
 activationSwitch.addEventListener("change", async () => {
     const isActive = activationSwitch.checked;
 
-    await chrome.storage.local.set({
+    await browser.storage.local.set({
         isActive
     });
 

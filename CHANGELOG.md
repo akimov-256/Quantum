@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added popup design and activation switch.
+
 ### Fixed
 - Fixed downloads stopped because of app closure appear like they are still downloading when loaded.
 
