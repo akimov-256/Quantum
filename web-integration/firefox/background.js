@@ -1,13 +1,16 @@
 browser.downloads.onCreated.addListener(async (downloadItem) => {
-    const { isActive = false } =
+    const { isActive = false } =        // Get if the integration is active.
         await browser.storage.local.get("isActive");
 
-    if (!isActive) {
+    if (!isActive) {                            // Skip the handling if the integration is inactive.
         return;
     }
 
-    await browser.downloads
-        .erase({ id: downloadItem.id });        // Immediately cancel the download.
+    await browser.downloads                     // Immediately cancel the download.
+        .cancel(downloadItem.id);
+
+    await browser.downloads                     // Erase the download from the disk.
+        .erase({ id: downloadItem.id });
 
     sendToManager(downloadItem.url);            // Pass url to send function.
 });
