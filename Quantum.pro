@@ -1,7 +1,9 @@
 QT       += core gui
 QT += quick qml quickcontrols2 network
 QT += svg sql
-LIBS += -lShell32
+LIBS += -lShell32 \
+    -L$$PWD/third-party/WinDivert/x64 \
+    -lWinDivert
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,7 +20,8 @@ SOURCES += \
     src/core/databasemanager.cpp \
     src/core/downloader.cpp \
     src/core/downloadworker.cpp \
-    src/core/main.cpp
+    src/core/main.cpp \
+    src/network/windivertmanager.cpp
 
 HEADERS += \
     src/backend/backend.h \
@@ -28,7 +31,9 @@ HEADERS += \
     src/core/downloader.h \
     src/models/downloadcategories.h \
     src/models/downloadstatus.h \
-    src/core/downloadworker.h
+    src/core/downloadworker.h \
+    src/network/windivertmanager.h \
+    third-party/windivert.h
 
 FORMS +=
 
