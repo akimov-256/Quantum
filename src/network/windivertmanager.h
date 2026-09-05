@@ -1,10 +1,10 @@
 #ifndef WINDIVERTMANAGER_H
 #define WINDIVERTMANAGER_H
 
-#include "third-party/WinDivert/include/windivert.h"
-
 #include <QObject>
 #include <qDebug>
+
+#include "third-party/WinDivert/include/windivert.h"
 
 class WinDivertManager : public QObject
 {

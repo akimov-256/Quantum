@@ -18,6 +18,8 @@
 
 #include "src/backend/backend.h"
 #include "src/core/databasemanager.h"
+#include "src/network/windivertmanager.h"
+
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -43,6 +45,9 @@ int main(int argc, char *argv[])
 
     a.setWindowIcon(QIcon(":/qml/assets/icons/icon.ico"));
 
+    WinDivertManager wd_manager;
+
+
     Backend backend;
 
     QQmlApplicationEngine engine;
@@ -63,5 +68,6 @@ int main(int argc, char *argv[])
         }
     }
 
+    wd_manager.start();
     return a.exec();
 }

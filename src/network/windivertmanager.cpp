@@ -26,6 +26,37 @@ bool WinDivertManager::start()
     return true;
 }
 
+void WinDivertManager::run()
+{
+    char packet[65535];
+    UINT packetLength;
+    WINDIVERT_ADDRESS address{};
+
+    while (m_running)
+    {
+        if (!WinDivertRecv(             // Recieve the packet and handle failures.
+                m_handle,
+                packet,
+                sizeof(packet),
+                &packetLength,
+                &address
+                ))
+            continue;
+
+        qDebug()                        // Print out the packet info.
+            << "Captured packet: "
+            << packetLength
+            << " bytes\n";
+
+        WinDivertSend(                  // Return the packet to the original destination.
+            m_handle,
+            packet,
+            packetLength,
+            nullptr,
+            &address);
+    }
+}
+
 void WinDivertManager::stop()
 {
     m_running = false;                  // Mark WinDivert as not running.
