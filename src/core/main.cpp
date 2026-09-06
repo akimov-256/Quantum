@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
 
     WinDivertManager wd_manager;
 
-
     Backend backend;
 
     QQmlApplicationEngine engine;
@@ -69,5 +68,6 @@ int main(int argc, char *argv[])
     }
 
     wd_manager.start();
+
     return a.exec();
 }

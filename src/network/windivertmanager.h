@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <qDebug>
+#include <QThread>
+#include <QAtomicInt>
 
 #include "third-party/WinDivert/include/windivert.h"
 
@@ -18,13 +20,16 @@ public:
 
 signals:
 
+private slots:
+    void run();
+
 private:
     // Functions
-    void run();
 
     // Variables
     void *m_handle = nullptr;
-    bool m_running = false;
+    QThread *m_WinDivertWorker;
+    QAtomicInteger<bool> m_running = false;
 };
 
 #endif // WINDIVERTMANAGER_H

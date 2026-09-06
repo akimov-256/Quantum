@@ -2,17 +2,18 @@
 
 WinDivertManager::WinDivertManager(QObject *parent)
     : QObject{parent}
+    , m_WinDivertWorker(new QThread)
 {}
 
 bool WinDivertManager::start()
 {
-    m_handle = WinDivertOpen(       // Populate the handle variable.
-        "tcp",
+    m_handle = WinDivertOpen(           // Populate the handle variable.
+        "true",
         WINDIVERT_LAYER_NETWORK,
         0,
         0);
 
-    if (!m_handle)                  // Guard if the handle is unvalid.
+    if (!m_handle)                      // Guard if the handle is unvalid.
     {
         qDebug()
             << "Failed to open WinDivert handle: "
@@ -20,8 +21,20 @@ bool WinDivertManager::start()
         return false;
     }
 
-    m_running = true;               // Mark WinDivert as running.
-    run();                          // Call the run function.
+    m_running = true;                   // Mark WinDivert as running.
+    moveToThread(m_WinDivertWorker);    // Move WinDivertManager to a different thread.
+
+    connect(m_WinDivertWorker,          // Start the running loop when the thread is ready.
+            &QThread::started,
+            this,
+            &WinDivertManager::run);
+
+    connect(m_WinDivertWorker,          // Stop WinDivertManager when the thread terminates.
+            &QThread::finished,
+            this,
+            &WinDivertManager::stop);
+
+    m_WinDivertWorker->start();         // Start WinDivert thread.
 
     return true;
 }
@@ -41,7 +54,12 @@ void WinDivertManager::run()
                 &packetLength,
                 &address
                 ))
+        {
+            qDebug()                    // Print the error.
+                << "WinDivertRecv failed with error: "
+                << GetLastError();
             continue;
+        }
 
         qDebug()                        // Print out the packet info.
             << "Captured packet: "
@@ -66,6 +84,12 @@ void WinDivertManager::stop()
         if (WinDivertClose(m_handle))   // Try closing the handle.
         {
             m_handle = nullptr;         // If successful free the handle variable.
+
+            if (m_WinDivertWorker)      // If thread is still running quit it and wait.
+            {
+                m_WinDivertWorker->quit();
+                m_WinDivertWorker->wait();
+            }
         }
         else
         {
@@ -74,6 +98,8 @@ void WinDivertManager::stop()
                 << GetLastError();
         }
     }
+
+    delete m_WinDivertWorker;           // Delete the thread pointer.
 }
 
 WinDivertManager::~WinDivertManager()   // Stop the handle when the destructor is called.
