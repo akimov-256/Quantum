@@ -28,6 +28,11 @@ qt_add_executable(Quantum WIN32 MACOSX_BUNDLE
     src/models/downloadcategories.h
     src/models/downloadstatus.h
 )
+
+qt_add_executable(QuantumNativeHost WIN32 MACOSX_BUNDLE
+    native-host/main.cpp
+)
+
 qt_add_qml_module(Quantum
     URI Quantum
     VERSION ${PROJECT_VERSION}
