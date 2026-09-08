@@ -31,6 +31,7 @@ qt_add_executable(Quantum WIN32 MACOSX_BUNDLE
 
 qt_add_executable(QuantumNativeHost WIN32 MACOSX_BUNDLE
     native-host/main.cpp
+    native-host/nativemessaging.cpp native-host/nativemessaging.h
 )
 
 qt_add_qml_module(Quantum
