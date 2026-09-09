@@ -24,11 +24,14 @@ bool NativeMessaging::readMessage(QJsonObject &message)
 
     QJsonParseError error;                  // Create the error variable to handle failures later.
 
-    QJsonDocument doc                       // Convert the buffer to a json document.
-        = QJsonDocument::fromJson(buffer);
+    QJsonDocument doc                       // Convert the buffer to a json document and collect errors.
+        = QJsonDocument::fromJson(buffer, &error);
     if (error.error                         // Check if convertion failed and return false.
             != QJsonParseError::NoError)
+    {
+        qDebug() << error.errorString();
         return false;
+    }
 
     if (!doc.isObject())                    // Check if the result document is a json object (safe guard).
         return false;
