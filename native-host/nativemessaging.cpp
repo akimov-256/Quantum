@@ -53,3 +53,19 @@ bool NativeMessaging::readExactly(char *buffer, qint64 size)
     }
     return true;                            // Return true when the read is successful.
 }
+
+bool NativeMessaging::sendMessage(const QJsonObject &message)
+{
+    QByteArray json = QJsonDocument(message)// Convert the message to a byte array.
+        .toJson(QJsonDocument::Compact);
+    quint32 len                             // Get the json length.
+        = static_cast<quint32>(json.size());
+
+    std::cout                               // Write the 4 byte message size section.
+        .write(reinterpret_cast<char *>(&len), sizeof(len));
+    std::cout.write(json.constData(), len); // Write the message body.
+
+    std::cout.flush();                      // Flush the output.
+
+    return std::cout.good();                // Return the status of the operation.
+}

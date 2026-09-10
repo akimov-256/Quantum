@@ -1,6 +1,5 @@
 #include <io.h>
 #include <fcntl.h>
-#include <iostream>
 #include <QCoreApplication>
 #include <QJsonObject>
 #include <QDebug>
@@ -10,8 +9,6 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-
-    std::cout << "starting main";
 
 #ifdef _WIN32                               // Handle windows binary mode.
     _setmode(_fileno(stdin), _O_BINARY);
@@ -25,7 +22,15 @@ int main(int argc, char *argv[])
     while (nMsg->readMessage(message))      // Loop to read messages.
     {
         qDebug() << message;                // Print the read message.
-        std::cout << "message rec";
+
+        QJsonObject reply;                  // Prepare the response message.
+        reply["status"] = "ok";             // Populate the status field in the response.
+
+        if (!nMsg->sendMessage(reply))      // Send the reply and handle failures.
+        {
+            qDebug() << "Error sending reply";
+            break;
+        }
     }
 
     return 0;

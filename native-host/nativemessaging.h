@@ -9,8 +9,8 @@ class NativeMessaging
 public:
     NativeMessaging();
 
-    static bool readMessage(QJsonObject &message);
-    static bool sendMessage(const QJsonObject &message);
+    bool readMessage(QJsonObject &message);
+    bool sendMessage(const QJsonObject &message);
 
 private:
     // Functions
