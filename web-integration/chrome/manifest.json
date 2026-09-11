@@ -27,7 +27,8 @@
 	"options_page": "options/options.html",
 	"permissions": [
 		"downloads",
-		"storage"
+		"storage",
+		"nativeMessaging"
 	],
 	"optional_permissions": [],
 	"host_permissions": [

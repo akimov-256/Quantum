@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added popup design and activation switch.
 - Added native host executable and implemented basic message reading logic.
 - Added helper to better read the messages provided by the extension in the native messaging host.
+- Added send reply feature for native messaging app.
 
 ### Fixed
 - Fixed downloads stopped because of app closure appear like they are still downloading when loaded.

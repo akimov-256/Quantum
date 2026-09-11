@@ -1,3 +1,18 @@
+const hostName = "com.mouloud_guenane.quantum";
+
+const port = chrome.runtime.connectNative(hostName);
+
+port.onMessage.addListener((response) => {
+    console.log("Received from native host:", response);
+});
+
+port.onDisconnect.addListener(() => {
+    console.log("Disconnected from native host");
+    if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message);
+    }
+});
+
 chrome.downloads.onCreated.addListener(async (downloadItem) => {
     const { isActive = false } =
         await chrome.storage.local.get("isActive");
