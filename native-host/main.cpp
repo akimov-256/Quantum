@@ -19,19 +19,21 @@ int main(int argc, char *argv[])
         = new NativeMessaging();
 
     QJsonObject message;                    // Create the message json object.
-    while (nMsg->readMessage(message))      // Loop to read messages.
-    {
-        qDebug() << message;                // Print the read message.
+    // while (nMsg->readMessage(message))      // Loop to read messages.
+    // {
+    //     qDebug() << message;                // Print the read message.
 
-        QJsonObject reply;                  // Prepare the response message.
-        reply["status"] = "ok";             // Populate the status field in the response.
+    //     QJsonObject reply;                  // Prepare the response message.
+    //     reply["status"] = "ok";             // Populate the status field in the response.
 
-        if (!nMsg->sendMessage(reply))      // Send the reply and handle failures.
-        {
-            qDebug() << "Error sending reply";
-            break;
-        }
-    }
+    //     if (!nMsg->sendMessage(reply))      // Send the reply and handle failures.
+    //     {
+    //         qDebug() << "Error sending reply";
+    //         break;
+    //     }
+    // }
 
-    return 0;
+    nMsg->run();
+
+    return app.exec();
 }

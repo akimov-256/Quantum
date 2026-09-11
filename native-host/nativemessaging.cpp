@@ -1,8 +1,17 @@
 #include "nativemessaging.h"
 
-#include <QJsonObject>
+NativeMessaging::NativeMessaging(QObject *parent)
+    : QObject(parent)
+{}
 
-NativeMessaging::NativeMessaging() {}
+void NativeMessaging::run()
+{
+    QJsonObject message;                    // Create the message container.
+    while (readMessage(message))            // Loop while reading messages from the browser.
+        emit messageRecieved(message);      // Emit the recieved message.
+
+    emit connectionLost();                  // Emit connection lost if the browser cut the pipe.
+}
 
 bool NativeMessaging::readMessage(QJsonObject &message)
 {
@@ -56,6 +65,9 @@ bool NativeMessaging::readExactly(char *buffer, qint64 size)
 
 bool NativeMessaging::sendMessage(const QJsonObject &message)
 {
+    static QMutex writeMutex;               // Create a mutex as a guard for stdout if it was ever called twice.
+    QMutexLocker locker(&writeMutex);
+
     QByteArray json = QJsonDocument(message)// Convert the message to a byte array.
         .toJson(QJsonDocument::Compact);
     quint32 len                             // Get the json length.

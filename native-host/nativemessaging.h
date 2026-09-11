@@ -3,17 +3,28 @@
 
 #include <QObject>
 #include <iostream>
+#include <QJsonObject>
+#include <QMutex>
+#include <QMutexLocker>
 
-class NativeMessaging
+class NativeMessaging : public QObject
 {
-public:
-    NativeMessaging();
+    Q_OBJECT
 
-    bool readMessage(QJsonObject &message);
+public:
+    NativeMessaging(QObject *parent = nullptr);
+
+    void run();
+
     bool sendMessage(const QJsonObject &message);
+
+signals:
+    void messageRecieved(QJsonObject message);
+    void connectionLost();
 
 private:
     // Functions
+    bool readMessage(QJsonObject &message);
     static bool readExactly(char *buffer, qint64 size);
 };
 
