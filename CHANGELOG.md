@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added helper to better read the messages provided by the extension in the native messaging host.
 - Added send reply feature for native messaging app.
 - Added connection between web integration and native host.
+- Added signal linking for native host message recieving and connection failures.
 
 ### Changed
 - Changed build system from qmake to cmake.
-- Changed native host run loop improvements.
+- Changed native host run loop structure.
 
 ## [1.5.1] 04-09-2026
 
