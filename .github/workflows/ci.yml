@@ -8,7 +8,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 env:
-  QT_VERSION: "6.9.1"
+  QT_VERSION: "6.11.1"
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -40,44 +40,50 @@ jobs:
       # check the action's README for the exact "tools_mingwXXXX" name that
       # ships with Qt 6.9.1 and add it under `tools:` above.
 
-      - name: Locate .pro file
+      - name: Locate CMakeLists.txt file
         id: proj
         shell: bash
         run: |
-          PRO_FILE=$(find . -maxdepth 3 -name "*.pro" | head -n 1)
-          if [ -z "$PRO_FILE" ]; then
-            echo "No .pro file found!" >&2
+          CMAKE_FILE=$(find . -maxdepth 3 -name "CMakeLists.txt" | head -n 1)
+          if [ -z "$CMAKE_FILE" ]; then
+            echo "No CMakeLists.txt file found!" >&2
             exit 1
           fi
-          echo "pro_file=$PRO_FILE" >> "$GITHUB_OUTPUT"
-          echo "pro_dir=$(dirname "$PRO_FILE")" >> "$GITHUB_OUTPUT"
+          echo "cmake_file=$CMAKE_FILE" >> "$GITHUB_OUTPUT"
+          echo "cmake_dir=$(dirname "$CMAKE_FILE")" >> "$GITHUB_OUTPUT"
 
-      - name: qmake (Release)
+      - name: create build dir
         shell: bash
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")" CONFIG+=release "DEFINES+=APP_VERSION=\\\"${{ steps.ver.outputs.version }}\\\""
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
+        run: mkdir build
 
-      - name: Build
+      - name: configure the project
         shell: bash
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: mingw32-make -j$(nproc 2>/dev/null || echo 4) release
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}/build
+        run: cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin
+
+      - name: cmake (Release)
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}/build
+        run: cmake --build . --parallel
 
       - name: Locate built exe
         id: exe
         shell: bash
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
         run: |
-          EXE=$(find . -iname "*.exe" -path "*release*" | head -n 1)
+          EXE=$(find build/bin -maxdepth 1 -iname "*.exe" | head -n 1)
           if [ -z "$EXE" ]; then
-            EXE=$(find . -iname "*.exe" | head -n 1)
+          echo "No exe found in build/bin" >&2
+          exit 1
           fi
           echo "exe_path=$EXE" >> "$GITHUB_OUTPUT"
           echo "exe_dir=$(dirname "$EXE")" >> "$GITHUB_OUTPUT"
 
       - name: windeployqt (bundle Qt DLLs)
         shell: bash
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: windeployqt --release --qmldir . "${{ steps.exe.outputs.exe_path }}"
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
+        run: windeployqt --release --compiler-runtime --qmldir . "${{ steps.exe.outputs.exe_path }}"
          
       - name: Install Inno Setup
         shell: pwsh
@@ -85,24 +91,22 @@ jobs:
 
       - name: Build installer with Inno Setup
         shell: pwsh
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
         run: |
-          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-          $exeDir = (Resolve-Path "${{ steps.exe.outputs.exe_dir }}").Path
           & $iscc `
-            "/DMyAppVersion=${{ steps.ver.outputs.version }}" `
-            "/DMyAppExeDir=$exeDir" `
-            "packaging\quantum.iss"
+          "/DMyAppVersion=${{ steps.ver.outputs.version }}" `
+          "/DMyAppExeDir=$exeDir" `
+          "/Oinstaller-output" `
+          "packaging\quantum.iss"
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-installer
-          path: ${{ steps.proj.outputs.pro_dir }}/installer-output/*.exe
+          path: ${{ steps.proj.outputs.cmake_dir }}/installer-output/*.exe
 
   build-linux:
     runs-on: ubuntu-22.04
-    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -128,25 +132,25 @@ jobs:
       - name: Locate .pro file
         id: proj
         run: |
-          PRO_FILE=$(find . -maxdepth 3 -name "*.pro" | head -n 1)
-          if [ -z "$PRO_FILE" ]; then
+          CMAKE_FILE=$(find . -maxdepth 3 -name "*.pro" | head -n 1)
+          if [ -z "$CMAKE_FILE" ]; then
             echo "No .pro file found!" >&2
             exit 1
           fi
-          echo "pro_file=$PRO_FILE" >> "$GITHUB_OUTPUT"
-          echo "pro_dir=$(dirname "$PRO_FILE")" >> "$GITHUB_OUTPUT"
+          echo "cmake_file=$CMAKE_FILE" >> "$GITHUB_OUTPUT"
+          echo "cmake_dir=$(dirname "$CMAKE_FILE")" >> "$GITHUB_OUTPUT"
 
       - name: qmake (Release)
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
-        run: qmake "$(basename "${{ steps.proj.outputs.pro_file }}")" CONFIG+=release "DEFINES+=APP_VERSION=\\\"${{ steps.ver.outputs.version }}\\\""
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
+        run: qmake "$(basename "${{ steps.proj.outputs.cmake_file }}")" CONFIG+=release "DEFINES+=APP_VERSION=\\\"${{ steps.ver.outputs.version }}\\\""
 
       - name: Build
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
         run: make -j$(nproc)
 
       - name: Locate built binary
         id: bin
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
         run: |
           BIN=$(find . -maxdepth 2 -type f -executable ! -name "*.so*" | grep -v "\.o$" | head -n 1)
           echo "bin_path=$BIN" >> "$GITHUB_OUTPUT"
@@ -158,7 +162,7 @@ jobs:
           chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
       - name: Build AppImage
-        working-directory: ${{ steps.proj.outputs.pro_dir }}
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
         env:
           QML_SOURCES_PATHS: ${{ github.workspace }}
         run: |
@@ -175,7 +179,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-package
-          path: ${{ steps.proj.outputs.pro_dir }}/Quantum-*.AppImage
+          path: ${{ steps.proj.outputs.cmake_dir }}/Quantum-*.AppImage
 
   package-extensions:
     runs-on: ubuntu-latest
