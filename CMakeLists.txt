@@ -83,13 +83,10 @@ target_link_libraries(Quantum PRIVATE
     Qt6::Sql
     Qt6::Svg
     Qt6::Widgets
-    Shell32
 )
 
-if((QT_VERSION_MAJOR GREATER 4))
-    target_link_libraries(Quantum PRIVATE
-        Qt::Widgets
-    )
+if(WIN32)
+    target_link_libraries(Quantum PRIVATE Shell32)
 endif()
 
 install(TARGETS Quantum
