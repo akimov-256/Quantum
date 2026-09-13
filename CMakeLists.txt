@@ -72,6 +72,7 @@ qt_add_qml_module(Quantum
         qml/assets/icons/close.png
         qml/assets/icons/compressed.svg
     NO_RESOURCE_TARGET_PATH
+    SOURCES src/backend/nativehostsocket.h src/backend/nativehostsocket.cpp
 )
 
 # Avoid collision between executable name and QML module directory (QTBUG-98568).
