@@ -40,21 +40,6 @@ jobs:
       # check the action's README for the exact "tools_mingwXXXX" name that
       # ships with Qt 6.9.1 and add it under `tools:` above.
 
-      - name: Prune unneeded Qt SQL drivers
-        shell: bash
-        run: |
-          QSQL_DIR="$Qt6_DIR/plugins/sqldrivers"
-          if [ -d "$QSQL_DIR" ]; then
-            # Keep only the SQLite driver. Remove Mimer (needs proprietary
-            # libmimerapi.so) and MySQL (pulls in system libmysqlclient).
-            find "$QSQL_DIR" -maxdepth 1 -type f \
-              ! -name "libqsqlite.so" \
-              ! -name "libqsqlite*.so" \
-              -delete
-            echo "Remaining SQL drivers:"
-            ls -la "$QSQL_DIR"
-          fi
-
       - name: Locate CMakeLists.txt file
         id: proj
         shell: bash
@@ -145,6 +130,7 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-22.04
+    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -313,7 +299,7 @@ jobs:
           path: QDM-Integration-*-firefox.xpi
 
   publish-release:
-    needs: [ build-windows, package-extensions, build-linux ]
+    needs: [ build-windows, package-extensions ] # later add build-linux
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
@@ -333,4 +319,4 @@ jobs:
             dist/windows-installer/*.exe
             dist/chrome-extension/*.zip
             dist/firefox-extension/*.xpi
-            dist/linux-package/*.AppImage
+#           dist/linux-package/*.AppImage
