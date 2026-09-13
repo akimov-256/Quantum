@@ -40,6 +40,21 @@ jobs:
       # check the action's README for the exact "tools_mingwXXXX" name that
       # ships with Qt 6.9.1 and add it under `tools:` above.
 
+      - name: Prune unneeded Qt SQL drivers
+        shell: bash
+        run: |
+          QSQL_DIR="$Qt6_DIR/plugins/sqldrivers"
+          if [ -d "$QSQL_DIR" ]; then
+            # Keep only the SQLite driver. Remove Mimer (needs proprietary
+            # libmimerapi.so) and MySQL (pulls in system libmysqlclient).
+            find "$QSQL_DIR" -maxdepth 1 -type f \
+              ! -name "libqsqlite.so" \
+              ! -name "libqsqlite*.so" \
+              -delete
+            echo "Remaining SQL drivers:"
+            ls -la "$QSQL_DIR"
+          fi
+
       - name: Locate CMakeLists.txt file
         id: proj
         shell: bash
