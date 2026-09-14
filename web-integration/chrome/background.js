@@ -36,7 +36,11 @@ function sendAndWaitForAck(message, timeoutMs = 5000) {
 
 chrome.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
     handleInterception(downloadItem);
-    suggest();
+
+    suggest({
+        filename: downloadItem.filename,
+        conflictAction: "uniquify"
+    });
 });
 
 chrome.downloads.onCreated.addListener(async (downloadItem) => {
