@@ -67,24 +67,42 @@ jobs:
         working-directory: ${{ steps.proj.outputs.cmake_dir }}/build
         run: cmake --build . --parallel
 
-      - name: Locate built exe
-        id: exe
+      - name: Locate built Quantum.exe
+        id: Quantumexe
         shell: bash
         working-directory: ${{ steps.proj.outputs.cmake_dir }}
         run: |
-          EXE=$(find build/bin -maxdepth 1 -iname "*.exe" | head -n 1)
+          EXE=$(find build/bin -maxdepth 1 -iname "Quantum.exe" | head -n 1)
           if [ -z "$EXE" ]; then
-          echo "No exe found in build/bin" >&2
+          echo "No Quantum.exe found in build/bin" >&2
           exit 1
           fi
           echo "exe_path=$EXE" >> "$GITHUB_OUTPUT"
           echo "exe_dir=$(dirname "$EXE")" >> "$GITHUB_OUTPUT"
 
-      - name: windeployqt (bundle Qt DLLs)
+      - name: Locate built QuantumNativeHost.exe
+        id: QNHexe
         shell: bash
         working-directory: ${{ steps.proj.outputs.cmake_dir }}
-        run: windeployqt --release --compiler-runtime --qmldir . "${{ steps.exe.outputs.exe_path }}"
-         
+        run: |
+          EXE=$(find build/bin -maxdepth 1 -iname "QuantumNativeHost.exe" | head -n 1)
+          if [ -z "$EXE" ]; then
+          echo "No QuantumNativeHost.exe found in build/bin" >&2
+          exit 1
+          fi
+          echo "exe_path=$EXE" >> "$GITHUB_OUTPUT"
+          echo "exe_dir=$(dirname "$EXE")" >> "$GITHUB_OUTPUT"
+
+      - name: windeployqt (bundle Qt DLLs) for Quantum.exe
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
+        run: windeployqt --release --compiler-runtime --qmldir . "${{ steps.Quantumexe.outputs.exe_path }}"
+
+      - name: windeployqt (bundle Qt DLLs) for QuantumNativeHost.exe
+        shell: bash
+        working-directory: ${{ steps.proj.outputs.cmake_dir }}
+        run: windeployqt --release --compiler-runtime --qmldir . "${{ steps.QNHexe.outputs.exe_path }}"
+
       - name: Install Inno Setup
         shell: pwsh
         run: choco install innosetup --no-progress -y
@@ -111,7 +129,7 @@ jobs:
 
           Write-Host "Using ISCC: $iscc"
 
-          $exeDir = (Resolve-Path "${{ steps.exe.outputs.exe_dir }}").Path
+          $exeDir = (Resolve-Path "${{ steps.Quantumexe.outputs.exe_dir }}").Path
           if (-not $exeDir) { throw "exe_dir output is empty" }
   
           & $iscc `
