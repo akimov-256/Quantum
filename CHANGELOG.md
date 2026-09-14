@@ -21,7 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed build system from qmake to cmake.
 - Changed native host run loop structure.
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 215a8d79cc6b87916b61ceb43096593150df9751
 ## [1.5.1] 04-09-2026
 
 ### Added
@@ -29,9 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed downloads stopped because of app closure appear like they are still downloading when loaded.
-
-### Changed
-- Changed build system from qmake to cmake.
 
 ## [v1.5.0] 03-09-2026
 

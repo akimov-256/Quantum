@@ -6,8 +6,17 @@ Backend::Backend(QObject *parent)
     , manager(new QNetworkAccessManager(this))
     , m_fileNameHandler(new FileNameHandler(this))
     , m_databaseManager(new DatabaseManager(this))
+    , m_nativeHostSocket(new NativeHostSocket(this))
 {
     m_downloadModel.setDownloads(&m_downloads);
+
+    m_nativeHostSocket->StartWebServer();   // Start the native host socket web server.
+
+    // Link the recieved url from the native host web server to its local signal.
+    connect(m_nativeHostSocket,
+            &NativeHostSocket::urlRecieved,
+            this,
+            &Backend::urlRecieved);
 
     loadDownloads();
     StartWebServer();

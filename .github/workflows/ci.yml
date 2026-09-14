@@ -148,6 +148,7 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-22.04
+    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -316,7 +317,7 @@ jobs:
           path: QDM-Integration-*-firefox.xpi
 
   publish-release:
-    needs: [ build-windows, package-extensions, build-linux ]
+    needs: [ build-windows, package-extensions ] # later add build-linux
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
@@ -336,4 +337,4 @@ jobs:
             dist/windows-installer/*.exe
             dist/chrome-extension/*.zip
             dist/firefox-extension/*.xpi
-            dist/linux-package/*.AppImage
+#           dist/linux-package/*.AppImage

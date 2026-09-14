@@ -7,6 +7,7 @@
 #include "src/models/downloadcategories.h"
 #include "src/backend/filenamehandler.h"
 #include "src/core/databasemanager.h"
+#include "nativehostsocket.h"
 
 #include <QObject>
 #include <QStandardPaths>
@@ -85,6 +86,7 @@ private:
     QHash<QString, Downloader*> m_activeDownloaders;
     FileNameHandler m_fileNameHandler;
     DatabaseManager *m_databaseManager;
+    NativeHostSocket *m_nativeHostSocket;
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;
