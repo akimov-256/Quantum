@@ -5,6 +5,23 @@ All notable changes to Quantum will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.6.0] 15-09-2026
+
+### Added
+- Added native host executable and implemented basic message reading logic.
+- Added helper to better read the messages provided by the extension in the native messaging host.
+- Added send reply feature for native messaging app.
+- Added connection between web integration and native host.
+- Added signal linking for native host message recieving and connection failures.
+- Added native host socket class and linked it to backend side.
+- Added native host communication setup in web integration.
+- Added better thread handling in native messaging host.
+
+### Changed
+- Changed build system from qmake to cmake.
+- Changed native host run loop structure.
+
+
 ## [1.5.1] 04-09-2026
 
 ### Added
