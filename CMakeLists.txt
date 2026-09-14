@@ -28,6 +28,12 @@ qt_add_executable(Quantum WIN32 MACOSX_BUNDLE
     src/models/downloadcategories.h
     src/models/downloadstatus.h
 )
+
+qt_add_executable(QuantumNativeHost WIN32 MACOSX_BUNDLE
+    native-host/main.cpp
+    native-host/nativemessaging.cpp native-host/nativemessaging.h
+)
+
 qt_add_qml_module(Quantum
     URI Quantum
     VERSION ${PROJECT_VERSION}
@@ -66,6 +72,7 @@ qt_add_qml_module(Quantum
         qml/assets/icons/close.png
         qml/assets/icons/compressed.svg
     NO_RESOURCE_TARGET_PATH
+    SOURCES src/backend/nativehostsocket.h src/backend/nativehostsocket.cpp
 )
 
 # Avoid collision between executable name and QML module directory (QTBUG-98568).
@@ -85,6 +92,10 @@ target_link_libraries(Quantum PRIVATE
     Qt6::Widgets
 )
 
+target_link_libraries(QuantumNativeHost PRIVATE
+    Qt6::Core
+    Qt6::Network
+)
 if(WIN32)
     target_link_libraries(Quantum PRIVATE Shell32)
 endif()
