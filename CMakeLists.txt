@@ -3,6 +3,10 @@ project(Quantum VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+if(WIN32)
+    set(APP_RC packaging/quantum.rc)
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS
     Core
     Gui
@@ -18,6 +22,7 @@ find_package(Qt6 REQUIRED COMPONENTS
 qt_standard_project_setup()
 
 qt_add_executable(Quantum WIN32 MACOSX_BUNDLE
+    ${APP_RC}
     src/backend/backend.cpp src/backend/backend.h
     src/backend/downloadmodel.cpp src/backend/downloadmodel.h
     src/backend/filenamehandler.cpp src/backend/filenamehandler.h
@@ -30,6 +35,7 @@ qt_add_executable(Quantum WIN32 MACOSX_BUNDLE
 )
 
 qt_add_executable(QuantumNativeHost WIN32 MACOSX_BUNDLE
+    ${APP_RC}
     native-host/main.cpp
     native-host/nativemessaging.cpp native-host/nativemessaging.h
 )
@@ -73,6 +79,7 @@ qt_add_qml_module(Quantum
         qml/assets/icons/compressed.svg
     NO_RESOURCE_TARGET_PATH
     SOURCES src/backend/nativehostsocket.h src/backend/nativehostsocket.cpp
+    RESOURCES packaging/quantum.rc
 )
 
 # Avoid collision between executable name and QML module directory (QTBUG-98568).
