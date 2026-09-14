@@ -6,15 +6,16 @@
 #include <QJsonObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QThread>
 
-class NativeMessaging : public QObject
+class NativeMessaging : public QThread
 {
     Q_OBJECT
 
 public:
     NativeMessaging(QObject *parent = nullptr);
 
-    void run();
+    void run() override;
 
     bool sendMessage(const QJsonObject &message);
 

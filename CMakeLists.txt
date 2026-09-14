@@ -93,6 +93,11 @@ target_link_libraries(Quantum PRIVATE
     Shell32
 )
 
+target_link_libraries(QuantumNativeHost PRIVATE
+    Qt6::Core
+    Qt6::Network
+)
+
 if((QT_VERSION_MAJOR GREATER 4))
     target_link_libraries(Quantum PRIVATE
         Qt::Widgets

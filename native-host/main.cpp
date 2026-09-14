@@ -6,8 +6,37 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <QObject>
+#include <QLocalSocket>
 
 #include "nativemessaging.h"
+
+void forwardUrlToBackend(const QString &url, NativeMessaging *nMsg)
+{
+    QLocalSocket socket;                    // Create the local socket.
+    socket.connectToServer("QuantumIPC");   // Connect to the main app IPC.
+
+    if (!socket.waitForConnected(1000)) {   // Handle connection failures.
+        nMsg->sendMessage(
+            {{"status", "error"},
+            {"message", "Quantum is not running"}});
+        return;
+    }
+
+    QByteArray payload                      // Create the message body.
+        = QJsonDocument(QJsonObject{{"url", url}})
+            .toJson(QJsonDocument::Compact);
+    quint32 len                             // Get the message lenght.
+        = static_cast<quint32>(payload.size());
+
+    socket.write(                           // Write the size of the message body
+        reinterpret_cast<char *>(&len),     // in the first 4 bytes of the message.
+        sizeof(len));
+    socket.write(payload);                  // Write the message body next.
+    socket.waitForBytesWritten();           // Wait for the writing to finish on the socket
+    socket.disconnectFromServer();          // Disconnect on finish.
+
+    nMsg->sendMessage({{"status", "ok"}});  // Send an "ok" status reply.
+}
 
 int main(int argc, char *argv[])
 {
@@ -32,30 +61,7 @@ int main(int argc, char *argv[])
             return;
         }
 
-        QNetworkRequest request(            // Create request to the HTTP localhost server.
-            QUrl("http://127.0.0.1:8421/download"));
-        request.setHeader(                  // Add headers to the request.
-            QNetworkRequest::ContentTypeHeader,
-            "application/json");
-
-        const QJsonObject                   // Create the reply body.
-            body{{"url", url}};
-        QNetworkReply *reply                // Send the body and create a pointer to the reply.
-            = manager.post(request,
-                QJsonDocument(body).toJson());
-
-        // Connect the reply finish to a lambda function.
-        QObject::connect(reply, &QNetworkReply::finished, [reply, &nMsg]() {
-            if (reply->error() == QNetworkReply::NoError)
-                nMsg->sendMessage(          // On reply success send a ok message to native host.
-                    {{"status", "ok"}});
-            else
-                nMsg->sendMessage(          // On reply failure send the error to native host.
-                    {{"status", "error"},
-                        {"message", reply->errorString()}});
-
-            reply->deleteLater();           // Free the reply pointer.
-        });
+        forwardUrlToBackend(url, nMsg);     // Call the forward function.
     });
 
     QObject::connect(                       // Close the native host app on web integration connection lost.
@@ -63,7 +69,7 @@ int main(int argc, char *argv[])
         &NativeMessaging::connectionLost,
         &app, &QCoreApplication::quit);
 
-    nMsg->run();                            // Execute the running loop of the native host message handling.
+    nMsg->start();                          // Execute the running loop of the native host message handling.
 
     return app.exec();
 }

@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added connection between web integration and native host.
 - Added signal linking for native host message recieving and connection failures.
 - Added native host socket class and linked it to backend side.
+- Added native host communication setup in web integration.
+- Added better thread handling in native messaging host.
 
 ### Changed
 - Changed build system from qmake to cmake.

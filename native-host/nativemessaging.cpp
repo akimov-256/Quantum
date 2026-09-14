@@ -1,7 +1,7 @@
 #include "nativemessaging.h"
 
 NativeMessaging::NativeMessaging(QObject *parent)
-    : QObject(parent)
+    : QThread(parent)
 {}
 
 void NativeMessaging::run()
