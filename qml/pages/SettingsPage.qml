@@ -5,12 +5,21 @@ import "../components"
 Item {
     id: root
 
-    ColumnLayout {
+    Flickable {
         anchors.fill: parent
+        anchors.margins: 10
+        contentHeight: column.implicitHeight
+        clip: true
 
-        SettingsBox {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+        ColumnLayout {
+            id: column
+
+            width: parent.width
+            spacing: 10
+
+            SettingsBox {
+                Layout.fillWidth: true
+            }
         }
     }
 }
