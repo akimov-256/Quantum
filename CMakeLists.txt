@@ -80,6 +80,8 @@ qt_add_qml_module(Quantum
     NO_RESOURCE_TARGET_PATH
     SOURCES src/backend/nativehostsocket.h src/backend/nativehostsocket.cpp
     RESOURCES packaging/quantum.rc
+    QML_FILES qml/pages/SettingsPage.qml
+    QML_FILES qml/components/SettingsBox.qml
 )
 
 # Avoid collision between executable name and QML module directory (QTBUG-98568).
