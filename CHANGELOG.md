@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added app icon back.
 - Added settings page loading logic.
 - Added settings box title.
+- Added settings row component.
 
 ## [v1.6.0] 15-09-2026
 

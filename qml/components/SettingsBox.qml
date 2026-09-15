@@ -7,6 +7,7 @@ Rectangle {
     Layout.preferredHeight: column.implicitHeight + 20
 
     default property alias content: column.data
+    property string title : "ZAYTIIIII"
 
     color: "#35003D"
     radius: 10
@@ -23,7 +24,7 @@ Rectangle {
         anchors.margins: 10
 
         Text {
-            text: "THIS IS A TITLE"
+            text: title
             font.family: appFont.name
             font.pixelSize: 16
             color: "#FFFFFF"

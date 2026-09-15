@@ -82,6 +82,7 @@ qt_add_qml_module(Quantum
     RESOURCES packaging/quantum.rc
     QML_FILES qml/pages/SettingsPage.qml
     QML_FILES qml/components/SettingsBox.qml
+    QML_FILES qml/components/SettingRow.qml
 )
 
 # Avoid collision between executable name and QML module directory (QTBUG-98568).
