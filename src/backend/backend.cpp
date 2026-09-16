@@ -96,6 +96,13 @@ void Backend::StartWebServer()
     }
 }
 
+void Backend::clearDatabase()
+{
+    m_databaseManager->clearDatabase();
+
+    emit countChanged();
+}
+
 bool Backend::downloadRequested(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256)
 {
     const QString path = filePath + "/" + fileName;         // Build the complete path.
