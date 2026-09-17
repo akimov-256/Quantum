@@ -332,8 +332,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if ! gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
+          if ! gh release view "${{ github.ref_name }}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
             gh release create "${{ github.ref_name }}" \
+              --repo "${{ github.repository }}" \
               --title "Quantum ${{ github.ref_name }}" \
               --generate-notes
           fi
@@ -341,14 +342,17 @@ jobs:
       - name: Upload installer
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.ref_name }}" dist/windows-installer/*.exe --clobber
+        run: gh release upload "${{ github.ref_name }}" dist/windows-installer/*.exe --clobber \
+                --repo "${{ github.repository }}"
 
       - name: Upload chrome extension
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.ref_name }}" dist/chrome-extension/*.zip --clobber
+        run: gh release upload "${{ github.ref_name }}" dist/chrome-extension/*.zip --clobber \
+                --repo "${{ github.repository }}"
 
       - name: Upload firefox extension
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.ref_name }}" dist/firefox-extension/*.xpi --clobber
+        run: gh release upload "${{ github.ref_name }}" dist/firefox-extension/*.xpi --clobber \
+                --repo "${{ github.repository }}"
