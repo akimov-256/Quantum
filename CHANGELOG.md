@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added settings box title.
 - Added settings row component.
 - Added database reset setting.
+- Added remove completed button.
 
 ## [v1.6.0] 15-09-2026
 

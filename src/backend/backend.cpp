@@ -511,6 +511,11 @@ void Backend::removeRequested(const QString id)
     if (reply == QMessageBox::No)
         return;
 
+    removeDownload(id);
+}
+
+void Backend::removeDownload(const QString &id)
+{
     m_databaseManager->removeDownload(id);
     m_downloadModel.removeRow(rowForId(id));
 
@@ -576,6 +581,18 @@ void Backend::resumeAll() {
 
         emit countChanged();
         m_downloadModel.updateDownload(download.ID);
+    }
+}
+
+void Backend::removeCompleted()
+{
+    for (downloadInformations info : m_downloads)   // Loop through the downloads.
+    {
+        if (info.status != "Paused"                 // Check if the download is completed.
+            || info.status != "Downloading")
+        {
+            removeDownload(info.ID);                // Remove the download.
+        }
     }
 }
 

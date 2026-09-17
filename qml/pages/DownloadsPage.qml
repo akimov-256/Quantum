@@ -7,7 +7,7 @@ import "../js/Helper.js" as Helper
 Item {
     id: root
 
-    property int delayTargetButton: 0               // 0 for default, 1 for pause all button, 2 for resume all button.
+    property int delayTargetButton: 0               // 0 for default, 1 for pause all button, 2 for resume all button, 3 for remove completed button.
 
     signal newDownloadRequested();
 
@@ -23,6 +23,10 @@ Item {
             else if (delayTargetButton == 2) {
                 backend.resumeAll()
             }
+            else if (delayTargetButton == 3) {
+                backend.removeCompleted()
+            }
+
             delayTargetButton = 0
         }
     }
@@ -79,6 +83,7 @@ Item {
 
                 anchors.fill: parent
                 anchors.leftMargin: 10
+                anchors.rightMargin: 10
                 spacing: 10
 
                 Layout.fillHeight: true
@@ -159,6 +164,29 @@ Item {
 
                 Item {
                     Layout.fillWidth: true
+                }
+
+                // Remove completed
+                UiButton {
+                    id: removeCompletedButton
+
+                    Layout.alignment: Qt.AlignVCenter
+
+                    buttonEnabled: backend.completedCount > 0
+
+                    buttonHeight: 32
+                    buttonWidth: 180
+
+                    fillColor: fillColor
+                    borderColor: borderColor
+
+                    buttonText: "Remove Completed"
+                    buttonIcon: "qrc:/qml/assets/icons/close.svg"
+
+                    onClicked: {
+                        root.delayTargetButton = 3
+                        delayTimer.start()
+                    }
                 }
             }
         }
