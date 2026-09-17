@@ -316,25 +316,39 @@ jobs:
           name: firefox-extension
           path: QDM-Integration-*-firefox.xpi
 
-  publish-release:
-    needs: [ build-windows, package-extensions ] # later add build-linux
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist
+publish-release:
+  needs: [ build-windows, package-extensions ]
+  if: startsWith(github.ref, 'refs/tags/')
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dist
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Quantum ${{ github.ref_name }}
-          generate_release_notes: true
-          files: |
-            dist/windows-installer/*.exe
-            dist/chrome-extension/*.zip
-            dist/firefox-extension/*.xpi
-#           dist/linux-package/*.AppImage
+    - name: Create release if missing
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        if ! gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
+          gh release create "${{ github.ref_name }}" \
+            --title "Quantum ${{ github.ref_name }}" \
+            --generate-notes
+        fi
+
+    - name: Upload installer
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release upload "${{ github.ref_name }}" dist/windows-installer/*.exe --clobber
+
+    - name: Upload chrome extension
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release upload "${{ github.ref_name }}" dist/chrome-extension/*.zip --clobber
+
+    - name: Upload firefox extension
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release upload "${{ github.ref_name }}" dist/firefox-extension/*.xpi --clobber
