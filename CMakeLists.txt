@@ -77,6 +77,7 @@ qt_add_qml_module(Quantum
         qml/assets/icons/video.svg
         qml/assets/icons/close.png
         qml/assets/icons/compressed.svg
+        qml/assets/icons/reset.svg
     NO_RESOURCE_TARGET_PATH
     SOURCES src/backend/nativehostsocket.h src/backend/nativehostsocket.cpp
     RESOURCES packaging/quantum.rc
