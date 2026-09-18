@@ -1,36 +1,73 @@
-browser.downloads.onCreated.addListener(async (downloadItem) => {
-    const { isActive = false } =        // Get if the integration is active.
-        await browser.storage.local.get("isActive");
+const hostName = "com.mouloud_guenane.quantum";
+let port = null;
+let pendingResolvers = [];
 
-    if (!isActive) {                            // Skip the handling if the integration is inactive.
-        return;
-    }
+function getPort() {
+    if (port) return port;
 
-    await browser.downloads                     // Immediately cancel the download.
-        .cancel(downloadItem.id);
+    port = browser.runtime.connectNative(hostName);
 
-    await browser.downloads                     // Erase the download from the disk.
-        .erase({ id: downloadItem.id });
+    port.onMessage.addListener((response) => {
+        console.log("Native host response:", response);
+        // Resolve whichever send is waiting on a reply
+        const resolve = pendingResolvers.shift();
+        if (resolve) resolve(response);
+    });
 
-    sendToManager(downloadItem.url);            // Pass url to send function.
+    port.onDisconnect.addListener(() => {
+        console.log("Native host disconnected:", browser.runtime.lastError?.message);
+        port = null;
+        // Reject anything still waiting so we don't hang forever
+        pendingResolvers.forEach(r => r({ status: "error", message: "disconnected" }));
+        pendingResolvers = [];
+    });
+
+    return port;
+}
+
+function sendAndWaitForAck(message, timeoutMs = 5000) {
+    return new Promise((resolve) => {
+        pendingResolvers.push(resolve);
+        getPort().postMessage(message);
+
+        setTimeout(() => resolve({ status: "timeout" }), timeoutMs);
+    });
+}
+
+browser.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
+    handleInterception(downloadItem);
+
+    suggest({
+        filename: downloadItem.filename,
+        conflictAction: "uniquify"
+    });
 });
 
-async function sendToManager(url) {
-    try {
-        const response = await fetch("http://127.0.0.1:8421/download", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ url: url })
-        });
+browser.downloads.onCreated.addListener(async (downloadItem) => {
+    const { isActive = false } = await browser.storage.local.get("isActive");
+    if (!isActive) return;
 
-        if (response.ok) {
-            console.log("Url received successfully");
-        } else {
-            console.log("Url not received");
-        }
-    } catch (error) {
-        console.error("Fetch failed:", error);
+    browser.downloads.cancel(downloadItem.id);
+    await handleInterception(downloadItem);   // <-- await keeps the worker alive until this resolves
+});
+
+async function handleInterception(downloadItem) {
+    const { isActive = false } = await browser.storage.local.get("isActive");
+    if (!isActive) return;
+
+    let cookieHeader = "";
+    try {
+        const cookies = await browser.cookies.getAll({ url: downloadItem.url });
+        cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join("; ");
+    } catch (e) {
+        console.warn("Could not read cookies for", downloadItem.url, e);
     }
+
+    const ack = await sendAndWaitForAck({
+        url: downloadItem.url,
+        referrer: downloadItem.referrer || "",
+        cookies: cookieHeader
+    });
+
+    console.log("Delivery result:", ack);
 }

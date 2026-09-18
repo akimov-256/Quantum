@@ -1,0 +1,12 @@
+{
+  "name": "com.mouloud_guenane.quantum",
+  "description": "Quantum Native Host",
+  "path": "C:\\Users\\MOULOUDOV\\Documents\\Quantum\\build\\Desktop_Qt_6_11_1_MinGW_64_bit_Debug\\QuantumNativeHost.exe",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://amplpanejdkenkfiidednahiodkkeljd/"
+  ],
+  "allowed_extensions": [
+    "qdm-integration@mouloud-guenane"
+  ]
+}

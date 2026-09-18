@@ -18,6 +18,8 @@ class DatabaseManager : public QObject
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
 
+    void clearDatabase();
+
     void insertDownload(const downloadInformations &info);
     void updateDownload(const downloadInformations &info);
     void removeDownload(const QString &id);

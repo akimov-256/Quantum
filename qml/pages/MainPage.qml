@@ -150,6 +150,7 @@ Item {
 
                         isSelected: root.currentCategory == 0
                         onClicked: {
+                            pageLoader.sourceComponent = downloadsPage
                             root.currentCategory = 0
                             backend.setCategory(0)
                         }
@@ -163,6 +164,7 @@ Item {
 
                         isSelected: root.currentCategory == 1
                         onClicked: {
+                            pageLoader.sourceComponent = downloadsPage
                             root.currentCategory = 1
                             backend.setCategory(1)
                         }
@@ -176,6 +178,7 @@ Item {
 
                         isSelected: root.currentCategory == 2
                         onClicked: {
+                            pageLoader.sourceComponent = downloadsPage
                             root.currentCategory = 2
                             backend.setCategory(2)
                         }
@@ -189,6 +192,7 @@ Item {
 
                         isSelected: root.currentCategory == 3
                         onClicked: {
+                            pageLoader.sourceComponent = downloadsPage
                             root.currentCategory = 3
                             backend.setCategory(3)
                         }
@@ -202,6 +206,7 @@ Item {
 
                         isSelected: root.currentCategory == 4
                         onClicked: {
+                            pageLoader.sourceComponent = downloadsPage
                             root.currentCategory = 4
                             backend.setCategory(4)
                         }
@@ -215,6 +220,7 @@ Item {
 
                         isSelected: root.currentCategory == 5
                         onClicked: {
+                            pageLoader.sourceComponent = downloadsPage
                             root.currentCategory = 5
                             backend.setCategory(5)
                         }
@@ -252,17 +258,40 @@ Item {
 
                     buttonText: "Settings"
                     buttonIcon: "qrc:/qml/assets/icons/setting.svg"
+
+                    onClicked: {
+                        pageLoader.sourceComponent = settingsPage
+                        root.currentCategory = -1
+                    }
                 }
             }
         }
 
-        DownloadsPage {
+        Loader {
+            id: pageLoader
+
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            // Signals
-            onNewDownloadRequested: {
-                root.newDownloadRequested()
+            sourceComponent: downloadsPage
+        }
+
+        Component {
+            id: downloadsPage
+
+            DownloadsPage {
+                // Signals
+                onNewDownloadRequested: {
+                    root.newDownloadRequested()
+                }
+            }
+        }
+
+        Component {
+            id: settingsPage
+
+            SettingsPage {
+
             }
         }
     }
