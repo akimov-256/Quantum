@@ -7,6 +7,7 @@
 #include "src/models/downloadcategories.h"
 #include "src/backend/filenamehandler.h"
 #include "src/core/databasemanager.h"
+#include "nativehostsocket.h"
 
 #include <QObject>
 #include <QStandardPaths>
@@ -20,6 +21,7 @@
 #include <QMessageBox>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QElapsedTimer>
 
 class Backend : public QObject
 {
@@ -38,6 +40,7 @@ public:
     explicit Backend(QObject *parent = nullptr);
 
     void StartWebServer();
+    Q_INVOKABLE void clearDatabase();
     Q_INVOKABLE bool downloadRequested(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void CreateDownload(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256);
     Q_INVOKABLE void getHeadInfo(const QString &fileUrl, const QString &targetPath);
@@ -47,6 +50,7 @@ public:
     Q_INVOKABLE void removeRequested(const QString id);
     Q_INVOKABLE void pauseAll();
     Q_INVOKABLE void resumeAll();
+    Q_INVOKABLE void removeCompleted();
     Q_INVOKABLE QRect availableScreenGeometry() const;
     Q_INVOKABLE QString coloredSvg(const QString &path, const QString &color);
     Q_INVOKABLE void setCategory(int category);
@@ -77,6 +81,7 @@ private:
     // Functions
     void loadDownloads();
     void wireDownloadConnections(Downloader *downloader, const downloadInformations &info);
+    void removeDownload(const QString &id);
 
     // Variables
     QTcpServer *m_webServer;
@@ -84,6 +89,7 @@ private:
     QHash<QString, Downloader*> m_activeDownloaders;
     FileNameHandler m_fileNameHandler;
     DatabaseManager *m_databaseManager;
+    NativeHostSocket *m_nativeHostSocket;
     QString m_fileName;
     qint64 m_fileSize = 0;
     bool m_isHeadReqActive = false;

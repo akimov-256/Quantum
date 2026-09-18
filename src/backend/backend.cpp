@@ -6,8 +6,17 @@ Backend::Backend(QObject *parent)
     , manager(new QNetworkAccessManager(this))
     , m_fileNameHandler(new FileNameHandler(this))
     , m_databaseManager(new DatabaseManager(this))
+    , m_nativeHostSocket(new NativeHostSocket(this))
 {
     m_downloadModel.setDownloads(&m_downloads);
+
+    m_nativeHostSocket->StartWebServer();   // Start the native host socket web server.
+
+    // Link the recieved url from the native host web server to its local signal.
+    connect(m_nativeHostSocket,
+            &NativeHostSocket::urlRecieved,
+            this,
+            &Backend::urlRecieved);
 
     loadDownloads();
     StartWebServer();
@@ -85,6 +94,39 @@ void Backend::StartWebServer()
         qDebug()
         << "Quantum web server running on port 8421";
     }
+}
+
+void Backend::clearDatabase()
+{
+    QMessageBox::StandardButton reply               // Create the reset warning and catch the reply.
+        = QMessageBox::warning(                     // Populate the warning parameters.
+        nullptr,
+        "Database Reset",
+        "All active downloads will be stopped.\n"
+        "All downloads will be removed.\n"
+        "Do you want to continue?",
+        QMessageBox::Yes | QMessageBox::No);        // Add yes/no buttons.
+
+    if (reply == QMessageBox::Yes)                  // Check if user selected yes.
+    {
+        for (Downloader* downloader : m_activeDownloaders)
+        {
+            downloader->downloadStop();             // Stop all active downloads.
+        }
+        m_activeDownloaders.clear();                // Clear active downloaders list.
+
+        for (downloadInformations info : m_downloads)
+        {
+            int row = rowForId(info.ID);            // Get the download row.
+
+            m_downloadModel.removeRow(row);         // Remove the download from the download model.
+        }
+        m_downloads.clear();                        // Clear the downloads list.
+
+        m_databaseManager->clearDatabase();         // Clear the database.
+    }
+
+    emit countChanged();                            // Notify change for counter and parts relying on count.
 }
 
 bool Backend::downloadRequested(const QString &fileUrl, const QString &fileName, const QString &filePath, const int &connections, const QString &SHA256)
@@ -469,6 +511,11 @@ void Backend::removeRequested(const QString id)
     if (reply == QMessageBox::No)
         return;
 
+    removeDownload(id);
+}
+
+void Backend::removeDownload(const QString &id)
+{
     m_databaseManager->removeDownload(id);
     m_downloadModel.removeRow(rowForId(id));
 
@@ -534,6 +581,18 @@ void Backend::resumeAll() {
 
         emit countChanged();
         m_downloadModel.updateDownload(download.ID);
+    }
+}
+
+void Backend::removeCompleted()
+{
+    for (downloadInformations info : m_downloads)   // Loop through the downloads.
+    {
+        if (info.status != "Paused"                 // Check if the download is completed.
+            || info.status != "Downloading")
+        {
+            removeDownload(info.ID);                // Remove the download.
+        }
     }
 }
 

@@ -49,6 +49,18 @@ void DatabaseManager::initDatabase()
         qDebug() << "Database query error: " << query.lastError().text();
 }
 
+void DatabaseManager::clearDatabase()
+{
+    QSqlQuery query;                        // Create the query.
+
+    QString sql                             // Create the sql body.
+        = "DELETE FROM downloads";
+
+    if (!query.exec(sql))                   // Execute the query and handle failures.
+        qDebug() << "Database clear error: "
+                 << query.lastError().text();
+}
+
 void DatabaseManager::insertDownload(const downloadInformations &info)
 {
     QSqlQuery query;                        // Create the query variable.
