@@ -179,7 +179,7 @@ QVector<downloadInformations> DatabaseManager::getDownloads()
         download.category = static_cast<DownloadCategory>(query.value("category").toInt());
         download.SHA256 = query.value("sha256").toString();
         QString status = query.value("status").toString();
-        if (status != "Completed" || status != "Paused")
+        if (status != "Completed" && status != "Paused")
             status = "Paused";
         download.status = status;
 
